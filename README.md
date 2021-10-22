@@ -64,3 +64,13 @@ Multi-Vehicle Planning을 통해 다수의 차량 동선을 종합적으로 고�
 
 ## How to build
 ## 릴리즈 히스토리
+
+## 관련문서
+
+[노션(Notion) 페이지](https://spice-session-a8a.notion.site/SDI-bf364b0fe61f457a8687d531096a47e9)
+
+[WBS 스프레드 시트](https://docs.google.com/spreadsheets/d/1HMPFKf2UmTKbTjrtqk0U_vcNYzQtznxR-eZYdHO8HKE/edit?usp=sharing)
+
+[UI 메뉴 계획](https://docs.google.com/spreadsheets/d/1PMcZ8eTfPwLhpXxE9VDXUx82L5bSitthVZU2a6iTxLI/edit?usp=sharing)
+
+[중간발표 자료 초안](https://docs.google.com/presentation/d/1_n9nmc46bJ1XvIrJIzhMT6J674z_0iJPbP7YQtuElyQ/edit?usp=sharing)
