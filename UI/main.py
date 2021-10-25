@@ -16,6 +16,9 @@ class MainPage(QWidget):
 
     # 메인 메뉴 생성
     def initMainMenu(self):
+        self.menu_height = 35
+        self.menu_width = 110
+
         self.menus = []
         self.menus.append(QPushButton("File", self))
         self.menus.append(QPushButton("Draw", self))
@@ -24,7 +27,7 @@ class MainPage(QWidget):
         self.menus.append(QPushButton("Report", self))
 
         left = 0
-        for menu in self.menus:
+        for idx, menu in enumerate(self.menus):
             font = QFont()
             font.setPointSize(13)   # font size 변경
             menu.setFont(font)      # font size 적용
@@ -35,9 +38,19 @@ class MainPage(QWidget):
                                "#HI:hover{"
                                "background-color:red;"
                                "}")
-            menu.resize(110, 35)
+            menu.resize(self.menu_width, self.menu_height)
             menu.move(left, 0)
-            left += 110
+            left += self.menu_width
+
+        self.menus[0].clicked.connect(lambda: self.getSubMenu(0))
+        self.menus[1].clicked.connect(lambda: self.getSubMenu(1))
+        self.menus[2].clicked.connect(lambda: self.getSubMenu(2))
+        self.menus[3].clicked.connect(lambda: self.getSubMenu(3))
+        self.menus[4].clicked.connect(lambda: self.getSubMenu(4))
+
+    def getSubMenu(self, idx):
+        print(idx)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
