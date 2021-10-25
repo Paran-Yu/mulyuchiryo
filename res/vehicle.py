@@ -15,7 +15,7 @@ class Vehicle:
         self.CHARGE_SPEED = -1
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
-        self.STAT_LIST
+        self.STAT_LIST = {}
 
         self.x = -1
         self.y = -1
