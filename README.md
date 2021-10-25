@@ -1,9 +1,8 @@
-
-# SDI 프로젝트(가제)
+# 물류치료
 
 ## 프로젝트 소개
 
-`SDI 프로젝트(가제)는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
+`물류 치료는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
 
 이미지(추후 작성)
 
@@ -74,6 +73,8 @@ Multi-Vehicle Planning을 통해 다수의 차량 동선을 종합적으로 고�
 [WBS 스프레드 시트](https://docs.google.com/spreadsheets/d/1HMPFKf2UmTKbTjrtqk0U_vcNYzQtznxR-eZYdHO8HKE/edit?usp=sharing)
 
 [UI 메뉴 계획](https://docs.google.com/spreadsheets/d/1PMcZ8eTfPwLhpXxE9VDXUx82L5bSitthVZU2a6iTxLI/edit?usp=sharing)
+
+[프로토 타입](https://xd.adobe.com/view/c35b2931-1fd7-41ca-85f5-bc734e19a8c3-9608/)
 
 [중간발표 자료 초안](https://docs.google.com/presentation/d/1_n9nmc46bJ1XvIrJIzhMT6J674z_0iJPbP7YQtuElyQ/edit?usp=sharing)
 
