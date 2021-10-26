@@ -26,6 +26,7 @@ class Vehicle:
         self.status = 0
         self.loaded = 0
         self.battery = -1
+        self.path = []
         self.command_list = []
 
     # new_node로 이동
