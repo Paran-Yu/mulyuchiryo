@@ -1,3 +1,5 @@
+from math import atan2, pi, degrees
+
 class Vehicle:
     def __init__(self, name):
         super().__init__()
@@ -65,6 +67,17 @@ class Vehicle:
         else:
             return False
 
+    def getAngle(self, destination):
+        # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
+        # atan2 결과값은 -180~180이므로, 방위각(정북과 타겟좌표 사이의 각도)을 구하자
+        radian = atan2(destination.y - self.y , destination.x - self.x)
+        degree = degrees(radian)
+        if degree > 0:
+            degree -= 360
+        degree = abs(degree)
+        degree = (degree+90)%360
+        return degree
+
     # 매 0.1초마다 실행
     def threadFunc(self):
         while True:
@@ -73,7 +86,7 @@ class Vehicle:
                 crashed = self.checkCrash(cars[i])
                 if crashed:
                     self.status = 4
-                    return -1   # 종료
+                    return -1   # 종료..?
             # 현재 상태를 파악
             # 대기
             if self.status == 0:
@@ -96,7 +109,7 @@ class Vehicle:
                 # 더 목적지가 있다면
                 else:
                     current_destination = self.path.pop(0)
-                # 가감속
+                # 회전 & 가감속
                 angle_diff = self.angleBetweenVector(self.getDesti(current_destination)) - self.angle # 위치벡터-위치벡터는 스칼라 각도
                 if angle_diff==0:   # 현재 목적지를 향해 보고 있다
                     distance = self.getDesti() - self.getPosition() # 현재 목적지와의 거리
@@ -106,15 +119,14 @@ class Vehicle:
                         self.velocity += self.ACCEL
                         if self.velocity > self.MAX_SPEED:
                             self.velocity = self.MAX_SPEED
-                    # 속도는 현재 위치에 영향을 준다
+                    # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꿔야할듯)
                     self.x += self.velocity
                     self.y += self.velocity
                 else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
                     # 각도 차이에 따라 더할지 뺄지 로직 필요
-                    self.angle += (self.ROTATE_SPEED)/10
-                # 회전
-                
+                    self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
                 # 동작 배터리 방전
+                self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
                 # 충돌시 에러
                 # 반송 완료 후 충전 요건 충족시
             # 복귀
@@ -125,8 +137,17 @@ class Vehicle:
                 self.battery -= self.DISCHARGE_WORK/60/10   # 분->초->0.1초
             # 충전
             elif self.status == 3:
-                self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
+                # 배터리 충전 완료시 / 업무 할당 가능시
+                # 새로운 명령 확인?
                 # 배터리 충전
+                self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
             # 에러
             elif self.status == 4:
                 pass
+
+# 방위각 테스팅
+d = Vehicle('d')
+d.x = -1
+d.y = 1
+v = Vehicle('v')
+print(d.getAngle(v))
