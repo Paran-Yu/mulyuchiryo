@@ -1,4 +1,5 @@
-from math import atan2, pi, degrees
+from time import sleep
+from math import atan2, degrees, isclose
 
 class Vehicle:
     def __init__(self, name):
@@ -28,7 +29,7 @@ class Vehicle:
         self.status = 0
         self.loaded = 0
         self.battery = -1
-        self.path = []
+        self.path = []  # 각 노드(경유지)가 object일지 좌표일지 정해야할듯
         self.command_list = []
 
     # new_node로 이동
@@ -61,7 +62,8 @@ class Vehicle:
 
     def checkCrash(self, car):
         # 다른 차량타입이라 크기 다르면? 둘다 메서드 들어가니까 ㄱㅊ
-        # 라운드턴 등으로 직각이 아닐 때는? 1) (언제나)여유롭게 대각선으로 2) 매0.1초마다 영역 계산
+        # 라운드턴 등으로 직각이 아닐 때는? 1) (언제나)여유롭게 대각선으로 2) 매0.1초마다 영역 계산 -> 일단 라운드턴 배제하고 진행
+        # 가로로 있는지 세로로 있는지에 따라 달라져야할거같은데?
         if (self.x + self.width > car.x) and (self.x < car.x + car.width) and (self.y > car.y + car.height) and (self.y + self.height > car.y):
             return True
         else:
@@ -81,8 +83,10 @@ class Vehicle:
     # 매 0.1초마다 실행
     def threadFunc(self):
         while True:
-            # 충돌여부 조사 (다른 차량 정보 모두 필요)
+            # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?
             for i in range(len(cars)):
+                if self is cars[i]: # 이게 될까?
+                    continue
                 crashed = self.checkCrash(cars[i])
                 if crashed:
                     self.status = 4
@@ -102,28 +106,42 @@ class Vehicle:
                     # LOAD/UNLOAD
                     if self.loaded:
                         sleep(30)   # 그냥 30초 쉴지, count 방식으로 쉴지
-                        self.loaded = not self.loaded
+                        self.loaded = 0
                     else:
                         sleep(30)
-                        self.loaded = not self.loaded
+                        self.loaded = 1
                 # 더 목적지가 있다면
                 else:
                     current_destination = self.path.pop(0)
                 # 회전 & 가감속
-                angle_diff = self.angleBetweenVector(self.getDesti(current_destination)) - self.angle # 위치벡터-위치벡터는 스칼라 각도
+                angle_diff = self.getAngle(self.getDesti(current_destination)) - self.angle
                 if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                    distance = self.getDesti() - self.getPosition() # 현재 목적지와의 거리
+                    distance = self.getDesti() - self.getPos() # 현재 목적지와의 거리 # 벡터
+                    # 도착했다는 것은 어떻게 할까? distance가 0이 될 일은 거의 없을텐데
+                    if distance <= 0.000001:
+                        self.x = self.getDesti().x
+                        self.y = self.getDesti().y
+                        continue
                     if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정
                         self.velocity -= self.ACCEL
                     else:
                         self.velocity += self.ACCEL
                         if self.velocity > self.MAX_SPEED:
                             self.velocity = self.MAX_SPEED
-                    # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꿔야할듯)
-                    self.x += self.velocity
-                    self.y += self.velocity
+                    # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
+                    if isclose(self.angle, 90):
+                        self.x += self.velocity/10*6 # m/min->1000mm/60sec->1000mm/600 0.1sec
+                    elif isclose(self.angle, 270):
+                        self.x -= self.velocity/10*6 # m/min->1000mm/60sec->1000mm/600 0.1sec
+                    elif isclose(self.angle, 0):
+                        self.y += self.velocity/10*6 # m/min->1000mm/60sec->1000mm/600 0.1sec
+                    elif isclose(self.angle, 180):
+                        self.y -= self.velocity/10*6 # m/min->1000mm/60sec->1000mm/600 0.1sec
+
+
                 else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
                     # 각도 차이에 따라 더할지 뺄지 로직 필요
+
                     self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
                 # 동작 배터리 방전
                 self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
