@@ -21,6 +21,8 @@ class MainPage(QWidget):
         self.menu_wrapper_height = 35
         menu_width = 110
 
+        self.mainMenu = 0   # 초기 메뉴는 file탭
+
         self.menus = []
         self.menus.append(QPushButton("File", self))
         self.menus.append(QPushButton("Draw", self))
@@ -44,6 +46,7 @@ class MainPage(QWidget):
             menu.move(left, 0)
             left += menu_width
 
+        # 메뉴 클릭 이벤트
         self.menus[0].clicked.connect(lambda: self.getSubMenu(0))
         self.menus[1].clicked.connect(lambda: self.getSubMenu(1))
         self.menus[2].clicked.connect(lambda: self.getSubMenu(2))
@@ -52,51 +55,87 @@ class MainPage(QWidget):
 
     # 서브 메뉴 생성
     def initSubMenu(self):
-        padding = 10
-        sub_menu_size = 70
+        padding = 10    # 메뉴 아이콘 여백
+        self.sub_menu_size = 70 # 서브 메뉴 아이콘 크기
 
-        self.subMenus = []
-        sub_menu_wrapper = QWidget(self)
-        sub_menu_wrapper.move(0,self.menu_wrapper_height)
-        sub_menu_wrapper.resize(self.rect.width(), padding*2 + sub_menu_size)
-        sub_menu_wrapper.setObjectName("sub-menu-wrapper")
-        sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
+        # 서브 메뉴 바 생성.
+        self.sub_menu_wrapper = QWidget(self)
+        self.sub_menu_wrapper.move(0,self.menu_wrapper_height)
+        self.sub_menu_wrapper.resize(self.rect.width(), padding*2 + self.sub_menu_size)
+        self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
+        self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
                                        "background-color: #CCCCCC;"
                                        "border: 2px solid #AAAAAA;"
                                        "}")
 
-        file = [
-            QPushButton("Open", sub_menu_wrapper),
-            QPushButton("Save", sub_menu_wrapper),
-            QPushButton("Save\nAs", sub_menu_wrapper),
-            QPushButton("Load", sub_menu_wrapper),
-            QPushButton("Load\nLayout", sub_menu_wrapper),
-            QPushButton("Set\nScale", sub_menu_wrapper),
-            QPushButton("Close", sub_menu_wrapper),
+        # 서브 메뉴 항목 추가
+        self.subMenus = [
+            # file
+            [
+                QPushButton("Open", self.sub_menu_wrapper),
+                QPushButton("Save", self.sub_menu_wrapper),
+                QPushButton("Save\nAs", self.sub_menu_wrapper),
+                QPushButton("Load", self.sub_menu_wrapper),
+                QPushButton("Load\nLayout", self.sub_menu_wrapper),
+                QPushButton("Set\nScale", self.sub_menu_wrapper),
+                QPushButton("Close", self.sub_menu_wrapper),
+            ],
+            # draw
+            [
+                QPushButton("Path", self.sub_menu_wrapper),
+                QPushButton("Port", self.sub_menu_wrapper),
+                QPushButton("Wait\nPoint", self.sub_menu_wrapper),
+            ],
+            # vehicle
+            [
+                QPushButton("Add", self.sub_menu_wrapper),
+                QPushButton("Delete\nAll", self.sub_menu_wrapper),
+            ],
+            # simulate
+            [
+                QPushButton("Play", self.sub_menu_wrapper),
+                QPushButton("Stop", self.sub_menu_wrapper),
+                QPushButton("Speed", self.sub_menu_wrapper),
+            ],
+            # report
+            [
+            ],
         ]
 
-        left = 0
+        for mainMenu in self.subMenus:
+            for menu in mainMenu:
+                menu.setObjectName("sub-menu")
+                menu.setStyleSheet("#sub-menu{"
+                                   "background-color:white;"
+                                   "font-size: 17px;"
+                                   "}"
+                                   "#sub-menu:hover{"
+                                   "background-color: #D7EDFF;"
+                                   "}")
+                menu.resize(self.sub_menu_size, self.sub_menu_size)
+                menu.move(-100, -100)
 
-        for menu in file:
-            menu.setObjectName("sub-menu")
-            menu.setStyleSheet("#sub-menu{"
-                               "background-color:white;"
-                               "font-size: 17px;"
-                               "}"
-                               "#sub-menu:hover{"
-                               "background-color: #D7EDFF;"
-                               "}")
+        self.showSubMenu(self.mainMenu)
+
+    def hideSubMenu(self, idx):
+        for menu in self.subMenus[idx]:
+            menu.move(-100, -100)
+
+    def showSubMenu(self, idx):
+        left = 0
+        padding = 10
+
+        for menu in self.subMenus[idx]:
             left += padding
-            menu.resize(sub_menu_size, sub_menu_size)
             menu.move(left, padding)
-            left += sub_menu_size
+            left += self.sub_menu_size
 
     # 메인 메뉴 버튼 클릭 이벤트
     def getSubMenu(self, idx):
-        print(idx)
-        self.mainMenu = idx
-        #self.showSubMenu(idx)
-
+        if idx != self.mainMenu:
+            self.hideSubMenu(self.mainMenu)
+            self.mainMenu = idx
+            self.showSubMenu(idx)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
