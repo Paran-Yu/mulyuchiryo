@@ -37,9 +37,11 @@ class Vehicle:
         pass
 
     def load(self, port_num):
+        self.loaded = 1
         pass
 
     def unload(self, port_num):
+        self.loaded = 0
         pass
 
     def getNode(self):
@@ -89,27 +91,28 @@ class Vehicle:
                     continue
                 crashed = self.checkCrash(cars[i])
                 if crashed:
-                    self.status = 4
+                    self.status = 91
                     return -1   # 종료..?
             # 현재 상태를 파악
             # 대기
-            if self.status == 0:
+            if self.status == 00:
                 # Core에서 명령 있는지 확인
                 # 대기 카운트 += 0.1초
                 # 대기 카운트 >= 5: 복귀 명령은 Core에서 해주는걸로?
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/10   # 분->초->0.1초
             # 반송 중
-            elif self.status == 1:
+            elif self.status == 20:
                 # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 상하차
                 if self.path.length == 0:
                     # LOAD/UNLOAD
                     if self.loaded:
                         sleep(30)   # 그냥 30초 쉴지, count 방식으로 쉴지
-                        self.loaded = 0
+                        self.unload()
                     else:
                         sleep(30)
-                        self.loaded = 1
+                        self.load()
+
                 # 더 목적지가 있다면
                 else:
                     current_destination = self.path.pop(0)
@@ -117,12 +120,12 @@ class Vehicle:
                 angle_diff = self.getAngle(self.getDesti(current_destination)) - self.angle
                 if angle_diff==0:   # 현재 목적지를 향해 보고 있다
                     distance = self.getDesti() - self.getPos() # 현재 목적지와의 거리 # 벡터
-                    # 도착했다는 것은 어떻게 할까? distance가 0이 될 일은 거의 없을텐데
-                    if distance <= 0.000001:
+                    # 도착했다는 것은 어떻게 할까? distance가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
+                    if distance <= 0.000001 and self.velocity <= 0.01:
                         self.x = self.getDesti().x
                         self.y = self.getDesti().y
                         continue
-                    if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정
+                    if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
                         self.velocity -= self.ACCEL
                     else:
                         self.velocity += self.ACCEL
@@ -141,31 +144,52 @@ class Vehicle:
 
                 else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
                     # 각도 차이에 따라 더할지 뺄지 로직 필요
-
-                    self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                    if self.getAngle(self.getDesti()) == 0:
+                        if 0 < self.angle <= 180:
+                            self.angle -= (self.ROTATE_SPEED)/10    # 초->01.초
+                        elif 180 < self.angle < 360:
+                            self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                    elif self.getAngle(self.getDesti()) == 90:
+                        if 90 < self.angle <= 270:
+                            self.angle -= (self.ROTATE_SPEED)/10    # 초->01.초
+                        elif 270 < self.angle or self.angle < 90:
+                            self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                    elif self.getAngle(self.getDesti()) == 180:
+                        if 180 < self.angle < 360:
+                            self.angle -= (self.ROTATE_SPEED)/10    # 초->01.초
+                        elif 0 <= self.angle < 180:
+                            self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                    elif self.getAngle(self.getDesti()) == 270:
+                        if 270 < self.angle or self.angle <= 90:
+                            self.angle -= (self.ROTATE_SPEED)/10    # 초->01.초
+                        elif 90 < self.angle < 270:
+                            self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                        
+                    # 360도는 0도다
+                    if 360 < self.angle:
+                        self.angle -= 360
+                    elif self.angle < 0:
+                        self.angle += 360
+                            
+                    # 직각이 아닐때는 정확히 계산해줘야한다. 아직 로직 완성 못함
+                    # if (angle_diff%360) 
+                    # self.angle += (self.ROTATE_SPEED)/10    # 초->01.초
+                    
                 # 동작 배터리 방전
                 self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
-                # 충돌시 에러
                 # 반송 완료 후 충전 요건 충족시
             # 복귀
-            elif self.status == 2:
+            elif self.status == 20:
                 # 복귀 (어...? 사실상 반송이랑 똑같은데?)
                 # 새로운 명령 확인
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK/60/10   # 분->초->0.1초
             # 충전
-            elif self.status == 3:
+            elif self.status == 80:
                 # 배터리 충전 완료시 / 업무 할당 가능시
                 # 새로운 명령 확인?
                 # 배터리 충전
                 self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
             # 에러
-            elif self.status == 4:
+            elif self.status == 91 or self.status == 99:
                 pass
-
-# 방위각 테스팅
-d = Vehicle('d')
-d.x = -1
-d.y = 1
-v = Vehicle('v')
-print(d.getAngle(v))
