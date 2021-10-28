@@ -33,7 +33,9 @@ class Vehicle:
         self.command_list = []
 
     # new_node로 이동
-    def move(self, new_node):
+    def move(self, new_node, path, status):
+        self.path = path    # new_node는 path의 마지막일까요?
+        self.status = status    # 충전소로 가는건지, 다음 load 장소로 가는건지
         pass
 
     def load(self, port_num):
@@ -51,7 +53,10 @@ class Vehicle:
         return (self.x, self.y)
 
     def getDesti(self):
-        pass
+        if self.path.length != 0:
+            return self.path[-1]
+        else:
+            return 0
 
     def getBattery(self):
         return self.battery
@@ -114,7 +119,7 @@ class Vehicle:
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/10   # 분->초->0.1초
             # 반송 중
-            elif self.status == 20:
+            elif self.status == 21:
                 # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 상하차
                 if self.path.length == 0:
                     # LOAD/UNLOAD
@@ -192,8 +197,8 @@ class Vehicle:
                 # 반송 완료 후 대기
                 self.status = 00
 
-            # 복귀
-            elif self.status == 20:
+            # 충전소로 복귀
+            elif self.status == 22:
                 # 복귀 (어...? 사실상 반송이랑 똑같은데?)
                 # 새로운 명령 확인
                 # 동작 배터리 방전
