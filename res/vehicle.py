@@ -66,10 +66,22 @@ class Vehicle:
         # 다른 차량타입이라 크기 다르면? 둘다 메서드 들어가니까 ㄱㅊ
         # 라운드턴 등으로 직각이 아닐 때는? 1) (언제나)여유롭게 대각선으로 2) 매0.1초마다 영역 계산 -> 일단 라운드턴 배제하고 진행
         # 가로로 있는지 세로로 있는지에 따라 달라져야할거같은데?
-        if (self.x + self.width > car.x) and (self.x < car.x + car.width) and (self.y > car.y + car.height) and (self.y + self.height > car.y):
-            return True
-        else:
-            return False
+        if self.angle == 0 or self.angle == 180:    #가로
+            if (self.x + self.WIDTH > car.x) and (self.x < car.x + car.WIDTH) and (self.y > car.y + car.HEIGHT) and (self.y + self.HEIGHT > car.y):
+                return True
+            else:
+                return False
+        elif self.angle == 90 or self.angle == 270: #세로
+            if (self.x + self.HEIGHT > car.x) and (self.x < car.x + car.HEIGHT) and (self.y > car.y + car.WIDTH) and (self.y + self.WIDTH > car.y):
+                return True
+            else:
+                return False
+        else:   # 그 외
+            if (self.x + self.DIAGONAL > car.x) and (self.x < car.x + car.DIAGONAL) and (self.y > car.y + car.DIAGONAL) and (self.y + self.DIAGONAL > car.y):
+                return True
+            else:
+                return False
+
 
     def getAngle(self, destination):
         # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
@@ -98,7 +110,7 @@ class Vehicle:
             if self.status == 00:
                 # Core에서 명령 있는지 확인
                 # 대기 카운트 += 0.1초
-                # 대기 카운트 >= 5: 복귀 명령은 Core에서 해주는걸로?
+                # 대기 카운트 >= 5: 복귀, 충전 명령은 Core에서 해주는걸로?
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/10   # 분->초->0.1초
             # 반송 중
@@ -177,7 +189,9 @@ class Vehicle:
                     
                 # 동작 배터리 방전
                 self.battery += self.CHARGE_SPEED/60/10   # 분->초->0.1초
-                # 반송 완료 후 충전 요건 충족시
+                # 반송 완료 후 대기
+                self.status = 00
+
             # 복귀
             elif self.status == 20:
                 # 복귀 (어...? 사실상 반송이랑 똑같은데?)
