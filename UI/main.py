@@ -7,6 +7,8 @@ class MainPage(QWidget):
     def __init__(self, rect):
         super().__init__()
         self.rect = rect
+        self.zoom = QPointF()
+        self.btn_ctrl = False
         self.initUI()
 
     def initUI(self):
@@ -171,6 +173,22 @@ class MainPage(QWidget):
             # 가로크기에 맞추기
             self.img_label.setPixmap(pm.scaledToWidth(self.img_label.width()))
 
+    # 키보드 클릭 이벤트
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Control:
+            self.btn_ctrl = True
+
+    # 키보드 떼는 이벤트
+    def keyReleaseEvent(self, e):
+        if e.key() == Qt.Key_Control:
+            self.btn_ctrl = False
+
+    # 휠 이벤트
+    def wheelEvent(self, e):
+        if self.btn_ctrl:
+            self.zoom += e.angleDelta() / 120
+
+        print(self.zoom)
 
 # Run App.
 if __name__ == '__main__':
