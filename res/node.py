@@ -6,3 +6,12 @@ class Node:
         self.X = x_input
         self.Y = y_input
         self.isCross = False
+
+class Port(Node):
+    def __init__(self, name):
+        self.PORT_NAME = name
+        self.TYPE = ""
+        self.FREQ = -1
+        self.V_TYPE = ""
+
+        self.isUsing = False
