@@ -47,7 +47,7 @@ class Vehicle:
         self.count = 0
 
     # new_node로 이동
-    def move(self, new_node, path, status):
+    def command(self, new_node, path, status):
         if self.status in [00, 10, 20, 22, 80] or self.path.length == 0:    
             self.path = path    
             self.desti_node = new_node  # new_node는 path의 마지막 (path[-1])
@@ -55,6 +55,75 @@ class Vehicle:
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
             pass
+
+    def move(self):
+        
+
+        # 회전 & 가감속
+        angle_diff = self.getAngle(NODE_LIST[self.node]) - self.angle
+        if angle_diff==0:   # 현재 목적지를 향해 보고 있다
+            distance = NODE_LIST[self.node].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+            # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
+            if isclose(distance[0], 0):
+                distance = distance[1]
+            else:
+                distance = distance[0]
+            pass
+            if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
+                self.velocity -= self.ACCEL # velocity: m/min, ACCEL: m/min
+            else:
+                self.velocity += self.ACCEL # velocity: m/min, ACCEL: m/min
+                if self.velocity > self.MAX_SPEED:  # 최고속도 제한
+                    self.velocity = self.MAX_SPEED
+            # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
+            # 현재 위치를 벡터값으로 하고 velocity에 방향에 더해주는 방법...?
+            if isclose(self.angle, 90):
+                self.x += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            elif isclose(self.angle, 270):
+                self.x -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            elif isclose(self.angle, 0):
+                self.y += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            elif isclose(self.angle, 180):
+                self.y -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+
+            # 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
+            if distance <= 0.000001 and self.velocity <= 0.01:
+                self.x = self.getDesti().x
+                self.y = self.getDesti().y
+                
+
+        else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
+            # 각도 차이에 따라 더할지 뺄지 로직 필요
+            if self.getAngle(self.getDesti()) == 0:
+                if 0 < self.angle <= 180:
+                    self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                elif 180 < self.angle < 360:
+                    self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+            elif self.getAngle(self.getDesti()) == 90:
+                if 90 < self.angle <= 270:
+                    self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                elif 270 < self.angle or self.angle < 90:
+                    self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+            elif self.getAngle(self.getDesti()) == 180:
+                if 180 < self.angle < 360:
+                    self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                elif 0 <= self.angle < 180:
+                    self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+            elif self.getAngle(self.getDesti()) == 270:
+                if 270 < self.angle or self.angle <= 90:
+                    self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                elif 90 < self.angle < 270:
+                    self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                
+            # 360도는 0도다
+            if 360 < self.angle:
+                self.angle -= 360
+            elif self.angle < 0:
+                self.angle += 360
+                    
+            # 직각이 아닐때는 정확히 계산해줘야한다. 아직 로직 완성 못함
+            # if (angle_diff%360) 
+            # self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
 
     def load(self, port_num):
         self.loaded = 1
@@ -130,6 +199,7 @@ class Vehicle:
                 if crashed:
                     self.status = 91
                     return -1   # 종료..?
+
             # 현재 상태를 파악
             # 초기상태 / 대기
             if self.status == 00 or self.status == 10:
@@ -168,70 +238,8 @@ class Vehicle:
                 elif self.getPos() == NODE_LIST[self.node].getPos():
                     self.node = self.path.pop(0)    # node 갱신, path에서 삭제
                 # 목적지가 있다면
-                # 회전 & 가감속
-                angle_diff = self.getAngle(NODE_LIST[self.node]) - self.angle
-                if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                    distance = NODE_LIST[self.node].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
-                    # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
-                    if isclose(distance[0], 0):
-                        distance = distance[1]
-                    else:
-                        distance = distance[0]
-                    pass
-                    if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
-                        self.velocity -= self.ACCEL # velocity: m/min, ACCEL: m/min
-                    else:
-                        self.velocity += self.ACCEL # velocity: m/min, ACCEL: m/min
-                        if self.velocity > self.MAX_SPEED:  # 최고속도 제한
-                            self.velocity = self.MAX_SPEED
-                    # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
-                    if isclose(self.angle, 90):
-                        self.x += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
-                    elif isclose(self.angle, 270):
-                        self.x -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
-                    elif isclose(self.angle, 0):
-                        self.y += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
-                    elif isclose(self.angle, 180):
-                        self.y -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
 
-                    # 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
-                    if distance <= 0.000001 and self.velocity <= 0.01:
-                        self.x = self.getDesti().x
-                        self.y = self.getDesti().y
-                        continue
-
-                else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
-                    # 각도 차이에 따라 더할지 뺄지 로직 필요
-                    if self.getAngle(self.getDesti()) == 0:
-                        if 0 < self.angle <= 180:
-                            self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
-                        elif 180 < self.angle < 360:
-                            self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-                    elif self.getAngle(self.getDesti()) == 90:
-                        if 90 < self.angle <= 270:
-                            self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
-                        elif 270 < self.angle or self.angle < 90:
-                            self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-                    elif self.getAngle(self.getDesti()) == 180:
-                        if 180 < self.angle < 360:
-                            self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
-                        elif 0 <= self.angle < 180:
-                            self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-                    elif self.getAngle(self.getDesti()) == 270:
-                        if 270 < self.angle or self.angle <= 90:
-                            self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
-                        elif 90 < self.angle < 270:
-                            self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-                        
-                    # 360도는 0도다
-                    if 360 < self.angle:
-                        self.angle -= 360
-                    elif self.angle < 0:
-                        self.angle += 360
-                            
-                    # 직각이 아닐때는 정확히 계산해줘야한다. 아직 로직 완성 못함
-                    # if (angle_diff%360) 
-                    # self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.move()
                     
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
