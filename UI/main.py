@@ -76,7 +76,7 @@ class MainPage(QWidget):
                 QPushButton("Save", self.sub_menu_wrapper),
                 QPushButton("Save\nAs", self.sub_menu_wrapper),
                 QPushButton("Load", self.sub_menu_wrapper),
-                QPushButton("Load\nLayout", self.sub_menu_wrapper),
+                QPushButton("Open\nLayout", self.sub_menu_wrapper),
                 QPushButton("Set\nScale", self.sub_menu_wrapper),
                 QPushButton("Close", self.sub_menu_wrapper),
             ],
@@ -103,6 +103,7 @@ class MainPage(QWidget):
         ]
 
         for mainMenu in self.subMenus:
+            left = 0
             for menu in mainMenu:
                 menu.setObjectName("sub-menu")
                 menu.setStyleSheet("#sub-menu{"
@@ -113,22 +114,20 @@ class MainPage(QWidget):
                                    "background-color: #D7EDFF;"
                                    "}")
                 menu.resize(self.sub_menu_size, self.sub_menu_size)
-                menu.move(-100, -100)
+                left += padding
+                menu.move(left, padding)
+                left += self.sub_menu_size
+                menu.hide()
 
         self.showSubMenu(self.mainMenu)
 
     def hideSubMenu(self, idx):
         for menu in self.subMenus[idx]:
-            menu.move(-100, -100)
+            menu.hide()
 
     def showSubMenu(self, idx):
-        left = 0
-        padding = 10
-
         for menu in self.subMenus[idx]:
-            left += padding
-            menu.move(left, padding)
-            left += self.sub_menu_size
+            menu.show()
 
     # 메인 메뉴 버튼 클릭 이벤트
     def getSubMenu(self, idx):
@@ -137,6 +136,7 @@ class MainPage(QWidget):
             self.mainMenu = idx
             self.showSubMenu(idx)
 
+# Run App.
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     screen = app.desktop()  # 컴퓨터 전체 화면 rect
