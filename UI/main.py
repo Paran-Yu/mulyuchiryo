@@ -12,6 +12,7 @@ class MainPage(QWidget):
     def initUI(self):
         self.initMainMenu()     # 메인 메뉴 생성
         self.initSubMenu()      # 서브 메뉴 생성
+        self.initCentralWidget()    # 메인 화면 생성
         self.showFullScreen()   # 전체화면 모드
         self.setWindowTitle("물류 치료")    # 프로그램 제목
         self.setWindowIcon(QIcon("./resources/image/favicon.png"))  # 프로그램 실행 아이콘
@@ -69,6 +70,10 @@ class MainPage(QWidget):
                                        "}")
 
         # 서브 메뉴 항목 추가
+        # file
+        btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
+        btn_open_layout.clicked.connect(self.openLayout)
+
         self.subMenus = [
             # file
             [
@@ -76,7 +81,7 @@ class MainPage(QWidget):
                 QPushButton("Save", self.sub_menu_wrapper),
                 QPushButton("Save\nAs", self.sub_menu_wrapper),
                 QPushButton("Load", self.sub_menu_wrapper),
-                QPushButton("Open\nLayout", self.sub_menu_wrapper),
+                btn_open_layout,
                 QPushButton("Set\nScale", self.sub_menu_wrapper),
                 QPushButton("Close", self.sub_menu_wrapper),
             ],
@@ -135,6 +140,37 @@ class MainPage(QWidget):
             self.hideSubMenu(self.mainMenu)
             self.mainMenu = idx
             self.showSubMenu(idx)
+
+    # 메인 화면 생성
+    def initCentralWidget(self):
+        # 메인 화면의 시작점 (메뉴바, 서브메뉴바 크기를 제외한 위치부터 시작)
+        height = self.menu_wrapper_height + self.sub_menu_size + 20
+
+        # 이미지를 넣을 label 생성.
+        self.img_label = QLabel(self)
+        self.img_label.move(0,self.menu_wrapper_height + self.sub_menu_size + 20)
+        self.img_label.resize(self.rect.width(), self.rect.height() - height)
+
+    # 기존 작업 불러오기
+    def load(self):
+        pass
+
+    # 현재 작업 저장
+    def save(self):
+        pass
+
+    # 도면 열기
+    def openLayout(self):
+        # 파일 오픈
+        fname = QFileDialog.getOpenFileName(self, 'Open file', './', "Image Files (*.jpg *.jpeg *.bmp *.png)")
+
+        if fname[0]:
+            self.img_label.show()
+            pm = QPixmap(fname[0])
+
+            # 가로크기에 맞추기
+            self.img_label.setPixmap(pm.scaledToWidth(self.img_label.width()))
+
 
 # Run App.
 if __name__ == '__main__':
