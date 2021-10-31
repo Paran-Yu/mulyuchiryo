@@ -1,5 +1,5 @@
 from xml.etree import ElementTree
-from res import vehicle
+from res import vehicle, node
 
 tree = ElementTree.parse('example.xml')
 root = tree.getroot()
@@ -20,6 +20,15 @@ img_name = image.find("name").text
 map_width = int(mapdata.find("width").text)
 map_scale = int(mapdata.find("scale").text)
 map_capa = int(mapdata.find("capa").text)
+
+# read nodes
+node_list = []
+xml_node_list = nodes.findall("node")
+for x in xml_node_list:
+    a = node.Node(int(x.find("num").text), int(x.find("x").text), int(x.find("y").text))
+    if x.find("isCross").text == "Y":
+        a.isCross = True
+    node_list.append(a)
 
 # read vehicles
 vehicle_list = []
