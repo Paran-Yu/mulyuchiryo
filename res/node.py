@@ -15,3 +15,19 @@ class Port(Node):
         self.V_TYPE = ""
 
         self.isUsing = False
+
+class WaitPoint(Node):
+    def __init__(self, name):
+        self.WAIT_NAME = name
+        self.CHARGE = False
+
+        self.using = False
+
+    def getName(self):
+        return self.WAIT_NAME
+
+    def isCharge(self):
+        return self.CHARGE
+
+    def isUsing(self):
+        return self.using
