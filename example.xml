@@ -179,62 +179,6 @@
             <charge>Y</charge>
         </wait>
     </waits>
-    <vehicles>
-        <vehicle>
-            <num>1</num>
-            <name>V01</name>
-            <type>LowHeight</type>
-            <node>25</node>
-            <angle>90</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-        </vehicle>
-        <vehicle>
-            <num>2</num>
-            <name>V02</name>
-            <type>LowHeight</type>
-            <node>27</node>
-            <angle>90</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-        </vehicle>
-        <vehicle>
-            <num>3</num>
-            <name>V03</name>
-            <type>LowHeight</type>
-            <node>29</node>
-            <angle>90</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-        </vehicle>
-    </vehicles>
     <nodes>
         <node>
             <num>1</num>
@@ -801,5 +745,68 @@
         </path>
 
     </paths>
+    <vehicles>
+        <vehicle>
+            <num>1</num>
+            <name>V01</name>
+            <type>LowHeight</type>
+            <node>25</node>
+            <angle>90</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>0.2</discharge_work>
+            <discharge_wait>1</discharge_wait>
+            <start_node>25</start_node>
+            <start_angle>90</start_angle>
+        </vehicle>
+        <vehicle>
+            <num>2</num>
+            <name>V02</name>
+            <type>LowHeight</type>
+            <node>27</node>
+            <angle>90</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>0.2</discharge_work>
+            <discharge_wait>1</discharge_wait>
+            <start_node>27</start_node>
+            <start_angle>90</start_angle>
+        </vehicle>
+        <vehicle>
+            <num>3</num>
+            <name>V03</name>
+            <type>LowHeight</type>
+            <node>29</node>
+            <angle>90</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>0.2</discharge_work>
+            <discharge_wait>1</discharge_wait>
+            <start_node>29</start_node>
+            <start_angle>90</start_angle>
+        </vehicle>
+    </vehicles>
+
 
 </layout>
