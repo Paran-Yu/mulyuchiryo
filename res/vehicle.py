@@ -89,22 +89,22 @@ class Vehicle:
 
     def turn(self):
         # 각도 차이에 따라 더할지 뺄지 로직 필요
-        if self.getAngle(self.getDesti()) == 0:
+        if self.getAngle(self.getNode()) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 180 < self.angle < 360:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getDesti()) == 90:
+        elif self.getAngle(self.getNode()) == 90:
             if 90 < self.angle <= 270:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 270 < self.angle or self.angle < 90:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getDesti()) == 180:
+        elif self.getAngle(self.getNode()) == 180:
             if 180 < self.angle < 360:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 0 <= self.angle < 180:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getDesti()) == 270:
+        elif self.getAngle(self.getNode()) == 270:
             if 270 < self.angle or self.angle <= 90:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 90 < self.angle < 270:
@@ -186,14 +186,14 @@ class Vehicle:
     # 매 1초마다 실행
     def threadFunc(self):
         while True:
-            # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?
-            for i in range(len(CARS_LIST)):
-                if self is CARS_LIST[i]: # 이게 될까?
-                    continue
-                crashed = self.checkCrash(CARS_LIST[i])
-                if crashed:
-                    self.status = 91
-                    return -1   # 종료..?
+            # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
+            # for i in range(len(CARS_LIST)):
+            #     if self is CARS_LIST[i]: # 이게 될까?
+            #         continue
+            #     crashed = self.checkCrash(CARS_LIST[i])
+            #     if crashed:
+            #         self.status = 91
+            #         return -1   # 종료..?
 
             # 현재 상태를 파악
             # 초기상태 / 대기
