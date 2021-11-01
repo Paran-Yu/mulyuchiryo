@@ -2,7 +2,10 @@ from time import sleep
 from math import atan2, degrees, isclose
 import matplotlib.pyplot as plt
 
+PORT_LIST = []
+NODE_LIST = []
 TIME = 1
+
 class Vehicle:
     def __init__(self, name):
         super().__init__()
@@ -128,9 +131,9 @@ class Vehicle:
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                # PORT[port_num].LOAD()
+                PORT_LIST[port_num].LOAD()
                 # 대기 상태로 전환
-                self.status = 10
+                self.status = 11
                 self.loaded = 1
         else:
             return False
@@ -142,7 +145,7 @@ class Vehicle:
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                # PORT[port_num].UNLOAD()
+                PORT_LIST[port_num].UNLOAD()
                 # 대기 상태로 전환
                 self.status = 10
                 self.loaded = 0
