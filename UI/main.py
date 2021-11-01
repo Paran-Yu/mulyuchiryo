@@ -189,10 +189,14 @@ class MainPage(QWidget):
 
         if fname[0]:
             self.img_label.show()
-            pm = QPixmap(fname[0])
+            self.pm = QPixmap(fname[0])
+
+            # 라벨 사이즈 조정
+            pm_scaled = self.pm.scaledToWidth(self.img_label.width())
+            self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
             # 가로크기에 맞추기
-            self.img_label.setPixmap(pm.scaledToWidth(self.img_label.width()))
+            self.img_label.setPixmap(pm_scaled)
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
