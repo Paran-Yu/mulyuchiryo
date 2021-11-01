@@ -156,7 +156,6 @@
         </port>
     </ports>
     <waits>
-        <num>1</num>
         <wait>
             <num>25</num>
             <x>182</x>

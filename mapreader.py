@@ -33,6 +33,17 @@ for x in xml_port_list:
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
 
+# read_waits
+wait_list = []
+xml_wait_list = waits.findall("wait")
+for x in xml_wait_list:
+    a = node.WaitPoint(x.find("name").text)
+    a.NUM = int(x.find("num").text)
+    a.X = float(x.find("x").text)
+    a.Y = float(x.find("y").text)
+    if x.find("charge").text == "y":
+        a.CHARGE = True
+
 # read nodes
 node_list = []
 xml_node_list = nodes.findall("node")
