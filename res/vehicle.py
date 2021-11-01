@@ -125,13 +125,13 @@ class Vehicle:
         if self.loaded == False:
             # 포트가 load가능한 상태인지 확인
             pass
-            self.status = 30
-            sleep(30*self.time) # 그냥 30초 쉴지, count 방식으로 쉴지
-            # PORT[port_num].LOAD()
-            # 대기 상태로 전환
-            self.status = 10
-            self.loaded = 1
-            pass
+            self.count += 1
+            if self.count >= 30:
+                self.count = 0
+                # PORT[port_num].LOAD()
+                # 대기 상태로 전환
+                self.status = 10
+                self.loaded = 1
         else:
             return False
 
@@ -139,13 +139,13 @@ class Vehicle:
         if self.loaded:
             # 포트가 unload가능한 상태인지 확인
             pass
-            self.status = 40
-            sleep(30*self.time) # 그냥 30초 쉴지, count 방식으로 쉴지
-            # 대기 상태로 전환
-            self.status = 10
-            self.loaded = 0
-            # PORT[port_num].UNLOAD()
-            pass
+            self.count += 1
+            if self.count >= 30:
+                self.count = 0
+                # PORT[port_num].UNLOAD()
+                # 대기 상태로 전환
+                self.status = 10
+                self.loaded = 0
         else:
             return False
 
@@ -225,8 +225,8 @@ class Vehicle:
 
 
             # 현재 상태를 파악
-            # 초기상태 / 대기
-            if self.status == 00 or self.status == 10:
+            # 초기상태 / 대기 / 물건 들고 대기
+            if self.status == 00 or self.status == 10 or self.status == 11:
                 # 대기 카운트 += 1초
                 self.count += 1
                 if self.count >= 5:
@@ -258,8 +258,15 @@ class Vehicle:
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
 
-            # 충전
-            elif self.status == 80:
+            # LOAD
+            elif self.status == 30:
+                self.load()
+            # UNLOAD
+            elif self.status == 40:
+                self.unload()
+            
+            # 충전 / 물건 들고 충전
+            elif self.status == 80 or self.status == 81:
                 # 배터리 충전
                 self.battery += self.CHARGE_SPEED/60/self.time   # 분->초->배속
                 # 배터리 과충전 불가
