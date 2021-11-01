@@ -198,6 +198,7 @@
             <discharge_work>0.2</discharge_work>
             <discharge_wait>1</discharge_wait>
             <start_node>25</start_node>
+            <start_angle>90</start_angle>
         </vehicle>
         <vehicle>
             <num>2</num>
@@ -217,6 +218,7 @@
             <discharge_work>0.2</discharge_work>
             <discharge_wait>1</discharge_wait>
             <start_node>27</start_node>
+            <start_angle>90</start_angle>
         </vehicle>
         <vehicle>
             <num>3</num>
@@ -236,6 +238,7 @@
             <discharge_work>0.2</discharge_work>
             <discharge_wait>1</discharge_wait>
             <start_node>29</start_node>
+            <start_angle>90</start_angle>
         </vehicle>
     </vehicles>
     <nodes>
