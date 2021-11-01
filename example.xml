@@ -156,24 +156,28 @@
         </port>
     </ports>
     <waits>
-        <group>
-            <num>1</num>
-            <wait>
-                <name>W01</name>
-                <node>25</node>
-                <charge>Y</charge>
-            </wait>
-            <wait>
-                <name>W02</name>
-                <node>27</node>
-                <charge>Y</charge>
-            </wait>
-            <wait>
-                <name>W03</name>
-                <node>29</node>
-                <charge>Y</charge>
-            </wait>
-        </group>
+        <num>1</num>
+        <wait>
+            <num>25</num>
+            <x>182</x>
+            <y>421</y>
+            <name>W01</name>
+            <charge>Y</charge>
+        </wait>
+        <wait>
+            <num>27</num>
+            <x>182</x>
+            <y>519</y>
+            <name>W02</name>
+            <charge>Y</charge>
+        </wait>
+        <wait>
+            <num>29</num>
+            <x>182</x>
+            <y>627</y>
+            <name>W03</name>
+            <charge>Y</charge>
+        </wait>
     </waits>
     <vehicles>
         <vehicle>
@@ -377,34 +381,16 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>25</num>
-            <x>182</x>
-            <y>421</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>26</num>
             <x>296</x>
             <y>421</y>
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>27</num>
-            <x>182</x>
-            <y>519</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>28</num>
             <x>296</x>
             <y>519</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>29</num>
-            <x>182</x>
-            <y>627</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>30</num>
