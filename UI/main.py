@@ -7,31 +7,45 @@ class MainPage(QWidget):
     def __init__(self, rect):
         super().__init__()
         self.rect = rect
+
+        self.menu_wrapper_height = 35
+        self.sub_menu_wrapper_height = 90
+
+        self.mainMenu = 0   # 선택된 메뉴, 초기탭은 file탭
+        self.pm = 0
+
         self.zoom = QPointF()
         self.btn_ctrl = False
+        self.mouse_left = False
+
         self.initUI()
 
     def initUI(self):
+        self.initCentralWidget()    # 메인 화면 생성
         self.initMainMenu()     # 메인 메뉴 생성
         self.initSubMenu()      # 서브 메뉴 생성
-        self.initCentralWidget()    # 메인 화면 생성
         self.showFullScreen()   # 전체화면 모드
         self.setWindowTitle("물류 치료")    # 프로그램 제목
         self.setWindowIcon(QIcon("./resources/image/favicon.png"))  # 프로그램 실행 아이콘
 
     # 메인 메뉴 생성
     def initMainMenu(self):
-        self.menu_wrapper_height = 35
         menu_width = 110
 
-        self.mainMenu = 0   # 초기 메뉴는 file탭
+        # 메뉴 바 생성.
+        self.menu_wrapper = QWidget(self)
+        self.menu_wrapper.resize(self.rect.width(), self.menu_wrapper_height)
+        self.menu_wrapper.setObjectName("menu-wrapper")
+        self.menu_wrapper.setStyleSheet("#menu-wrapper{"
+                                       "background-color: #FFFFFF;"
+                                       "}")
 
         self.menus = []
-        self.menus.append(QPushButton("File", self))
-        self.menus.append(QPushButton("Draw", self))
-        self.menus.append(QPushButton("Vehicle", self))
-        self.menus.append(QPushButton("Simulate", self))
-        self.menus.append(QPushButton("Report", self))
+        self.menus.append(QPushButton("File", self.menu_wrapper))
+        self.menus.append(QPushButton("Draw", self.menu_wrapper))
+        self.menus.append(QPushButton("Vehicle", self.menu_wrapper))
+        self.menus.append(QPushButton("Simulate", self.menu_wrapper))
+        self.menus.append(QPushButton("Report", self.menu_wrapper))
 
         left = 0
         for idx, menu in enumerate(self.menus):
@@ -42,8 +56,11 @@ class MainPage(QWidget):
             menu.setStyleSheet("#main-menu{"    # style 적용
                                "background-color: white;"
                                "}"
-                               "#HI:hover{"
-                               "background-color:red;"
+                               "#main-menu:hover{"
+                               "background-color: #D7EDFF;"
+                               "}"
+                               "#main-menu:pressed{"
+                               "background-color: #C5DCFF;"
                                "}")
             menu.resize(menu_width, self.menu_wrapper_height)
             menu.move(left, 0)
@@ -59,12 +76,12 @@ class MainPage(QWidget):
     # 서브 메뉴 생성
     def initSubMenu(self):
         padding = 10    # 메뉴 아이콘 여백
-        self.sub_menu_size = 70 # 서브 메뉴 아이콘 크기
+        sub_menu_size = self.sub_menu_wrapper_height - (2 * padding) # 서브 메뉴 아이콘 크기
 
         # 서브 메뉴 바 생성.
         self.sub_menu_wrapper = QWidget(self)
         self.sub_menu_wrapper.move(0,self.menu_wrapper_height)
-        self.sub_menu_wrapper.resize(self.rect.width(), padding*2 + self.sub_menu_size)
+        self.sub_menu_wrapper.resize(self.rect.width(), self.sub_menu_wrapper_height)
         self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
         self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
                                        "background-color: #CCCCCC;"
@@ -119,11 +136,14 @@ class MainPage(QWidget):
                                    "}"
                                    "#sub-menu:hover{"
                                    "background-color: #D7EDFF;"
+                                   "}"
+                                   "#sub-menu:pressed{"
+                                   "background-color: #C5DCFF;"
                                    "}")
-                menu.resize(self.sub_menu_size, self.sub_menu_size)
+                menu.resize(sub_menu_size, sub_menu_size)
                 left += padding
                 menu.move(left, padding)
-                left += self.sub_menu_size
+                left += sub_menu_size
                 menu.hide()
 
         self.showSubMenu(self.mainMenu)
@@ -146,11 +166,12 @@ class MainPage(QWidget):
     # 메인 화면 생성
     def initCentralWidget(self):
         # 메인 화면의 시작점 (메뉴바, 서브메뉴바 크기를 제외한 위치부터 시작)
-        height = self.menu_wrapper_height + self.sub_menu_size + 20
+        height = self.menu_wrapper_height + self.sub_menu_wrapper_height
+        self.centralWidget = QWidget(self)
+        self.centralWidget.move(0, height)
 
         # 이미지를 넣을 label 생성.
-        self.img_label = QLabel(self)
-        self.img_label.move(0,self.menu_wrapper_height + self.sub_menu_size + 20)
+        self.img_label = QLabel(self.centralWidget)
         self.img_label.resize(self.rect.width(), self.rect.height() - height)
 
     # 기존 작업 불러오기
@@ -168,10 +189,14 @@ class MainPage(QWidget):
 
         if fname[0]:
             self.img_label.show()
-            pm = QPixmap(fname[0])
+            self.pm = QPixmap(fname[0])
+
+            # 라벨 사이즈 조정
+            pm_scaled = self.pm.scaledToWidth(self.img_label.width())
+            self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
             # 가로크기에 맞추기
-            self.img_label.setPixmap(pm.scaledToWidth(self.img_label.width()))
+            self.img_label.setPixmap(pm_scaled)
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
@@ -188,7 +213,34 @@ class MainPage(QWidget):
         if self.btn_ctrl:
             self.zoom += e.angleDelta() / 120
 
-        print(self.zoom)
+            if self.pm != 0:
+                scaled_width = self.centralWidget.width() + self.zoom.y() * 100
+                self.pm_scaled = self.pm.scaledToWidth(scaled_width)
+                self.img_label.setGeometry(self.img_label.geometry().x(), self.img_label.geometry().y(), self.pm_scaled.width(), self.pm_scaled.height())
+                self.img_label.setPixmap(self.pm_scaled)
+
+    # 마우스 트래킹 이벤트
+    def mouseMoveEvent(self, e):
+        if self.mouse_left:
+            nx = e.x() - self.dx
+            ny = e.y() - self.dy
+            self.img_label.move(nx, ny)
+
+    # 마우스 클릭 이벤트
+    def mousePressEvent(self, e):
+        if e.buttons() & Qt.LeftButton:
+            self.mouse_left = True
+            # 현재 마우스 위치와 라벨의 시작점간의 차이
+            self.dx = e.x() - self.img_label.x()
+            self.dy = e.y() - self.img_label.y()
+        if e.buttons() & Qt.MidButton:
+            pass
+        if e.buttons() & Qt.RightButton:
+            pass
+
+    # 마우스 해제 이벤트
+    def mouseReleaseEvent(self, e):
+        self.mouse_left = False
 
 # Run App.
 if __name__ == '__main__':
