@@ -222,12 +222,17 @@ class MainPage(QWidget):
     # 마우스 트래킹 이벤트
     def mouseMoveEvent(self, e):
         if self.mouse_left:
-            self.img_label.move(e.x(), e.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height)
+            nx = e.x() - self.dx
+            ny = e.y() - self.dy
+            self.img_label.move(nx, ny)
 
     # 마우스 클릭 이벤트
     def mousePressEvent(self, e):
         if e.buttons() & Qt.LeftButton:
             self.mouse_left = True
+            # 현재 마우스 위치와 라벨의 시작점간의 차이
+            self.dx = e.x() - self.img_label.x()
+            self.dy = e.y() - self.img_label.y()
         if e.buttons() & Qt.MidButton:
             pass
         if e.buttons() & Qt.RightButton:
