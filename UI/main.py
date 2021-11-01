@@ -219,6 +219,24 @@ class MainPage(QWidget):
                 self.img_label.setGeometry(self.img_label.geometry().x(), self.img_label.geometry().y(), self.pm_scaled.width(), self.pm_scaled.height())
                 self.img_label.setPixmap(self.pm_scaled)
 
+    # 마우스 트래킹 이벤트
+    def mouseMoveEvent(self, e):
+        if self.mouse_left:
+            self.img_label.move(e.x(), e.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height)
+
+    # 마우스 클릭 이벤트
+    def mousePressEvent(self, e):
+        if e.buttons() & Qt.LeftButton:
+            self.mouse_left = True
+        if e.buttons() & Qt.MidButton:
+            pass
+        if e.buttons() & Qt.RightButton:
+            pass
+
+    # 마우스 해제 이벤트
+    def mouseReleaseEvent(self, e):
+        self.mouse_left = False
+
 # Run App.
 if __name__ == '__main__':
     app = QApplication(sys.argv)
