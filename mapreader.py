@@ -46,9 +46,11 @@ for x in xml_vehicle_list:
     a.CHARGE_SPEED = float(x.find("charge_speed").text)
     a.DISCHARGE_WAIT = float(x.find("discharge_wait").text)
     a.DISCHARGE_WORK = float(x.find("discharge_work").text)
-    # a.node: 초기 node 위치 필요
+    a.node = int(x.find("start_node").text)
+    # a.x
+    # a.y
     a.velocity = 0
-    # a.angle: 초기 각 필요
+    a.angle = int(x.find("start_angle").text)
     a.battery = 100
 
     vehicle_list.append(a)
