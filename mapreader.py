@@ -21,6 +21,18 @@ map_width = int(mapdata.find("width").text)
 map_scale = int(mapdata.find("scale").text)
 map_capa = int(mapdata.find("capa").text)
 
+# read_ports
+port_list = []
+xml_port_list = ports.findall("port")
+for x in xml_port_list:
+    a = node.Port(x.find("name").text)
+    a.NUM = int(x.find("num").text)
+    a.X = float(x.find("x").text)
+    a.Y = float(x.find("y").text)
+    a.TYPE = x.find("type").text
+    a.FREQ = int(x.find("freq").text)
+    a.V_TYPE = x.find("v_type").text
+
 # read nodes
 node_list = []
 xml_node_list = nodes.findall("node")
