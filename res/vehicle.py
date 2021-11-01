@@ -121,14 +121,34 @@ class Vehicle:
         # self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
 
     def load(self, port_num):
-        self.loaded = 1
-        # PORT[port_num].LOAD()
-        pass
+        if self.loaded == False:
+            # 포트가 load가능한 상태인지 확인
+            pass
+            self.status = 30
+            sleep(30*self.time)
+            self.load()
+            # 대기 상태로 전환
+            self.status = 10
+            self.loaded = 1
+            # PORT[port_num].LOAD()
+            pass
+        else:
+            return False
 
     def unload(self, port_num):
-        self.loaded = 0
-        # PORT[port_num].UNLOAD()
-        pass
+        if self.loaded:
+            # 포트가 unload가능한 상태인지 확인
+            pass
+            self.status = 40
+            sleep(30*self.time)   # 그냥 30초 쉴지, count 방식으로 쉴지
+            self.unload()
+            # 대기 상태로 전환
+            self.status = 10
+            self.loaded = 0
+            # PORT[port_num].UNLOAD()
+            pass
+        else:
+            return False
 
     def getNode(self):
         return self.node        # 이동중일때는 경유하게 될 노드, 그렇지 않은 경우 현재 위치의 노드 반환
@@ -195,10 +215,19 @@ class Vehicle:
             #         self.status = 91
             #         return -1   # 종료..?
 
+            # 로직 설명
+            # 중요한 3가지 변수: status, path(node, desti_node 포함함), command_list
+            # Core에서 명령이 내려오면 path, command_list 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
+            # path에 따라 차량은 이동을 시작하며, status를 업데이트함
+            # 목적지에 도착하면 path는 empty하며 command_list에 적힌 명령을 실행함(대기, 충전, L, U 등), status 업데이트
+            # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
+            # 대기인 경우 명령을 받을 수 있음
+
+
+
             # 현재 상태를 파악
             # 초기상태 / 대기
             if self.status == 00 or self.status == 10:
-                # Core에서 명령 있는지 확인->명령생기면 self.status바뀌므로 여기서 처리ㄴㄴ
                 # 대기 카운트 += 1초
                 self.count += 1
                 if self.count >= 5:
@@ -209,36 +238,22 @@ class Vehicle:
                 self.battery -= self.DISCHARGE_WAIT/60/self.time   # 분->초->배속
             # 반송 중
             elif self.status == 21:
-                # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 상하차
+
+                # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
                 if self.path.length == 0:
-                    # LOAD/UNLOAD
-                    if self.loaded:
-                        # 포트가 unload가능한 상태인지 확인
-                        pass
-                        self.status = 40
-                        sleep(30*self.time)   # 그냥 30초 쉴지, count 방식으로 쉴지
-                        self.unload()
-                        # 대기 상태로 전환
-                        self.status = 10
-                    else:
-                        # 포트가 load가능한 상태인지 확인
-                        pass
-                        self.status = 30
-                        sleep(30*self.time)
-                        self.load()
-                        # 대기 상태로 전환
-                        self.status = 10
+                    self.status = self.command_list.pop(0)
 
                 # 현재 경유지에 도착했다면
                 elif self.getPos() == NODE_LIST[self.node].getPos():
                     self.node = self.path.pop(0)    # node 갱신, path에서 삭제
-                # 목적지가 있다면
-                        # 회전 & 가감속
-                angle_diff = self.getAngle(NODE_LIST[self.node]) - self.angle
-                if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                    self.move()
-                else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
-                    self.turn()
+                
+                # 목적지가 있다면 회전 & 가감속
+                else:
+                    angle_diff = self.getAngle(NODE_LIST[self.node]) - self.angle
+                    if angle_diff==0:   # 현재 목적지를 향해 보고 있다
+                        self.move()
+                    else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
+                        self.turn()
                     
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
