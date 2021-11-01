@@ -47,11 +47,12 @@ class Vehicle:
         self.count = 0
 
     # new_node로 이동
-    def command(self, new_node, path, status):
+    def command(self, new_node, path, command):
         if self.status in [00, 10, 20, 22, 80] or self.path.length == 0:    
+            self.count = 0
             self.path = path    
-            self.desti_node = new_node  # new_node는 path의 마지막 (path[-1])
-            self.status = status    # 충전소로 가서 충전하는건지, 대기하러 가는건지 status 정보 필요
+            self.desti_node = new_node  # new_node는 path의 마지막 (path[-1]), self.node는 이동 시작하면서 업데이트
+            self.command_list = command    # 충전소로 가서 충전하는건지, 대기하러 가는건지 명령 정보 필요. 20, 22 등 명령을 오버라이드 가능.
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
             pass
@@ -81,10 +82,10 @@ class Vehicle:
         elif isclose(self.angle, 180):
             self.y -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
 
-        # 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
+        # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = self.getDesti().x
-            self.y = self.getDesti().y
+            self.x = self.getNode().x
+            self.y = self.getNode().y
                 
 
     def turn(self):
@@ -125,12 +126,11 @@ class Vehicle:
             # 포트가 load가능한 상태인지 확인
             pass
             self.status = 30
-            sleep(30*self.time)
-            self.load()
+            sleep(30*self.time) # 그냥 30초 쉴지, count 방식으로 쉴지
+            # PORT[port_num].LOAD()
             # 대기 상태로 전환
             self.status = 10
             self.loaded = 1
-            # PORT[port_num].LOAD()
             pass
         else:
             return False
@@ -140,8 +140,7 @@ class Vehicle:
             # 포트가 unload가능한 상태인지 확인
             pass
             self.status = 40
-            sleep(30*self.time)   # 그냥 30초 쉴지, count 방식으로 쉴지
-            self.unload()
+            sleep(30*self.time) # 그냥 30초 쉴지, count 방식으로 쉴지
             # 대기 상태로 전환
             self.status = 10
             self.loaded = 0
@@ -231,8 +230,9 @@ class Vehicle:
                 # 대기 카운트 += 1초
                 self.count += 1
                 if self.count >= 5:
+                    # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
                     self.count = 0
-                    # Core에 알림! 복귀, 충전 명령은 Core에서 해주는걸로?
+                    # Core에 알림!
                     pass
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/self.time   # 분->초->배속
