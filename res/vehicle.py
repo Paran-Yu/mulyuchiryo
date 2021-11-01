@@ -236,8 +236,8 @@ class Vehicle:
                     pass
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/self.time   # 분->초->배속
-            # 반송 중
-            elif self.status == 21:
+            # 반송 중, 충전소로 복귀
+            elif self.status == 21 or self.status == 22:
 
                 # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
                 if self.path.length == 0:
@@ -258,11 +258,6 @@ class Vehicle:
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
 
-            # 충전소로 복귀
-            elif self.status == 22:
-                # 복귀 (어...? 사실상 반송이랑 똑같은데?)
-                # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
             # 충전
             elif self.status == 80:
                 # 배터리 충전
