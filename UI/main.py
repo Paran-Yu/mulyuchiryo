@@ -213,7 +213,11 @@ class MainPage(QWidget):
         if self.btn_ctrl:
             self.zoom += e.angleDelta() / 120
 
-        print(self.zoom)
+            if self.pm != 0:
+                scaled_width = self.centralWidget.width() + self.zoom.y() * 100
+                self.pm_scaled = self.pm.scaledToWidth(scaled_width)
+                self.img_label.setGeometry(self.img_label.geometry().x(), self.img_label.geometry().y(), self.pm_scaled.width(), self.pm_scaled.height())
+                self.img_label.setPixmap(self.pm_scaled)
 
 # Run App.
 if __name__ == '__main__':
