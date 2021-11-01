@@ -21,6 +21,7 @@ map_width = int(mapdata.find("width").text)
 map_scale = int(mapdata.find("scale").text)
 map_capa = int(mapdata.find("capa").text)
 
+
 # read_ports
 port_list = []
 xml_port_list = ports.findall("port")
@@ -32,6 +33,8 @@ for x in xml_port_list:
     a.TYPE = x.find("type").text
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
+    port_list.append(a)
+
 
 # read_waits
 wait_list = []
@@ -43,6 +46,8 @@ for x in xml_wait_list:
     a.Y = float(x.find("y").text)
     if x.find("charge").text == "y":
         a.CHARGE = True
+    wait_list.append(a)
+
 
 # read nodes
 node_list = []
@@ -52,6 +57,7 @@ for x in xml_node_list:
     if x.find("isCross").text == "Y":
         a.isCross = True
     node_list.append(a)
+
 
 # read vehicles
 vehicle_list = []
