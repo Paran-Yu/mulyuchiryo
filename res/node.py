@@ -16,8 +16,13 @@ class Port(Node):
         self.TYPE = ""
         self.FREQ = -1
         self.V_TYPE = ""
+        self.UNLOAD_LIST = []
 
         self.isUsing = False
+
+    def get_unload(self):
+        return self.UNLOAD_LIST
+
 
 class WaitPoint(Node):
     def __init__(self, name):
