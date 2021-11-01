@@ -10,7 +10,7 @@ ports = root.find("ports")
 waits = root.find("waits")
 vehicles = root.find("vehicles")
 nodes = root.find("nodes")
-paths = root.find("path")
+paths = root.find("paths")
 
 # read image data
 img_path = image.find("img_path").text
@@ -59,6 +59,13 @@ for x in xml_node_list:
     node_list.append(a)
 
 
+# read paths
+path_list = []
+xml_path_list = paths.findall("path")
+for x in xml_path_list:
+    a = (int(x.find("start").text), int(x.find("end").text))
+    path_list.append(a)
+
 # read vehicles
 vehicle_list = []
 xml_vehicle_list = vehicles.findall("vehicle")
@@ -81,6 +88,4 @@ for x in xml_vehicle_list:
     a.velocity = 0
     a.angle = int(x.find("start_angle").text)
     a.battery = 100
-
     vehicle_list.append(a)
-
