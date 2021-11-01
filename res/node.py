@@ -7,6 +7,9 @@ class Node:
         self.Y = y_input
         self.isCross = False
 
+    def __lt__(self, other):
+        return self.NUM < other.NUM
+
 class Port(Node):
     def __init__(self, name):
         self.PORT_NAME = name
