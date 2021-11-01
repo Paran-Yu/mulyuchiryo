@@ -10,131 +10,150 @@
         <capa>834</capa>
     </map>
     <ports>
-        <group>
-            <num>1</num>
-            <port>
-                <name>L01</name>
-                <type>load</type>
-                <node>32</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L02</name>
-                <type>load</type>
-                <node>34</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L03</name>
-                <type>load</type>
-                <node>36</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L04</name>
-                <type>load</type>
-                <node>38</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-        </group>
-        <group>
-            <num>2</num>
-            <port>
-                <name>L05</name>
-                <type>load</type>
-                <node>40</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L06</name>
-                <type>load</type>
-                <node>42</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L07</name>
-                <type>load</type>
-                <node>44</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>L08</name>
-                <type>load</type>
-                <node>46</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-        </group>
-        <group>
-            <num>3</num>
-            <port>
-                <name>U01</name>
-                <type>unload</type>
-                <node>48</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U02</name>
-                <type>unload</type>
-                <node>50</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U02</name>
-                <type>unload</type>
-                <node>52</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U02</name>
-                <type>unload</type>
-                <node>54</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-        </group>
-        <group>
-            <num>4</num>
-            <port>
-                <name>U05</name>
-                <type>unload</type>
-                <node>56</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U06</name>
-                <type>unload</type>
-                <node>58</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U07</name>
-                <type>unload</type>
-                <node>60</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-            <port>
-                <name>U08</name>
-                <type>unload</type>
-                <node>62</node>
-                <freq>9888</freq>
-                <v_type></v_type>
-            </port>
-        </group>
-
+        <port>
+            <num>32</num>
+            <x>577</x>
+            <y>339</y>
+            <name>L01</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>34</num>
+            <x>647</x>
+            <y>339</y>
+            <name>L02</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>36</num>
+            <x>717</x>
+            <y>339</y>
+            <name>L03</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>38</num>
+            <x>787</x>
+            <y>339</y>
+            <name>L04</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>40</num>
+            <x>1245</x>
+            <y>339</y>
+            <name>L05</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>42</num>
+            <x>1315</x>
+            <y>339</y>
+            <name>L06</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>44</num>
+            <x>1385</x>
+            <y>339</y>
+            <name>L07</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>46</num>
+            <x>1455</x>
+            <y>339</y>
+            <name>L08</name>
+            <type>load</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>48</num>
+            <x>647</x>
+            <y>739</y>
+            <name>U01</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>50</num>
+            <x>717</x>
+            <y>739</y>
+            <name>U02</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>52</num>
+            <x>787</x>
+            <y>739</y>
+            <name>U02</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>54</num>
+            <x>1245</x>
+            <y>739</y>
+            <name>U02</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>56</num>
+            <x>1315</x>
+            <y>739</y>
+            <name>U05</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>58</num>
+            <x>1385</x>
+            <y>739</y>
+            <name>U06</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>60</num>
+            <x>1455</x>
+            <y>739</y>
+            <name>U07</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
+        <port>
+            <num>62</num>
+            <x>1455</x>
+            <y>739</y>
+            <name>U08</name>
+            <type>unload</type>
+            <freq>9888</freq>
+            <v_type></v_type>
+        </port>
     </ports>
     <waits>
         <group>
@@ -400,22 +419,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>32</num>
-            <x>577</x>
-            <y>339</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>33</num>
             <x>647</x>
             <y>240</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>34</num>
-            <x>647</x>
-            <y>339</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>35</num>
@@ -424,22 +431,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>36</num>
-            <x>717</x>
-            <y>339</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>37</num>
             <x>787</x>
             <y>240</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>38</num>
-            <x>787</x>
-            <y>339</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>39</num>
@@ -448,22 +443,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>40</num>
-            <x>1245</x>
-            <y>339</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>41</num>
             <x>1315</x>
             <y>240</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>42</num>
-            <x>1315</x>
-            <y>339</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>43</num>
@@ -472,22 +455,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>44</num>
-            <x>1385</x>
-            <y>339</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>45</num>
             <x>1455</x>
             <y>240</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>46</num>
-            <x>1455</x>
-            <y>339</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>47</num>
@@ -496,22 +467,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>48</num>
-            <x>647</x>
-            <y>739</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>49</num>
             <x>647</x>
             <y>840</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>50</num>
-            <x>717</x>
-            <y>739</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>51</num>
@@ -520,22 +479,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>52</num>
-            <x>787</x>
-            <y>739</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>53</num>
             <x>787</x>
             <y>840</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>54</num>
-            <x>1245</x>
-            <y>739</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>55</num>
@@ -544,22 +491,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>56</num>
-            <x>1315</x>
-            <y>739</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>57</num>
             <x>1315</x>
             <y>840</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>58</num>
-            <x>1385</x>
-            <y>739</y>
-            <isCross>N</isCross>
         </node>
         <node>
             <num>59</num>
@@ -568,22 +503,10 @@
             <isCross>Y</isCross>
         </node>
         <node>
-            <num>60</num>
-            <x>1455</x>
-            <y>739</y>
-            <isCross>N</isCross>
-        </node>
-        <node>
             <num>61</num>
             <x>1455</x>
             <y>840</y>
             <isCross>Y</isCross>
-        </node>
-        <node>
-            <num>62</num>
-            <x>1455</x>
-            <y>739</y>
-            <isCross>N</isCross>
         </node>
     </nodes>
     <paths>
