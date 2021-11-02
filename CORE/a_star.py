@@ -16,6 +16,11 @@ class a_star:
         return abs(x1 - x2) + abs(y1 - y2)
 
     def a_star(self,start):
+
+        # 수정해야 한다.
+        self.path = []
+        self.cost = []
+
         Q = PriorityQueue()
         # Q.put((우선 순위, 좌표))
         # 우선 순위에 비용을 넣겠다. 그러면 비용이 작은 좌표부터 나올 것이다.
