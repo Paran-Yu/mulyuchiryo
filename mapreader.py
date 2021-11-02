@@ -45,6 +45,7 @@ for x in xml_port_list:
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
     port_list.append(a)
+    node_list.append(a)
 
 
 # read_waits
@@ -57,6 +58,7 @@ for x in xml_wait_list:
     if x.find("charge").text == "y":
         a.CHARGE = True
     wait_list.append(a)
+    node_list.append(a)
 
 
 # read nodes
@@ -66,6 +68,7 @@ for x in xml_node_list:
     if x.find("isCross").text == "Y":
         a.isCross = True
     node_list.append(a)
+node_list = sorted(node_list)
 
 
 # read paths
