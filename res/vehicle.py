@@ -60,21 +60,21 @@ class Vehicle:
             distance = coord_diff[0]
         pass
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
-            self.velocity -= self.ACCEL # velocity: m/min, ACCEL: m/min
+            self.velocity -= self.ACCEL/60 # velocity: m/min, ACCEL: m/min
         else:
-            self.velocity += self.ACCEL # velocity: m/min, ACCEL: m/min
+            self.velocity += self.ACCEL/60 # velocity: m/min, ACCEL: m/min
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
                 self.velocity = self.MAX_SPEED
         # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
         # 현재 위치를 벡터값으로 하고 velocity에 방향에 더해주는 방법...?
         if isclose(self.angle, 90):
-            self.x += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            self.x += self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 270):
-            self.x -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            self.x -= self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 0):
-            self.y += self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            self.y += self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 180):
-            self.y -= self.velocity/100*6/self.time # m/min->1000mm/60sec->배속
+            self.y -= self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
