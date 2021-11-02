@@ -9,7 +9,6 @@ class Vehicle:
     def __init__(self, name):
         super().__init__()
 
-        self.time = 1*TIME
         self.NAME = name
         self.TYPE = "default"
         self.WIDTH = -1
@@ -68,13 +67,13 @@ class Vehicle:
         # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
         # 현재 위치를 벡터값으로 하고 velocity에 방향에 더해주는 방법...?
         if isclose(self.angle, 90):
-            self.x += self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
+            self.x += self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 270):
-            self.x -= self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
+            self.x -= self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 0):
-            self.y += self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
+            self.y += self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 180):
-            self.y -= self.velocity*100/6/self.time # m/min->1000mm/60sec->배속
+            self.y -= self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
@@ -86,24 +85,24 @@ class Vehicle:
         # 각도 차이에 따라 더할지 뺄지 로직 필요
         if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
             if 0 < self.angle <= 180:
-                self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle -= (self.ROTATE_SPEED)/TIME    # 초->배속
             elif 180 < self.angle < 360:
-                self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle += (self.ROTATE_SPEED)/TIME    # 초->배속
         elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
             if 90 < self.angle <= 270:
-                self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle -= (self.ROTATE_SPEED)/TIME    # 초->배속
             elif 270 < self.angle or self.angle < 90:
-                self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle += (self.ROTATE_SPEED)/TIME    # 초->배속
         elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
             if 180 < self.angle < 360:
-                self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle -= (self.ROTATE_SPEED)/TIME    # 초->배속
             elif 0 <= self.angle < 180:
-                self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle += (self.ROTATE_SPEED)/TIME    # 초->배속
         elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
             if 270 < self.angle or self.angle <= 90:
-                self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle -= (self.ROTATE_SPEED)/TIME    # 초->배속
             elif 90 < self.angle < 270:
-                self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+                self.angle += (self.ROTATE_SPEED)/TIME    # 초->배속
             
         # 360도는 0도다
         if 360 < self.angle:
@@ -113,7 +112,7 @@ class Vehicle:
                 
         # 직각이 아닐때는 정확히 계산해줘야한다. 아직 로직 완성 못함
         # if (angle_diff%360) 
-        # self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
+        # self.angle += (self.ROTATE_SPEED)/TIME    # 초->배속
 
     def load(self, port_num):
         if self.loaded == False:
@@ -228,7 +227,7 @@ class Vehicle:
                     # Core에 알림!
                     pass
                 # 대기 배터리 방전
-                self.battery -= self.DISCHARGE_WAIT/60/self.time   # 분->초->배속
+                self.battery -= self.DISCHARGE_WAIT/60/TIME   # 분->초->배속
 
             # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
             elif self.status in [20, 21, 22, 23]:
@@ -257,24 +256,24 @@ class Vehicle:
                         self.turn()
                     
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
+                self.battery -= self.DISCHARGE_WORK/60/TIME   # 분->초->배속
 
             # LOAD
             elif self.status == 30:
                 self.load()
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
+                self.battery -= self.DISCHARGE_WORK/60/TIME   # 분->초->배속
                 
             # UNLOAD
             elif self.status == 40:
                 self.unload()
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
+                self.battery -= self.DISCHARGE_WORK/60/TIME   # 분->초->배속
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
                 # 배터리 충전
-                self.battery += self.CHARGE_SPEED/60/self.time   # 분->초->배속
+                self.battery += self.CHARGE_SPEED/60/TIME   # 분->초->배속
                 # 배터리 과충전 불가
                 if self.battery > 100:
                     self.battery = 100
@@ -283,5 +282,5 @@ class Vehicle:
             # 에러
             elif self.status == 91 or self.status == 99:
                 pass
-            sleep(self.time)
+            sleep(TIME)
             
