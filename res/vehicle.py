@@ -1,6 +1,5 @@
 from time import sleep
 from math import atan2, degrees, isclose
-import matplotlib.pyplot as plt
 
 PORT_LIST = []
 NODE_LIST = []
@@ -283,11 +282,4 @@ class Vehicle:
             elif self.status == 91 or self.status == 99:
                 pass
             sleep(self.time)
-
-
-X=[[0]*100 for _ in range(100)]
-plt.imshow(X)
-v = Vehicle('1번')
-v.x = v.y = 50
-plt.title("test")
-plt.show()
+            
