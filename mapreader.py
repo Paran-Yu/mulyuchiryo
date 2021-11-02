@@ -32,8 +32,8 @@ xml_port_list = ports.findall("port")
 for x in xml_port_list:
     a = node.Port(x.find("name").text)
     a.NUM = int(x.find("num").text)
-    a.X = float(x.find("x").text)
-    a.Y = float(x.find("y").text)
+    a.X = float(x.find("x").text) * map_scale
+    a.Y = float(x.find("y").text) * map_scale
     a.TYPE = x.find("type").text
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
@@ -46,8 +46,8 @@ xml_wait_list = waits.findall("wait")
 for x in xml_wait_list:
     a = node.WaitPoint(x.find("name").text)
     a.NUM = int(x.find("num").text)
-    a.X = float(x.find("x").text)
-    a.Y = float(x.find("y").text)
+    a.X = float(x.find("x").text) * map_scale
+    a.Y = float(x.find("y").text) * map_scale
     if x.find("charge").text == "y":
         a.CHARGE = True
     wait_list.append(a)
@@ -57,7 +57,7 @@ for x in xml_wait_list:
 node_list = []
 xml_node_list = nodes.findall("node")
 for x in xml_node_list:
-    a = node.Node(int(x.find("num").text), int(x.find("x").text), int(x.find("y").text))
+    a = node.Node(int(x.find("num").text), int(x.find("x").text) * map_scale, int(x.find("y").text) * map_scale)
     if x.find("isCross").text == "Y":
         a.isCross = True
     node_list.append(a)
