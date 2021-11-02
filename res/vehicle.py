@@ -15,16 +15,6 @@ class Vehicle:
         self.CHARGE_SPEED = -1
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
-        self.STAT_LIST = {
-            00: "INIT",
-            10: "WAITING",
-            20: "MOVING",
-            30: "LOADING",
-            40: "UNLOADING",
-            80: "CHARGING",
-            91: "COLLIDED",
-            99: "ERROR",
-        }
 
         self.x = -1
         self.y = -1
