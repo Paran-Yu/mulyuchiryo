@@ -50,12 +50,12 @@ class Vehicle:
             pass
 
     def move(self):
-        distance = NODE_LIST[self.path[0]].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+        coord_diff = NODE_LIST[self.path[0]].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
-        if isclose(distance[0], 0):
-            distance = distance[1]
+        if isclose(coord_diff[0], 0):
+            distance = coord_diff[1]
         else:
-            distance = distance[0]
+            distance = coord_diff[0]
         pass
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
             self.velocity -= self.ACCEL # velocity: m/min, ACCEL: m/min
