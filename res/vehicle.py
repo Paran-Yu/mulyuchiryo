@@ -50,7 +50,7 @@ class Vehicle:
             pass
 
     def move(self):
-        coord_diff = NODE_LIST[self.path[0]].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+        coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
         if isclose(coord_diff[0], 0):
             distance = coord_diff[1]
@@ -76,28 +76,28 @@ class Vehicle:
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = NODE_LIST[self.path[0]].x
-            self.y = NODE_LIST[self.path[0]].y
+            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]].x
+            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]].y
                 
 
     def turn(self):
         # 각도 차이에 따라 더할지 뺄지 로직 필요
-        if self.getAngle(NODE_LIST[self.path[0]]) == 0:
+        if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]]) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 180 < self.angle < 360:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(NODE_LIST[self.path[0]]) == 90:
+        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]]) == 90:
             if 90 < self.angle <= 270:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 270 < self.angle or self.angle < 90:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(NODE_LIST[self.path[0]]) == 180:
+        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]]) == 180:
             if 180 < self.angle < 360:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 0 <= self.angle < 180:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(NODE_LIST[self.path[0]]) == 270:
+        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]]) == 270:
             if 270 < self.angle or self.angle <= 90:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 90 < self.angle < 270:
@@ -232,7 +232,7 @@ class Vehicle:
             elif self.status in [20, 21, 22, 23]:
 
                 # 현재 경유지에 도착했다면
-                if self.getPos() == NODE_LIST[self.path[0]].getPos():
+                if self.getPos() == [node for node in NODE_LIST if node.NUM == self.path[0]].getPos():
                     self.node = self.path.pop(0)    # node 갱신, path에서 삭제
 
                 # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
@@ -248,7 +248,7 @@ class Vehicle:
                 
                 # 목적지가 있다면 회전 & 가감속
                 else:
-                    angle_diff = self.getAngle(NODE_LIST[self.path[0]]) - self.angle
+                    angle_diff = self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]]) - self.angle
                     if angle_diff==0:   # 현재 목적지를 향해 보고 있다
                         self.move()
                     else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
