@@ -15,8 +15,11 @@ class MainPage(QWidget):
         self.pm = 0
 
         self.zoom = QPointF()
-        self.btn_ctrl = False
+        self.ctrl_pressed = False
         self.mouse_left = False
+
+        self.current_tool = "path"
+        self.paths = []
 
         self.initUI()
 
@@ -174,6 +177,12 @@ class MainPage(QWidget):
         self.img_label = QLabel(self.centralWidget)
         self.img_label.resize(self.rect.width(), self.rect.height() - height)
 
+        self.canvas_label = QLabel(self.centralWidget)
+        self.canvas_label.resize(self.rect.width(), self.rect.height() - height)
+
+        self.image_original = QImage()
+        self.canvas = QImage()
+
     # 기존 작업 불러오기
     def load(self):
         pass
@@ -194,23 +203,28 @@ class MainPage(QWidget):
             # 라벨 사이즈 조정
             pm_scaled = self.pm.scaledToWidth(self.img_label.width())
             self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
+            # 이미지 위에 그림을 그리면, 나중에 지울 수 없으므로 빈 라벨에 그릴 예정.
+            self.canvas_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
             # 가로크기에 맞추기
-            self.img_label.setPixmap(pm_scaled)
+            #self.img_label.setPixmap(pm_scaled)
+
+            self.image_original.load(fname[0])
+
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Control:
-            self.btn_ctrl = True
+            self.ctrl_pressed = True
 
     # 키보드 떼는 이벤트
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_Control:
-            self.btn_ctrl = False
+            self.ctrl_pressed = False
 
     # 휠 이벤트
     def wheelEvent(self, e):
-        if self.btn_ctrl:
+        if self.ctrl_pressed:
             self.zoom += e.angleDelta() / 120
 
             if self.pm != 0:
@@ -219,12 +233,35 @@ class MainPage(QWidget):
                 self.img_label.setGeometry(self.img_label.geometry().x(), self.img_label.geometry().y(), self.pm_scaled.width(), self.pm_scaled.height())
                 self.img_label.setPixmap(self.pm_scaled)
 
+                self.canvas_label.setGeometry(self.img_label.geometry().x(), self.img_label.geometry().y(), self.pm_scaled.width(), self.pm_scaled.height())
+
     # 마우스 트래킹 이벤트
     def mouseMoveEvent(self, e):
-        if self.mouse_left:
+        # 컨트롤을 누르고 왼쪽 마우스를 끌면
+        if self.mouse_left and self.ctrl_pressed:
             nx = e.x() - self.dx
             ny = e.y() - self.dy
             self.img_label.move(nx, ny)
+            # TODO: move canvas together.
+
+        elif not self.ctrl_pressed:
+            # path 그리기 도구일 때 왼쪽 마우스 처리.
+            # TODO: move this for mousePressEvent. (We don't need draw line.)
+            if self.mouse_left and self.current_tool == "path":
+                # TODO: Paint at another label.
+                qp = QPainter(self.image_original)
+
+                # TODO: Change the Pen Size to Fit the Screen Size.
+                qp.setPen(QPen(QColor(0, 0, 0), 15))
+                nx = (e.x() - self.img_label.x()) * self.image_original.width() / self.img_label.width()
+                ny = (e.y() - self.img_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height)\
+                     * self.image_original.height() / self.img_label.height()
+
+                qp.drawPoint(nx, ny)
+
+                # TODO: erase above drawPoint and draw all paths, ports, vehicles in paintEvent.
+                self.paths.append(QPoint(nx, ny))
+                qp.end()
 
     # 마우스 클릭 이벤트
     def mousePressEvent(self, e):
@@ -241,6 +278,17 @@ class MainPage(QWidget):
     # 마우스 해제 이벤트
     def mouseReleaseEvent(self, e):
         self.mouse_left = False
+
+    # 화면 갱신 이벤트
+    def paintEvent(self, event):
+        if self.image_original:
+            self.image_scaled = self.image_original.scaledToWidth(self.img_label.width())
+
+            # Convert QImage to QPixmap
+            # QPixmap은 수정이, QImage는 출력이 안되기 때문.
+            # TODO: print all nodes in here.
+            pixmap = QPixmap(self.image_scaled)
+            self.img_label.setPixmap(pixmap)
 
 # Run App.
 if __name__ == '__main__':
