@@ -45,9 +45,11 @@ class Vehicle:
             self.path = path    
             self.desti_node = path[-1]  # desti_node는 path의 마지막 (path[-1]), self.node는 도착할때마다 업데이트
             self.status = status    # 충전소로 가서 충전하는건지, 대기하러 가는건지 명령 정보 필요. 20, 22 등 명령을 오버라이드 가능.
+            return True
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
             pass
+            return False
 
     def move(self):
         coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
