@@ -50,18 +50,18 @@ class Vehicle:
         self.count = 0
 
     # new_node로 이동
-    def command(self, new_node, path, command):
+    def command(self, path, status):
         if self.status in [00, 10, 20, 22, 80] or self.path.length == 0:    
             self.count = 0
             self.path = path    
-            self.desti_node = new_node  # new_node는 path의 마지막 (path[-1]), self.node는 이동 시작하면서 업데이트
-            self.command_list = command    # 충전소로 가서 충전하는건지, 대기하러 가는건지 명령 정보 필요. 20, 22 등 명령을 오버라이드 가능.
+            self.desti_node = path[-1]  # desti_node는 path의 마지막 (path[-1]), self.node는 도착할때마다 업데이트
+            self.status = status    # 충전소로 가서 충전하는건지, 대기하러 가는건지 명령 정보 필요. 20, 22 등 명령을 오버라이드 가능.
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
             pass
 
     def move(self):
-        distance = NODE_LIST[self.node].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+        distance = NODE_LIST[self.path[0]].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
         if isclose(distance[0], 0):
             distance = distance[1]
@@ -87,28 +87,28 @@ class Vehicle:
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = self.getNode().x
-            self.y = self.getNode().y
+            self.x = NODE_LIST[self.path[0]].x
+            self.y = NODE_LIST[self.path[0]].y
                 
 
     def turn(self):
         # 각도 차이에 따라 더할지 뺄지 로직 필요
-        if self.getAngle(self.getNode()) == 0:
+        if self.getAngle(NODE_LIST[self.path[0]]) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 180 < self.angle < 360:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getNode()) == 90:
+        elif self.getAngle(NODE_LIST[self.path[0]]) == 90:
             if 90 < self.angle <= 270:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 270 < self.angle or self.angle < 90:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getNode()) == 180:
+        elif self.getAngle(NODE_LIST[self.path[0]]) == 180:
             if 180 < self.angle < 360:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 0 <= self.angle < 180:
                 self.angle += (self.ROTATE_SPEED)/self.time    # 초->배속
-        elif self.getAngle(self.getNode()) == 270:
+        elif self.getAngle(NODE_LIST[self.path[0]]) == 270:
             if 270 < self.angle or self.angle <= 90:
                 self.angle -= (self.ROTATE_SPEED)/self.time    # 초->배속
             elif 90 < self.angle < 270:
@@ -153,7 +153,7 @@ class Vehicle:
             return False
 
     def getNode(self):
-        return self.node        # 이동중일때는 경유하게 될 노드, 그렇지 않은 경우 현재 위치의 노드 반환
+        return self.node        # 이동중일때는 가장 최근 회전한 노드, 그렇지 않은 경우 현재 위치의 노드 반환
 
     def getPos(self):
         return (self.x, self.y)
@@ -218,7 +218,7 @@ class Vehicle:
             #         return -1   # 종료..?
 
             # 로직 설명
-            # 중요한 3가지 변수: status, path(node, desti_node 포함함), command_list
+            # 중요한 3가지 변수: status, path(node, desti_node 포함함), status
             # Core에서 명령이 내려오면 path, command_list 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
             # path에 따라 차량은 이동을 시작하며, status를 업데이트함
             # 목적지에 도착하면 path는 empty하며 command_list에 적힌 명령을 실행함(대기, 충전, L, U 등), status 업데이트
@@ -227,32 +227,39 @@ class Vehicle:
 
 
 
-            # 현재 상태를 파악
             # 초기상태 / 대기 / 물건 들고 대기
             if self.status == 00 or self.status == 10 or self.status == 11:
                 # 대기 카운트 += 1초
                 self.count += 1
-                if self.count >= 5:
+                if self.count >= 5: # 5초마다 알림
                     # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
                     self.count = 0
                     # Core에 알림!
                     pass
                 # 대기 배터리 방전
                 self.battery -= self.DISCHARGE_WAIT/60/self.time   # 분->초->배속
-            # 반송 중, 충전소로 복귀
-            elif self.status == 21 or self.status == 22:
+
+            # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
+            elif self.status in [20, 21, 22, 23]:
+
+                # 현재 경유지에 도착했다면
+                if self.getPos() == NODE_LIST[self.path[0]].getPos():
+                    self.node = self.path.pop(0)    # node 갱신, path에서 삭제
 
                 # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
                 if self.path.length == 0:
-                    self.status = self.command_list.pop(0)
-
-                # 현재 경유지에 도착했다면
-                elif self.getPos() == NODE_LIST[self.node].getPos():
-                    self.node = self.path.pop(0)    # node 갱신, path에서 삭제
+                    if self.status == 20:
+                        self.status = 10    # WAITING
+                    elif self.status == 21: 
+                        self.status = 40    # UNLOAD
+                    elif self.status == 22:
+                        self.status = 30    # LOAD
+                    elif self.status == 23:
+                        self.status = 80    # CHARGING
                 
                 # 목적지가 있다면 회전 & 가감속
                 else:
-                    angle_diff = self.getAngle(NODE_LIST[self.node]) - self.angle
+                    angle_diff = self.getAngle(NODE_LIST[self.path[0]]) - self.angle
                     if angle_diff==0:   # 현재 목적지를 향해 보고 있다
                         self.move()
                     else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
@@ -264,9 +271,14 @@ class Vehicle:
             # LOAD
             elif self.status == 30:
                 self.load()
+                # 동작 배터리 방전
+                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
+                
             # UNLOAD
             elif self.status == 40:
                 self.unload()
+                # 동작 배터리 방전
+                self.battery -= self.DISCHARGE_WORK/60/self.time   # 분->초->배속
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
@@ -275,7 +287,8 @@ class Vehicle:
                 # 배터리 과충전 불가
                 if self.battery > 100:
                     self.battery = 100
-                # 충전 완료 됐다고 Core에 알리기
+                    # 충전 완료 됐다고 Core에 알리기
+
             # 에러
             elif self.status == 91 or self.status == 99:
                 pass
