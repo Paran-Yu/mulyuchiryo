@@ -13,6 +13,14 @@ nodes = root.find("nodes")
 paths = root.find("paths")
 
 
+# declare lists
+port_list = []
+wait_list = []
+node_list = []
+path_list = []
+vehicle_list = []
+
+
 # read image data
 img_path = image.find("img_path").text
 img_name = image.find("name").text
@@ -27,7 +35,6 @@ map_data = {'width': map_width, 'scale': map_scale, 'capacity': map_capa}
 
 
 # read_ports
-port_list = []
 xml_port_list = ports.findall("port")
 for x in xml_port_list:
     a = node.Port(x.find("name").text)
@@ -41,7 +48,6 @@ for x in xml_port_list:
 
 
 # read_waits
-wait_list = []
 xml_wait_list = waits.findall("wait")
 for x in xml_wait_list:
     a = node.WaitPoint(x.find("name").text)
@@ -54,7 +60,6 @@ for x in xml_wait_list:
 
 
 # read nodes
-node_list = []
 xml_node_list = nodes.findall("node")
 for x in xml_node_list:
     a = node.Node(int(x.find("num").text), int(x.find("x").text) * map_scale, int(x.find("y").text) * map_scale)
@@ -64,14 +69,13 @@ for x in xml_node_list:
 
 
 # read paths
-path_list = []
 xml_path_list = paths.findall("path")
 for x in xml_path_list:
     a = (int(x.find("start").text), int(x.find("end").text))
     path_list.append(a)
 
+
 # read vehicles
-vehicle_list = []
 xml_vehicle_list = vehicles.findall("vehicle")
 for x in xml_vehicle_list:
     a = vehicle.Vehicle(x.find("name").text)
