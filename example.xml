@@ -200,7 +200,7 @@
         </port>
         <port>
             <num>56</num>
-            <x>1315</x>
+            <x>1245</x>
             <y>739</y>
             <name>U05</name>
             <type>unload</type>
@@ -209,7 +209,7 @@
         </port>
         <port>
             <num>58</num>
-            <x>1385</x>
+            <x>1315</x>
             <y>739</y>
             <name>U06</name>
             <type>unload</type>
@@ -218,7 +218,7 @@
         </port>
         <port>
             <num>60</num>
-            <x>1455</x>
+            <x>1385</x>
             <y>739</y>
             <name>U07</name>
             <type>unload</type>
