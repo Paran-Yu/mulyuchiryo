@@ -23,7 +23,6 @@ class Vehicle:
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
 
-
         self.x = -1
         self.y = -1
         self.node = -1
