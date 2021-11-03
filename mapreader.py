@@ -44,6 +44,11 @@ for x in xml_port_list:
     a.TYPE = x.find("type").text
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
+    if a.TYPE == "load":
+        unload = x.find("unload")
+        unload_list = unload.findall("item")
+        for y in unload_list:
+            a.UNLOAD_LIST.append(int(y.text))
     port_list.append(a)
     node_list.append(a)
 
@@ -102,7 +107,7 @@ for x in xml_vehicle_list:
     vehicle_list.append(a)
 
 def read_layout():
-    return img, map
+    return img, map_data
 
 def read_component():
     return port_list, wait_list, node_list, path_list, vehicle_list
