@@ -102,7 +102,7 @@ for x in xml_vehicle_list:
     vehicle_list.append(a)
 
 def read_layout():
-    return img, map
+    return img, map_data
 
 def read_component():
     return port_list, wait_list, node_list, path_list, vehicle_list
