@@ -57,7 +57,6 @@ class Vehicle:
             distance = coord_diff[1]
         else:
             distance = coord_diff[0]
-        pass
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
             self.velocity -= self.ACCEL/60 # velocity: m/min, ACCEL: m/min
         else:
