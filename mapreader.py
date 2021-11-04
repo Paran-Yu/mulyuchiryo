@@ -91,16 +91,17 @@ for x in xml_vehicle_list:
     a.WIDTH = int(x.find("width").text)
     a.HEIGHT = int(x.find("height").text)
     a.DIAGONAL = int(x.find("diagonal").text)
-    a.ROTATE_SPEED = int(x.find("rotate_speed").text)
-    a.ACCEL = float(x.find("accel").text)
-    a.MAX_SPEED = int(x.find("max_speed").text)
+    a.ROTATE_SPEED = float(x.find("rotate_speed").text)
+    a.ACCEL = float(x.find("accel").text) * 1000                # m/sec^2 -> mm/sec^2
+    a.MAX_SPEED = float(x.find("max_speed").text) * 100 / 6     # m/min -> mm/sec
     a.LU_TYPE = x.find("lu_type").text
-    a.CHARGE_SPEED = float(x.find("charge_speed").text)
-    a.DISCHARGE_WAIT = float(x.find("discharge_wait").text)
-    a.DISCHARGE_WORK = float(x.find("discharge_work").text)
+    a.CHARGE_SPEED = float(x.find("charge_speed").text) / 60    # %/min -> %/sec
+    a.DISCHARGE_WAIT = float(x.find("discharge_wait").text) / 60    # %/min -> %/sec
+    a.DISCHARGE_WORK = float(x.find("discharge_work").text) / 60    # %/min -> %/sec
     a.node = int(x.find("start_node").text)
-    # a.x
-    # a.y
+    start_node = [node for node in node_list if node.NUM == a.node][0]
+    a.x = start_node.X
+    a.y = start_node.Y
     a.velocity = 0
     a.angle = int(x.find("start_angle").text)
     a.battery = 100
