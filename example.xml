@@ -164,7 +164,7 @@
         </port>
         <port>
             <num>48</num>
-            <x>647</x>
+            <x>577</x>
             <y>739</y>
             <name>U01</name>
             <type>unload</type>
@@ -173,7 +173,7 @@
         </port>
         <port>
             <num>50</num>
-            <x>717</x>
+            <x>647</x>
             <y>739</y>
             <name>U02</name>
             <type>unload</type>
@@ -182,25 +182,25 @@
         </port>
         <port>
             <num>52</num>
-            <x>787</x>
+            <x>717</x>
             <y>739</y>
-            <name>U02</name>
+            <name>U03</name>
             <type>unload</type>
             <freq>9888</freq>
             <v_type></v_type>
         </port>
         <port>
             <num>54</num>
-            <x>1245</x>
+            <x>787</x>
             <y>739</y>
-            <name>U02</name>
+            <name>U04</name>
             <type>unload</type>
             <freq>9888</freq>
             <v_type></v_type>
         </port>
         <port>
             <num>56</num>
-            <x>1315</x>
+            <x>1245</x>
             <y>739</y>
             <name>U05</name>
             <type>unload</type>
@@ -209,7 +209,7 @@
         </port>
         <port>
             <num>58</num>
-            <x>1385</x>
+            <x>1315</x>
             <y>739</y>
             <name>U06</name>
             <type>unload</type>
@@ -218,7 +218,7 @@
         </port>
         <port>
             <num>60</num>
-            <x>1455</x>
+            <x>1385</x>
             <y>739</y>
             <name>U07</name>
             <type>unload</type>
