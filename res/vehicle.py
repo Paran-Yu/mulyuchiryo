@@ -71,7 +71,7 @@ class Vehicle:
         elif isclose(self.angle, 0):
             self.y += self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
         elif isclose(self.angle, 180):
-            self.y -= self.velocity*100/6/TIME # m/min->1000mm/60sec->배속
+            self.y -= self.velocity*100/6 # m/min->1000mm/60sec
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
