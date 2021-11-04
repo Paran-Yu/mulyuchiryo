@@ -37,20 +37,39 @@ port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_compon
 simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
 
 # 1920x1080, example.xml scale=1로 조정하고 했습니다.
-print(img, map_data)
+print(img, map_data, vehicle_list)
 
 # 어디에서든 imread해도 값은 똑같은 것 같다.
 # img = mpimg.imread('./example.png')
 # print('mpimg:',img)
 img = plt.imread('./example.png')
-print('plt:',img)
+# print('plt:',img)
+
 # print(img[739][1455]) # png는 [R, G, B, A]이며 각 값은 [0, 1], jpg는 [R, G, B]이며 각 값은 [0,255]
 # img.resize((1080, 1920))
 
 # for node in node_list:
 #     print(node.X, node.Y)
 imgplot = plt.imshow(img)
+# 노드
 plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
+# 도로
+# path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
+for path in path_list:
+    # 시작점 start
+    start = [node for node in node_list if node.NUM == path[0]][0]
+    # 끝점 end
+    end = [node for node in node_list if node.NUM == path[1]][0]
+    # print(start, end)
+    # 수직인지 수평인지 판별 필요
+    if start.X == end.X:    # X축 동일 -> 수직
+        plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
+    else:                   # Y축 동일 -> 수평
+        plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
+
+# 차량
+
+
 plt.show()
 
 # 위에 뜬 창을 없애야만 아래가 실행된다. 업데이트 하는 방법을 찾아보기
