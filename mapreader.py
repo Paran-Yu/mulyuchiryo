@@ -75,15 +75,24 @@ for x in xml_node_list:
     node_list.append(a)
 node_list = sorted(node_list)
 
-
 # 노드 사이의 연결 관계를 linked list로 표현
-# path_list의 index 0은 편의상 사용하지 않고 index 1부터 사용한다.
+# path_list의 index 0부터 사용하는 점에 유의한다.
 xml_path_list = paths.findall("path")
-path_list = [[] for _ in range(len(node_list)+1)]
+path_list = [[] for _ in range(len(node_list))]
 for x in xml_path_list:
     from_node, to_node = int(x.find("start").text), int(x.find("end").text)
-    path_list[from_node].append(to_node)
-    path_list[to_node].append(from_node)
+    
+    # cost 구하기
+    # 시간으로 구하고 싶어서 노드 사이의 거리를 40으로 나눠준 값을 일단 쓰겠습니다.
+
+    # 세로로 연결된 노드라면
+    if node_list[from_node-1].X == node_list[to_node-1].X:
+        cost = (abs(node_list[from_node-1].Y - node_list[to_node-1].Y)) / 40
+    # 가로로 연결된 노드라면
+    else:
+        cost = (abs(node_list[from_node-1].X - node_list[to_node-1].X)) / 40
+    path_list[from_node-1].append((to_node, cost))
+    path_list[to_node-1].append((from_node, cost))
 
 print(path_list)
 
