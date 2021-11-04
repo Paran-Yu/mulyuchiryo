@@ -49,8 +49,8 @@ print('plt:',img)
 
 # for node in node_list:
 #     print(node.X, node.Y)
-
 imgplot = plt.imshow(img)
+plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
 plt.show()
 
 # 위에 뜬 창을 없애야만 아래가 실행된다. 업데이트 하는 방법을 찾아보기
