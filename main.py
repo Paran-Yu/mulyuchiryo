@@ -1,5 +1,7 @@
 import mapreader
 from simulator import simulator
+from Core.a_star import a_star, heuristic
+
 
 # simulate attribute
 simulate_speed = 1
@@ -10,6 +12,12 @@ wait_list = []
 node_list = []
 path_list = []
 vehicle_list = []
+
+# 짐을 내려놓을 수 있는 포트만 모아놓은 리스트 추가
+# 반송을 시작하려면 짐을 내려놓을 수 있는 포트가 존재해야 하기 때문에, 체크를 위해서 추가했습니다.
+# 짐이 새로 나오면 아래 리스트를 확인하고
+# 비어있지 않다면 가장 가까이 있는 AGV에게 job을 할당하여 포트로 불러들입니다.
+unloadable_port_list = []
 
 VEHICLE_STATUS = {
     00: "INIT",

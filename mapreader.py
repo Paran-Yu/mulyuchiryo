@@ -94,9 +94,6 @@ for x in xml_path_list:
     path_list[from_node-1].append((to_node, cost))
     path_list[to_node-1].append((from_node, cost))
 
-print(path_list)
-
-
 # read vehicles
 xml_vehicle_list = vehicles.findall("vehicle")
 for x in xml_vehicle_list:
