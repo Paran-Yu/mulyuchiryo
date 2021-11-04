@@ -76,11 +76,16 @@ for x in xml_node_list:
 node_list = sorted(node_list)
 
 
-# read paths
+# 노드 사이의 연결 관계를 linked list로 표현
+# path_list의 index 0은 편의상 사용하지 않고 index 1부터 사용한다.
 xml_path_list = paths.findall("path")
+path_list = [[] for _ in range(len(node_list)+1)]
 for x in xml_path_list:
-    a = (int(x.find("start").text), int(x.find("end").text))
-    path_list.append(a)
+    from_node, to_node = int(x.find("start").text), int(x.find("end").text)
+    path_list[from_node].append(to_node)
+    path_list[to_node].append(from_node)
+
+print(path_list)
 
 
 # read vehicles
