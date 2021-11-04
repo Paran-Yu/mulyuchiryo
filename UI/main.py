@@ -3,11 +3,18 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from sidebar import SideBar
+from selector import Selector
+
+class Context:
+    def __init__(self):
+        self.main = None
 
 class MainPage(QWidget):
     def __init__(self, rect):
         super().__init__()
         self.rect = rect
+        self.context = Context()
+        self.context.main = self
 
         self.menu_wrapper_height = 35
         self.sub_menu_wrapper_height = 90
@@ -18,6 +25,7 @@ class MainPage(QWidget):
         self.zoom = QPointF()
         self.ctrl_pressed = False
         self.mouse_left = False
+        self.node_selected = False
 
         self.tools = [
             "path",
@@ -38,6 +46,8 @@ class MainPage(QWidget):
             self.wait_points,
             self.vehicles,
         ]
+
+        self.selector = Selector(self)
 
         self.initUI()
 
@@ -213,7 +223,7 @@ class MainPage(QWidget):
         self.image_original = None
 
         # 객체들의 정보를 수정, 확인할 수 있는 사이드바 생성
-        self.side_bar = SideBar(self.centralWidget)
+        self.side_bar = SideBar(self.context, self.centralWidget)
 
     def changeTools(self, idx):
         # 버튼을 누른 경우
@@ -293,11 +303,26 @@ class MainPage(QWidget):
     # 마우스 트래킹 이벤트
     def mouseMoveEvent(self, e):
         # 컨트롤을 누르고 왼쪽 마우스를 끌면
-        if self.mouse_left and self.ctrl_pressed:
-            nx = e.x() - self.dx
-            ny = e.y() - self.dy
-            self.img_label.move(nx, ny)
-            self.canvas_label.move(nx, ny)
+        if self.ctrl_pressed:
+            if self.mouse_left:
+                nx = e.x() - self.dx
+                ny = e.y() - self.dy
+                self.img_label.move(nx, ny)
+                self.canvas_label.move(nx, ny)
+        else:
+            if self.node_selected:
+                nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
+                ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
+                     * self.canvas.height() / self.canvas_label.height()
+
+                self.selected_node.setX(nx)
+                self.selected_node.setY(ny)
+
+                self.side_bar.widget.show()
+
+                self.side_bar.setDetail(p(self.selected_node))
+
+
 
         '''
         끌기 작업에서 불필요하다고 판단해서 주석처리.
@@ -371,24 +396,56 @@ class MainPage(QWidget):
 
             # 컨트롤이 눌리지 않았고, 편집할 이미지가 오픈 된 경우
             if not self.ctrl_pressed and self.image_original:
+                # 메뉴바 이상을 눌렀을 때 무반응.
+                if e.y() < self.menu_wrapper_height + self.sub_menu_wrapper_height:
+                    return
+
+                nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
+                ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
+                     * self.canvas.height() / self.canvas_label.height()
+
+                if self.canvas.pixel(nx, ny) != 0x00ffffff:
+                    self.node_selected = True
+                    # select clicked node.
+                    type, idx = self.selector.selectNode(nx, ny)
+                    self.selected_node = self.positions[type][idx]
+
+                    self.side_bar.widget.show()
+                    self.side_bar.getDetail(type)
+                    self.side_bar.setDetail(p(self.selected_node))
+
                 # 그리기 도구일 때 좌표를 찾아서 저장.
-                if self.mouse_left and self.tools[self.current_tool] != "mouse":
+                elif self.tools[self.current_tool] != "mouse":
+                    '''self.mouse_left and '''
+                    self.node_selected = True
                     nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
                     ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
                          * self.canvas.height() / self.canvas_label.height()
 
-                    self.positions[self.current_tool].append(QPoint(nx, ny))
+                    self.selected_node = QPoint(nx, ny)
+                    self.positions[self.current_tool].append(self.selected_node)
                     self.drawCanvas()
+
+                    self.side_bar.widget.show()
+                    self.side_bar.getDetail(self.current_tool)
+                    self.side_bar.setDetail(p(QPoint(nx, ny)))
+
+                elif self.tools[self.current_tool] == "mouse":
+                    self.side_bar.widget.hide()
 
         if e.buttons() & Qt.MidButton:
             pass
         if e.buttons() & Qt.RightButton:
-            self.eraseCanvas()
+            if self.side_bar.widget.isHidden():
+                self.side_bar.widget.show()
+            else:
+                self.side_bar.widget.hide()
             pass
 
     # 마우스 해제 이벤트
     def mouseReleaseEvent(self, e):
         self.mouse_left = False
+        self.node_selected = False
 
     # 화면 갱신 이벤트
     def paintEvent(self, event):
@@ -404,6 +461,13 @@ class MainPage(QWidget):
 
             pixmap = QPixmap(self.canvas_scaled)
             self.canvas_label.setPixmap(pixmap)
+
+# 테스트를 위한 임시 클래스
+class p:
+    def __init__(self, p, t=None):
+        self.x = p.x()
+        self.y = p.y()
+        self.type = t
 
 # Run App.
 if __name__ == '__main__':
