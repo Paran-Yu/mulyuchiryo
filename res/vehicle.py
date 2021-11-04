@@ -280,5 +280,4 @@ class Vehicle:
             # 에러
             elif self.status == 91 or self.status == 99:
                 pass
-            sleep(TIME)
             
