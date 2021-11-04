@@ -18,7 +18,8 @@ class Port(Node):
         self.V_TYPE = ""
         self.UNLOAD_LIST = []
 
-        self.isUsing = False
+        self.status = 0
+        self.count = 0
 
     def get_unload(self):
         return self.UNLOAD_LIST
