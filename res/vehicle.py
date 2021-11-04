@@ -159,7 +159,7 @@ class Vehicle:
         return self.status
     
     def getBrakeDis(self):
-        return (self.velocity**2)/(2*self.ACCEL)
+        return (self.velocity**2)/(2*self.ACCEL)    # m/min & m/sec^2
 
     def checkCrash(self, car):
         # 다른 차량타입이라 크기 다르면? 둘다 메서드 들어가니까 ㄱㅊ
