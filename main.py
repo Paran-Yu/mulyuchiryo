@@ -2,6 +2,8 @@ import mapreader
 from simulator import simulator
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.transforms import Affine2D
 import matplotlib.image as mpimg
 
 # simulate attribute
@@ -44,13 +46,12 @@ print(img, map_data, vehicle_list)
 # print('mpimg:',img)
 img = plt.imread('./example.png')
 # print('plt:',img)
+imgplot = plt.imshow(img)
 
 # print(img[739][1455]) # png는 [R, G, B, A]이며 각 값은 [0, 1], jpg는 [R, G, B]이며 각 값은 [0,255]
 # img.resize((1080, 1920))
 
-# for node in node_list:
-#     print(node.X, node.Y)
-imgplot = plt.imshow(img)
+
 # 노드
 plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
 # 도로
@@ -67,8 +68,25 @@ for path in path_list:
     else:                   # Y축 동일 -> 수평
         plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
-# 차량
+# 여기서부터는 병렬처리 쓰레드의 적용을 받아야할 것 같다.
 
+ax = plt.gca()
+
+# 차량
+for vehicle in vehicle_list:
+    print(vehicle.x, vehicle.y)
+    vehicle_rect = patches.Rectangle(
+        [vehicle.x-vehicle.WIDTH/2, vehicle.y-vehicle.HEIGHT/2],
+        vehicle.WIDTH,
+        vehicle.HEIGHT,
+        # angle=30,   # anti-clockwise angle
+        fill=True,
+        edgecolor = 'blue',
+        facecolor = 'purple',
+        # transform=Affine2D().rotate_deg_around(*(vehicle.x-vehicle.WIDTH/2, vehicle.y-vehicle.HEIGHT/2), 30)+ax.transData
+    )
+    ax.add_patch(vehicle_rect)
+    pass
 
 plt.show()
 
