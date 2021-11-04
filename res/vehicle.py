@@ -162,24 +162,8 @@ class Vehicle:
         return (self.velocity**2)/(2*self.ACCEL*3600)    # m/min | m/sec^2->3600m/min^2
 
     def checkCrash(self, car):
-        # 다른 차량타입이라 크기 다르면? 둘다 메서드 들어가니까 ㄱㅊ
-        # 라운드턴 등으로 직각이 아닐 때는? 1) (언제나)여유롭게 대각선으로 2) 매0.1초마다 영역 계산 -> 일단 라운드턴 배제하고 진행
-        # 가로로 있는지 세로로 있는지에 따라 달라져야할거같은데?
-        if self.angle == 0 or self.angle == 180:    #가로
-            if (self.x + self.WIDTH > car.x) and (self.x < car.x + car.WIDTH) and (self.y > car.y + car.HEIGHT) and (self.y + self.HEIGHT > car.y):
-                return True
-            else:
-                return False
-        elif self.angle == 90 or self.angle == 270: #세로
-            if (self.x + self.HEIGHT > car.x) and (self.x < car.x + car.HEIGHT) and (self.y > car.y + car.WIDTH) and (self.y + self.WIDTH > car.y):
-                return True
-            else:
-                return False
-        else:   # 그 외
-            if (self.x + self.DIAGONAL > car.x) and (self.x < car.x + car.DIAGONAL) and (self.y > car.y + car.DIAGONAL) and (self.y + self.DIAGONAL > car.y):
-                return True
-            else:
-                return False
+        # 1. self와 car 두 점 사이의 거리 구하기
+        # 2. 두 점 사이의 거리 < self.diagonal/2 + car.diagonal/2 이면 충돌
 
 
     def getAngle(self, destination):
