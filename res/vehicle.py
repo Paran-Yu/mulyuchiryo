@@ -57,9 +57,9 @@ class Vehicle:
         else:
             distance = coord_diff[0]
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
-            self.velocity -= self.ACCEL/60 # velocity: m/min, ACCEL: m/min
+            self.velocity -= self.ACCEL     # velocity: m/min, ACCEL: m/sec^
         else:
-            self.velocity += self.ACCEL/60 # velocity: m/min, ACCEL: m/min
+            self.velocity += self.ACCEL     # velocity: m/min, ACCEL: m/sec^
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
                 self.velocity = self.MAX_SPEED
         # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
@@ -158,8 +158,8 @@ class Vehicle:
     def getStatus(self):
         return self.status
     
-    def getBrakeDis(self):
-        return (self.velocity**2)/(2*self.ACCEL)    # m/min & m/sec^2
+    def getBrakeDis(self):  # m단위
+        return (self.velocity**2)/(2*self.ACCEL*3600)    # m/min | m/sec^2->3600m/min^2
 
     def checkCrash(self, car):
         # 다른 차량타입이라 크기 다르면? 둘다 메서드 들어가니까 ㄱㅊ
