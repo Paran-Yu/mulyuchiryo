@@ -1,5 +1,5 @@
 from time import sleep
-from math import atan2, degrees, isclose
+from math import atan2, degrees, isclose, sqrt, dist
 
 PORT_LIST = []
 NODE_LIST = []
@@ -163,7 +163,18 @@ class Vehicle:
 
     def checkCrash(self, car):
         # 1. self와 car 두 점 사이의 거리 구하기
+        # 1) 피타고라스 정리
+        distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
+        # 2) math.dist()
+        s = [self.x, self.y]
+        c = [car.x, car.y]
+        distance = dist(s, c)
         # 2. 두 점 사이의 거리 < self.diagonal/2 + car.diagonal/2 이면 충돌
+        if distance <= self.diagonal/2 + car.diagonal/2:
+            return True
+        else:
+            return False
+
 
 
     def getAngle(self, destination):
