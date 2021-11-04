@@ -57,21 +57,21 @@ class Vehicle:
         else:
             distance = coord_diff[0]
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
-            self.velocity -= self.ACCEL*3600    # velocity: m/min, ACCEL: m/sec^-> m/min^
+            self.velocity -= self.ACCEL
         else:
-            self.velocity += self.ACCEL*3600    # velocity: m/min, ACCEL: m/sec^-> m/min^
+            self.velocity += self.ACCEL
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
                 self.velocity = self.MAX_SPEED
         # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
         # 현재 위치를 벡터값으로 하고 velocity에 방향에 더해주는 방법...?
         if isclose(self.angle, 90):
-            self.x += self.velocity*100/6 # m/min->1000mm/60sec
+            self.x += self.velocity
         elif isclose(self.angle, 270):
-            self.x -= self.velocity*100/6 # m/min->1000mm/60sec
+            self.x -= self.velocity
         elif isclose(self.angle, 0):
-            self.y += self.velocity*100/6 # m/min->1000mm/60sec
+            self.y += self.velocity
         elif isclose(self.angle, 180):
-            self.y -= self.velocity*100/6 # m/min->1000mm/60sec
+            self.y -= self.velocity
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
@@ -158,8 +158,8 @@ class Vehicle:
     def getStatus(self):
         return self.status
     
-    def getBrakeDis(self):  # m단위
-        return (self.velocity**2)/(2*self.ACCEL*3600)    # m/min | m/sec^2->3600m/min^2
+    def getBrakeDis(self):
+        return (self.velocity**2)/(2*self.ACCEL)
 
     def checkCrash(self, car):
         # 1. self와 car 두 점 사이의 거리 구하기
@@ -220,7 +220,7 @@ class Vehicle:
                     # Core에 알림!
                     pass
                 # 대기 배터리 방전
-                self.battery -= self.DISCHARGE_WAIT/60   # 분->초
+                self.battery -= self.DISCHARGE_WAIT
 
             # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
             elif self.status in [20, 21, 22, 23]:
@@ -249,24 +249,24 @@ class Vehicle:
                         self.turn()
                     
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60   # 분->초
+                self.battery -= self.DISCHARGE_WORK
 
             # LOAD
             elif self.status == 30:
                 self.load()
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60   # 분->초
+                self.battery -= self.DISCHARGE_WORK
                 
             # UNLOAD
             elif self.status == 40:
                 self.unload()
                 # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK/60   # 분->초
+                self.battery -= self.DISCHARGE_WORK
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
                 # 배터리 충전
-                self.battery += self.CHARGE_SPEED/60   # 분->초
+                self.battery += self.CHARGE_SPEED
                 # 배터리 과충전 불가
                 if self.battery > 100:
                     self.battery = 100
