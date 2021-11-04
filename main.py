@@ -1,6 +1,7 @@
 import mapreader
 from simulator import simulator
 
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.transforms import Affine2D
@@ -72,18 +73,45 @@ for path in path_list:
 
 ax = plt.gca()
 
+# 기존 Rectangle은 회전시 중심 기준이 아니라서 어려움, https://stackoverflow.com/questions/60413174/rotating-rectangles-around-point-with-matplotlib
+class RotatingRectangle(patches.Rectangle):
+    def __init__(self, xy, width, height, rel_point_of_rot, **kwargs):
+        super().__init__(xy, width, height, **kwargs)
+        self.rel_point_of_rot = rel_point_of_rot
+        self.xy_center = self.get_xy()
+        self.set_angle(self.angle)
+
+    def _apply_rotation(self):
+        angle_rad = self.angle * np.pi / 180
+        m_trans = np.array([[np.cos(angle_rad), -np.sin(angle_rad)],
+                            [np.sin(angle_rad), np.cos(angle_rad)]])
+        shift = -m_trans @ self.rel_point_of_rot
+        self.set_xy(self.xy_center + shift)
+
+    def set_angle(self, angle):
+        self.angle = angle
+        self._apply_rotation()
+
+    def set_rel_point_of_rot(self, rel_point_of_rot):
+        self.rel_point_of_rot = rel_point_of_rot
+        self._apply_rotation()
+
+    def set_xy_center(self, xy):
+        self.xy_center = xy
+        self._apply_rotation()
+
 # 차량
 for vehicle in vehicle_list:
     print(vehicle.x, vehicle.y)
-    vehicle_rect = patches.Rectangle(
-        [vehicle.x-vehicle.WIDTH/2, vehicle.y-vehicle.HEIGHT/2],
+    vehicle_rect = RotatingRectangle(
+        [vehicle.x, vehicle.y],
         vehicle.WIDTH,
         vehicle.HEIGHT,
-        # angle=30,   # anti-clockwise angle
+        angle=vehicle.angle,   # anti-clockwise angle
         fill=True,
         edgecolor = 'blue',
         facecolor = 'purple',
-        # transform=Affine2D().rotate_deg_around(*(vehicle.x-vehicle.WIDTH/2, vehicle.y-vehicle.HEIGHT/2), 30)+ax.transData
+        rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
     )
     ax.add_patch(vehicle_rect)
     pass
