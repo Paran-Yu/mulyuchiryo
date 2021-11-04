@@ -59,7 +59,7 @@ class Vehicle:
         if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
             self.velocity -= self.ACCEL*3600    # velocity: m/min, ACCEL: m/sec^-> m/min^
         else:
-            self.velocity -= self.ACCEL*3600    # velocity: m/min, ACCEL: m/sec^-> m/min^
+            self.velocity += self.ACCEL*3600    # velocity: m/min, ACCEL: m/sec^-> m/min^
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
                 self.velocity = self.MAX_SPEED
         # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
