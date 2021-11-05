@@ -1,4 +1,5 @@
 import mapreader
+import time
 from simulator import simulator
 from Core.a_star import a_star, heuristic
 
@@ -42,4 +43,13 @@ port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_compon
 simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
 
 # 출발지와 도착지를 첫 번째, 두 번째 인자로 넣어준다.
-a_star(29, 11, path_list, node_list)
+
+# 대기장소 -> 짐 싣기 -> 짐 내리기
+print(a_star(29, 34, path_list, node_list))
+# 9가 exclusion_list에 5초동안 들어간다.
+print(a_star(34, 50, path_list, node_list))
+# 그래서 다른 경로가 나온다.
+print(a_star(34, 50, path_list, node_list))
+# 5초가 지나서 9가 exclusion_list에서 나오면 다시 처음처럼 경로가 나온다.
+time.sleep(5)
+print(a_star(34, 50, path_list, node_list))

@@ -1,4 +1,9 @@
+import threading
+import time
 from queue import PriorityQueue
+
+# 여기에 들어가있는 노드들은 5초 동안 동선 탐색에서 제외한다.
+exclusion_list = []
 
 # Manhattan distance와 Euclidean distance 중 Manhattan distance을 선택함
 # 방식은 크게 중요하지 않다고 생각했음. 다만 Euclidean distance는 계산하는데 더 시간이 오래 걸릴 것 같아서
@@ -40,6 +45,11 @@ def a_star(start, goal, path_list, node_list):
 
         if current_node == goal:
             found = True
+
+        # AGV 분산하기
+        if current_node in exclusion_list:
+            continue
+
         # current에서 갈 수 있는 노드마다
         for each_path in path_list[current_node-1]:
             # each_path는 (2, 20.5) 같은 형태
@@ -56,10 +66,10 @@ def a_star(start, goal, path_list, node_list):
             # 5초라서 일단 5를 더해주었다.
             if previous_node:
                 if node_list[current_node-1].X == node_list[previous_node-1].X and node_list[current_node-1].X != node_list[next_node-1].X:
-                    print(current_node, "에서 회전")
+                    # print(current_node, "에서 회전")
                     g += 5
                 elif node_list[current_node-1].X != node_list[previous_node-1].X and node_list[current_node-1].X == node_list[next_node-1].X:
-                    print(current_node, "에서 회전")
+                    # print(current_node, "에서 회전")
                     g += 5
 
             f = g + heuristic(next_node, goal, node_list)
@@ -78,4 +88,16 @@ def a_star(start, goal, path_list, node_list):
         node = nextNode
 
     final_path = final_path[::-1]
-    print(final_path)
+
+    # AGV 분산하기
+    for each_node in final_path:
+        if each_node == 9:
+            cost_thread = threading.Thread(target=control_cost, args=[each_node])
+            cost_thread.start()
+
+    return final_path
+
+def control_cost(each_node):
+    exclusion_list.append(each_node)
+    time.sleep(5)
+    exclusion_list.remove(each_node)
