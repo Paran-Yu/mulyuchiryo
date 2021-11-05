@@ -10,6 +10,9 @@ class Node:
     def __lt__(self, other):
         return self.NUM < other.NUM
 
+    def getPos(self):
+        return (self.X, self.Y)
+
 class Port(Node):
     def __init__(self, name):
         self.PORT_NAME = name
