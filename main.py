@@ -1,6 +1,7 @@
 import mapreader
 from simulator import simulator
 
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -69,9 +70,16 @@ for path in path_list:
     else:                   # Y축 동일 -> 수평
         plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
-# 여기서부터는 병렬처리 쓰레드의 적용을 받아야할 것 같다.
+# plt.show()
+# plt.plot()
+# plt.draw()
+# fig = plt.figure()
 
 ax = plt.gca()
+plt.pause(1)
+
+# 여기서부터는 병렬처리 쓰레드의 적용을 받아야할 것 같다.
+
 
 # 기존 Rectangle은 회전시 중심 기준이 아니라서 어려움, https://stackoverflow.com/questions/60413174/rotating-rectangles-around-point-with-matplotlib
 class RotatingRectangle(patches.Rectangle):
@@ -100,9 +108,10 @@ class RotatingRectangle(patches.Rectangle):
         self.xy_center = xy
         self._apply_rotation()
 
+vehicle_rects = []
 # 차량
 for vehicle in vehicle_list:
-    print(vehicle.x, vehicle.y)
+    # print(vehicle.x, vehicle.y)
     vehicle_rect = RotatingRectangle(
         [vehicle.x, vehicle.y],
         vehicle.WIDTH,
@@ -113,10 +122,44 @@ for vehicle in vehicle_list:
         facecolor = 'purple',
         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
     )
+    print(vehicle_rect.xy)
     ax.add_patch(vehicle_rect)
+    vehicle_rects.append(vehicle_rect)
     pass
 
-plt.show()
+print(vehicle_rects)
+
+# 이동했다 치고 다시 보여주려면
+# # 1) 전에 있던 걸 지우고 새로 그리기
+# for vehicle in vehicle_list:
+#     vehicle.x, vehicle.y = vehicle.y, vehicle.x
+#     # print(vehicle.x, vehicle.y)
+#     vehicle_rect = RotatingRectangle(
+#         [vehicle.x, vehicle.y],
+#         vehicle.WIDTH,
+#         vehicle.HEIGHT,
+#         angle=vehicle.angle,
+#         fill=True,
+#         edgecolor = 'blue',
+#         facecolor = 'purple',
+#         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
+#     )
+#     ax.add_patch(vehicle_rect)
+#     pass
+
+plt.pause(1)
+
+# 2) 전에 있던 것 업데이트 해주기
+for i in range(len(vehicle_rects)):
+    print(vehicle_rects[i])
+    print(vehicle_list[i])
+    vehicle_rects[i].set_xy((vehicle_list[i].x, vehicle_list[i].y))
+    vehicle_rects[i].set_angle(vehicle_list[i].angle)
+    print(vehicle_rects[i])
+
+plt.pause(1)
+
+
 
 # 위에 뜬 창을 없애야만 아래가 실행된다. 업데이트 하는 방법을 찾아보기
 # img[739][1455] = [0,0,0,0]
