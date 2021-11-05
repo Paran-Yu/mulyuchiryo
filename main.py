@@ -42,4 +42,4 @@ port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_compon
 simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
 
 # 출발지와 도착지를 첫 번째, 두 번째 인자로 넣어준다.
-# a_star(29, 11, path_list, node_list)
+a_star(29, 11, path_list, node_list)

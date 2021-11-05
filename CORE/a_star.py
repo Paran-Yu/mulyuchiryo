@@ -25,7 +25,7 @@ def a_star(start, goal, path_list, node_list):
     
     # Q.put((우선 순위, 노드))
     # 우선 순위에 cost를 넣겠다. 그러면 cost가 작은 노드부터 나올 것이다.
-    Q.put((0, start))
+    Q.put((0, start, None))
     cost[start-1] = 0
     found = False
 
@@ -33,21 +33,40 @@ def a_star(start, goal, path_list, node_list):
         if found:
             break
 
-        # Q.get() 하면 (우선순위, 노드) 이렇게 나온다.
+        # Q.get() 하면 (우선순위, 노드, 이전 노드) 이렇게 나온다.
         # 노드를 꺼낸다.
-        current = Q.get()[1]
-        if current == goal:
+        # current_node = Q.get()[1]
+        _, current_node, previous_node =Q.get()
+
+        if current_node == goal:
             found = True
         # current에서 갈 수 있는 노드마다
-        for each_path in path_list[current-1]:
+        for each_path in path_list[current_node-1]:
             # each_path는 (2, 20.5) 같은 형태
             next_node, next_cost = each_path
             # g = current까지 축적된 cost + 다음 노드로 가는 cost
-            g = cost[current-1] + next_cost
+            g = cost[current_node-1] + next_cost
+
+            # 회전을 하면 cost를 추가시키는 코드
+            # 첫 시작점은 회전 체크를 하지 못하고 그 다음 노드부터 회전 체크를 한다.
+            # angle과 좌표를 이용하면 첫 시작점도 회전하는지 알 수 있겠지만
+            # 여러 상황을 고려해봤을 때 체크를 안 해도 무방하다고 판단했습니다.
+            # 대기/충전 장소, 포트에서 나오는 경로가 딱 1개이기 때문에
+
+            # 5초라서 일단 5를 더해주었다.
+            if previous_node:
+                if node_list[current_node-1].X == node_list[previous_node-1].X and node_list[current_node-1].X != node_list[next_node-1].X:
+                    print(current_node, "에서 회전")
+                    g += 5
+                elif node_list[current_node-1].X != node_list[previous_node-1].X and node_list[current_node-1].X == node_list[next_node-1].X:
+                    print(current_node, "에서 회전")
+                    g += 5
+
             f = g + heuristic(next_node, goal, node_list)
             if f < cost[next_node-1]:
-                Q.put((f, next_node))
-                path[next_node-1] = current
+                # 우선순위 큐에 넣을 때는 h(x)가 포함된 값을 넣는다.
+                Q.put((f, next_node, current_node))
+                path[next_node-1] = current_node
                 cost[next_node-1] = g
 
     final_path.append(goal)
