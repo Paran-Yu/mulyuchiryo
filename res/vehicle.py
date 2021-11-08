@@ -179,7 +179,7 @@ class Vehicle:
         return degree
 
     # 매 1초마다 실행
-    def threadFunc(self, NODE_LIST, PORT_LIST):
+    def threadFunc(self, NODE_LIST):
         while True:
             # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
 
