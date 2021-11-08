@@ -44,7 +44,7 @@ class Vehicle:
             return False
 
     def move(self, NODE_LIST):
-        coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+        coord_diff = tuple(map(lambda i, j: i - j, [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos(), self.getPos()))
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
         if isclose(coord_diff[0], 0):
             distance = coord_diff[1]
