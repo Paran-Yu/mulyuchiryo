@@ -2,6 +2,7 @@ import time
 import threading
 import mapreader
 from simulator import simulator
+from Core2.astar_afterwork import a_star, heuristic
 
 # simulate attribute
 simulate_speed = 1
