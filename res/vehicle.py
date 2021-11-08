@@ -1,9 +1,6 @@
 from time import sleep
 from math import atan2, degrees, isclose, sqrt, dist
 
-PORT_LIST = []
-NODE_LIST = []
-TIME = 1
 
 class Vehicle:
     def __init__(self, name):
@@ -32,8 +29,7 @@ class Vehicle:
         self.status = 0
         self.loaded = 0
         self.battery = -1
-        self.path = []  # 각 노드(경유지)가 object일지 좌표일지 정해야할듯
-        self.command_list = []
+        self.path = []
         self.count = 0
 
     # new_node로 이동
@@ -46,10 +42,9 @@ class Vehicle:
             return True
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
-            pass
             return False
 
-    def move(self):
+    def move(self, NODE_LIST):
         coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
         if isclose(coord_diff[0], 0):
@@ -79,8 +74,7 @@ class Vehicle:
             self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].y
                 
 
-    def turn(self):
-        # 각도 차이에 따라 더할지 뺄지 로직 필요
+    def turn(self, NODE_LIST):
         if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)    # 초
@@ -101,8 +95,7 @@ class Vehicle:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 90 < self.angle < 270:
                 self.angle += (self.ROTATE_SPEED)    # 초
-            
-        # 360도는 0도다
+
         if 360 < self.angle:
             self.angle -= 360
         elif self.angle < 0:
@@ -112,28 +105,28 @@ class Vehicle:
         # if (angle_diff%360) 
         # self.angle += (self.ROTATE_SPEED)    # 초
 
-    def load(self, port_num):
+    def load(self, port_num, PORT_LIST):
         if self.loaded == False:
             # 포트가 load가능한 상태인지 확인
             pass
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[port_num].LOAD()
+                PORT_LIST[port_num].LOAD()  # PORT.LOAD() 메서드 필요
                 # 대기 상태로 전환
                 self.status = 11
                 self.loaded = 1
         else:
             return False
 
-    def unload(self, port_num):
+    def unload(self, port_num, PORT_LIST):
         if self.loaded:
             # 포트가 unload가능한 상태인지 확인
             pass
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[port_num].UNLOAD()
+                PORT_LIST[port_num].UNLOAD()    # PORT.UNLOAD() 메서드 필요
                 # 대기 상태로 전환
                 self.status = 10
                 self.loaded = 0
@@ -189,7 +182,7 @@ class Vehicle:
         return degree
 
     # 매 1초마다 실행
-    def threadFunc(self):
+    def threadFunc(self, NODE_LIST, PORT_LIST):
         while True:
             # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
             # for i in range(len(CARS_LIST)):
@@ -202,9 +195,9 @@ class Vehicle:
 
             # 로직 설명
             # 중요한 3가지 변수: status, path(node, desti_node 포함함), status
-            # Core에서 명령이 내려오면 path, command_list 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
-            # path에 따라 차량은 이동을 시작하며, status를 업데이트함
-            # 목적지에 도착하면 path는 empty하며 command_list에 적힌 명령을 실행함(대기, 충전, L, U 등), status 업데이트
+            # Core에서 명령이 내려오면 path, status 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
+            # status와 path에 따라 차량은 이동을 시작하며
+            # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
             # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
             # 대기인 경우 명령을 받을 수 있음
 
