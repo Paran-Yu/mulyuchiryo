@@ -104,28 +104,28 @@ class Vehicle:
         # if (angle_diff%360) 
         # self.angle += (self.ROTATE_SPEED)    # 초
 
-    def load(self, PORT_LIST):
+    def load(self, NODE_LIST):
         if self.loaded == False:
             # 포트가 load가능한 상태인지 확인
             pass
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[self.node()].LOAD()  # PORT.LOAD() 메서드 필요
+                [node for node in NODE_LIST if node.NUM == self.node()][0].LOAD()  # PORT.LOAD() 메서드 필요
                 # 대기 상태로 전환
                 self.status = 11
                 self.loaded = 1
         else:
             return False
 
-    def unload(self, PORT_LIST):
+    def unload(self, NODE_LIST):
         if self.loaded:
             # 포트가 unload가능한 상태인지 확인
             pass
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[self.node()].UNLOAD()    # PORT.UNLOAD() 메서드 필요
+                [node for node in NODE_LIST if node.NUM == self.node()][0].UNLOAD()    # PORT.UNLOAD() 메서드 필요
                 # 대기 상태로 전환
                 self.status = 10
                 self.loaded = 0
@@ -233,23 +233,24 @@ class Vehicle:
 
             # LOAD
             elif self.status == 30:
-                self.load(PORT_LIST)
+                self.load(NODE_LIST)
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
                 
             # UNLOAD
             elif self.status == 40:
-                self.unload(PORT_LIST)
+                self.unload(NODE_LIST)
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
                 # 충전소가 충전이 가능한 상태인가?
+
                 # 배터리 충전
                 self.battery += self.CHARGE_SPEED
                 # 충전기를 충전중 상태로 전환
-                WAIT_LIST[self.node()].CHARGE()
+                [node for node in NODE_LIST if node.NUM == self.node()][0].CHARGE()
                 # 배터리 과충전 불가
                 if self.battery > 100:
                     self.battery = 100
