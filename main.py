@@ -61,5 +61,6 @@ def simulate_routine():
 
 #######################
 # Test용 main
-if __name__=="__main__":
+if __name__ == "__main__":
     read_map()
+    
