@@ -10,6 +10,9 @@ class Node:
     def __lt__(self, other):
         return self.NUM < other.NUM
 
+    def getPos(self):
+        return (self.X, self.Y)
+
 class Port(Node):
     def __init__(self, name):
         self.PORT_NAME = name
@@ -18,7 +21,8 @@ class Port(Node):
         self.V_TYPE = ""
         self.UNLOAD_LIST = []
 
-        self.isUsing = False
+        self.status = 0
+        self.count = 0
 
     def get_unload(self):
         return self.UNLOAD_LIST

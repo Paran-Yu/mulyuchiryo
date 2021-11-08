@@ -35,7 +35,7 @@
             <y>339</y>
             <name>L02</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -54,7 +54,7 @@
             <y>339</y>
             <name>L03</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -73,7 +73,7 @@
             <y>339</y>
             <name>L04</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -92,7 +92,7 @@
             <y>339</y>
             <name>L05</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -111,7 +111,7 @@
             <y>339</y>
             <name>L06</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -130,7 +130,7 @@
             <y>339</y>
             <name>L07</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -149,7 +149,7 @@
             <y>339</y>
             <name>L08</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
             <unload>
                 <item>48</item>
@@ -168,7 +168,7 @@
             <y>739</y>
             <name>U01</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -177,7 +177,7 @@
             <y>739</y>
             <name>U02</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -186,7 +186,7 @@
             <y>739</y>
             <name>U03</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -195,7 +195,7 @@
             <y>739</y>
             <name>U04</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -204,7 +204,7 @@
             <y>739</y>
             <name>U05</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -213,7 +213,7 @@
             <y>739</y>
             <name>U06</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -222,7 +222,7 @@
             <y>739</y>
             <name>U07</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
@@ -231,7 +231,7 @@
             <y>739</y>
             <name>U08</name>
             <type>unload</type>
-            <freq>9888</freq>
+            <freq>206</freq>
             <v_type></v_type>
         </port>
     </ports>

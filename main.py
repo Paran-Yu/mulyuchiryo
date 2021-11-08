@@ -1,3 +1,5 @@
+import time
+import threading
 import mapreader
 from simulator import simulator
 
@@ -34,11 +36,19 @@ VEHICLE_STATUS = {
     99: "ERROR"
 }
 
+# map data 읽어오기
 img, map_data = mapreader.read_layout()
 port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_component()
 
-# simulate 시작하면 simulator 함수 시작하도록
-simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
+# UI에서 simulate 버튼을 누르면 simulate 시작
+def start_simulate():
+    simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
+    simulate_routine()
+
+# simulate_speed마다 루틴 실행
+def simulate_routine():
+    threading.Timer(simulate_speed, simulate_routine()).start()
+
 
 # 1920x1080, example.xml scale=1로 조정하고 했습니다.
 print(img, map_data, vehicle_list)
