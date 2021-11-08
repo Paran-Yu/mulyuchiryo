@@ -1,11 +1,11 @@
 import random
 
-# main func of simulator
-def simulate(simulate_speed, port_list, wait_list, vehicle_list):
+# simulate 초기화
+def simulate_init(simulate_speed, port_list, wait_list, vehicle_list):
     port_init(port_list)
     pass
 
-
+# PORT
 # port의 time cnt를 0~FREQ 사이의 랜덤값으로 지정
 def port_init(port_list):
     for x in port_list:
@@ -21,3 +21,7 @@ def port_update(port_list):
             if x.count == x.FREQ:
                 x.status = 1
                 x.count = 0
+
+# WAIT POINT
+
+# VEHICLE
