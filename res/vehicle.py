@@ -185,13 +185,6 @@ class Vehicle:
     def threadFunc(self, NODE_LIST, PORT_LIST):
         while True:
             # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
-            # for i in range(len(CARS_LIST)):
-            #     if self is CARS_LIST[i]: # 이게 될까?
-            #         continue
-            #     crashed = self.checkCrash(CARS_LIST[i])
-            #     if crashed:
-            #         self.status = 91
-            #         return -1   # 종료..?
 
             # 로직 설명
             # 중요한 3가지 변수: status, path(node, desti_node 포함함), status
@@ -200,8 +193,6 @@ class Vehicle:
             # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
             # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
             # 대기인 경우 명령을 받을 수 있음
-
-
 
             # 초기상태 / 대기 / 물건 들고 대기
             if self.status == 00 or self.status == 10 or self.status == 11:
@@ -237,22 +228,22 @@ class Vehicle:
                 else:
                     angle_diff = self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
                     if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                        self.move()
+                        self.move(NODE_LIST)
                     else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
-                        self.turn()
+                        self.turn(NODE_LIST)
                     
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
 
             # LOAD
             elif self.status == 30:
-                self.load()
+                self.load(port_num, PORT_LIST)
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
                 
             # UNLOAD
             elif self.status == 40:
-                self.unload()
+                self.unload(port_num, PORT_LIST)
                 # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
             
