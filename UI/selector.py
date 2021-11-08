@@ -13,8 +13,8 @@ class Selector:
         idx = -1
         for t in range(len(self.context.positions)):
             for i in range(len(self.context.positions[t])):
-                if x - 10 < self.context.positions[t][i].x() < x + 10 \
-                        and y - 10 < self.context.positions[t][i].y() < y + 10:
+                if x - 10 < self.context.positions[t][i].point.x() < x + 10 \
+                        and y - 10 < self.context.positions[t][i].point.y() < y + 10:
                     type = t
                     idx = i
 

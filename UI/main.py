@@ -10,6 +10,9 @@ class Context:
         self.main = None
 
 class MainPage(QWidget):
+    # auto increment ID.
+    count = 0
+
     def __init__(self, rect):
         super().__init__()
         self.rect = rect
@@ -315,12 +318,12 @@ class MainPage(QWidget):
                 ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
                      * self.canvas.height() / self.canvas_label.height()
 
-                self.selected_node.setX(nx)
-                self.selected_node.setY(ny)
+                self.selected_node.point.setX(nx)
+                self.selected_node.point.setY(ny)
 
                 self.side_bar.widget.show()
 
-                self.side_bar.setDetail(p(self.selected_node))
+                self.side_bar.setDetail(self.selected_node)
 
 
 
@@ -359,17 +362,17 @@ class MainPage(QWidget):
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 0), 15))
-            qp.drawPoint(path)
-            qp.drawEllipse(path, 4, 4)
+            qp.drawPoint(path.point)
+            qp.drawEllipse(path.point, 4, 4)
 
             qp.end()
         for port in self.ports:
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(255, 0, 0), 15))
-            qp.drawPoint(port)
+            qp.drawPoint(port.point)
             qp.setPen(QPen(QColor(255, 0, 0), 1))
-            qp.drawRect(port.x()-7.5, port.y()-7.5, 15, 15)
+            qp.drawRect(port.point.x()-7.5, port.point.y()-7.5, 15, 15)
 
             qp.end()
 
@@ -377,7 +380,7 @@ class MainPage(QWidget):
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 255), 15))
-            qp.drawPoint(wait_point)
+            qp.drawPoint(wait_point.point)
 
             qp.end()
         # TODO: Add Ports, Wait Points and Vehicles
@@ -412,7 +415,7 @@ class MainPage(QWidget):
 
                     self.side_bar.widget.show()
                     self.side_bar.getDetail(type)
-                    self.side_bar.setDetail(p(self.selected_node))
+                    self.side_bar.setDetail(self.selected_node)
 
                 # 그리기 도구일 때 좌표를 찾아서 저장.
                 elif self.tools[self.current_tool] != "mouse":
@@ -422,13 +425,15 @@ class MainPage(QWidget):
                     ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
                          * self.canvas.height() / self.canvas_label.height()
 
-                    self.selected_node = QPoint(nx, ny)
+                    # Count increment per every node creation
+                    self.count += 1
+                    self.selected_node = p(self.count, QPoint(nx, ny))
                     self.positions[self.current_tool].append(self.selected_node)
                     self.drawCanvas()
 
                     self.side_bar.widget.show()
                     self.side_bar.getDetail(self.current_tool)
-                    self.side_bar.setDetail(p(QPoint(nx, ny)))
+                    self.side_bar.setDetail(self.selected_node)
 
                 elif self.tools[self.current_tool] == "mouse":
                     self.side_bar.widget.hide()
@@ -464,10 +469,13 @@ class MainPage(QWidget):
 
 # 테스트를 위한 임시 클래스
 class p:
-    def __init__(self, p, t=None):
-        self.x = p.x()
-        self.y = p.y()
+    def __init__(self, id, p, t="unload", name="NODE"):
+        self.id = id
+        self.point = p
         self.type = t
+        self.name = name
+        # port 클래스에서 연결된 unload 포트를 관리하기 위함.
+        self.unload_list = []
 
 # Run App.
 if __name__ == '__main__':
