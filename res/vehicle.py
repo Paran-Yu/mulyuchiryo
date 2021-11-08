@@ -178,13 +178,12 @@ class Vehicle:
         degree = (degree+90)%360
         return degree
 
-    # 매 1초마다 실행
     def threadFunc(self, NODE_LIST):
         while True:
             # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
 
             # 로직 설명
-            # 중요한 3가지 변수: status, path(node, desti_node 포함함), status
+            # 중요한 2가지 변수: status, path(node, desti_node 포함함)
             # Core에서 명령이 내려오면 path, status 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
             # status와 path에 따라 차량은 이동을 시작하며
             # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
@@ -228,34 +227,32 @@ class Vehicle:
                     else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
                         self.turn(NODE_LIST)
                     
-                # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
 
             # LOAD
             elif self.status == 30:
                 self.load(NODE_LIST)
-                # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
                 
             # UNLOAD
             elif self.status == 40:
                 self.unload(NODE_LIST)
-                # 동작 배터리 방전
                 self.battery -= self.DISCHARGE_WORK
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
                 # 충전소가 충전이 가능한 상태인가?
-
-                # 배터리 충전
-                self.battery += self.CHARGE_SPEED
+                pass    # 다른 차량과 충돌한게 아니라면 충전소에는 제약이 없는 것으로 알고 있음
                 # 충전기를 충전중 상태로 전환
                 [node for node in NODE_LIST if node.NUM == self.node()][0].CHARGE()
-                # 배터리 과충전 불가
-                if self.battery > 100:
+                # 배터리 충전
+                self.battery += self.CHARGE_SPEED
+                # 배터리 과충전 불가, 충전 종료?
+                if self.battery >= 100:
                     self.battery = 100
                     # 충전 완료 됐다고 Core에 알리기
                     # 충전 완료 했으니 충전기로 부터 해제
+                    # 대기로 status 전환
 
 
             # 에러
