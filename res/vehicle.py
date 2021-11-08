@@ -156,7 +156,7 @@ class Vehicle:
     def checkCrash(self, car):
         # 1. self와 car 두 점 사이의 거리 구하기
         # 1) 피타고라스 정리
-        distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
+        # distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
         # 2) math.dist()
         s = [self.x, self.y]
         c = [car.x, car.y]
