@@ -140,47 +140,46 @@ for vehicle in vehicle_list:
 # print(vehicle_rects)
 plt.pause(1)
 
-# 이동 명령
-for vehicle in vehicle_list:
-    print(dir(vehicle))
-    vehicle.path = [26]
-    vehicle.move()
-    break
+while True:
 
-    # 일단 vehicle에 node_list 등이 전달이 안 되고 있음
-    # node.getPos() 필요
-
-
+    # 이동 명령
+    for vehicle in vehicle_list:
+        print(vehicle)
+        vehicle.command([26], 20)
+        vehicle.move(node_list)
+        print(vehicle.path, vehicle.status)
+        # break
 
 
-# 이동했다 치고 다시 보여주려면
-# # 1) 전에 있던 걸 지우고 새로 그리기(지우는 방법을 모르겠음)
-# for vehicle in vehicle_list:
-#     vehicle.x, vehicle.y = vehicle.y, vehicle.x
-#     # print(vehicle.x, vehicle.y)
-#     vehicle_rect = RotatingRectangle(
-#         [vehicle.x, vehicle.y],
-#         vehicle.WIDTH,
-#         vehicle.HEIGHT,
-#         angle=vehicle.angle,
-#         fill=True,
-#         edgecolor = 'blue',
-#         facecolor = 'purple',
-#         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
-#     )
-#     ax.add_patch(vehicle_rect)
-#     pass
+    # 이동했다 치고 다시 보여주려면
+    # # 1) 전에 있던 걸 지우고 새로 그리기(지우는 방법을 모르겠음)
+    # for vehicle in vehicle_list:
+    #     vehicle.x, vehicle.y = vehicle.y, vehicle.x
+    #     # print(vehicle.x, vehicle.y)
+    #     vehicle_rect = RotatingRectangle(
+    #         [vehicle.x, vehicle.y],
+    #         vehicle.WIDTH,
+    #         vehicle.HEIGHT,
+    #         angle=vehicle.angle,
+    #         fill=True,
+    #         edgecolor = 'blue',
+    #         facecolor = 'purple',
+    #         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
+    #     )
+    #     ax.add_patch(vehicle_rect)
+    #     pass
 
 
-# 2) 전에 있던 것 업데이트 해주기
-for i in range(len(vehicle_rects)):
-    print(vehicle_rects[i])
-    print(vehicle_list[i])
-    vehicle_rects[i].set_xy((vehicle_list[i].x, vehicle_list[i].y))
-    vehicle_rects[i].set_angle(vehicle_list[i].angle)
-    print(vehicle_rects[i])
+    # 2) 전에 있던 것 업데이트 해주기
+    for i in range(len(vehicle_rects)):
+        print(vehicle_rects[i])
+        print(vehicle_list[i], vehicle_list[i].getPos())
+        vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
+        vehicle_rects[i].set_angle(vehicle_list[i].angle)
+        print(vehicle_rects[i])
 
-plt.pause(1)
+    plt.pause(1)
+    # break
 
 
 
