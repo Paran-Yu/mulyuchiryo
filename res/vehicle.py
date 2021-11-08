@@ -74,22 +74,22 @@ class Vehicle:
                 
 
     def turn(self, NODE_LIST):
-        if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
+        if self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 180 < self.angle < 360:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
             if 90 < self.angle <= 270:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 270 < self.angle or self.angle < 90:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
             if 180 < self.angle < 360:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 0 <= self.angle < 180:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
             if 270 < self.angle or self.angle <= 90:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 90 < self.angle < 270:
@@ -167,9 +167,7 @@ class Vehicle:
         else:
             return False
 
-
-
-    def getAngle(self, destination):
+    def getAngleTo(self, destination):
         # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
         # atan2 결과값은 -180~180이므로, 방위각(정북과 타겟좌표 사이의 각도)을 구하자
         radian = atan2(destination.y - self.y , destination.x - self.x)
@@ -224,7 +222,7 @@ class Vehicle:
                 
                 # 목적지가 있다면 회전 & 가감속
                 else:
-                    angle_diff = self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
+                    angle_diff = self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
                     if angle_diff==0:   # 현재 목적지를 향해 보고 있다
                         self.move(NODE_LIST)
                     else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
