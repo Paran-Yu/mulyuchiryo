@@ -195,9 +195,8 @@ class Vehicle:
 
             # 초기상태 / 대기 / 물건 들고 대기
             if self.status == 00 or self.status == 10 or self.status == 11:
-                # 대기 카운트 += 1초
                 self.count += 1
-                if self.count >= 5: # 5초마다 알림
+                if self.count >= 5:
                     # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
                     self.count = 0
                     # Core에 알림!
@@ -248,12 +247,17 @@ class Vehicle:
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
+                # 충전소가 충전이 가능한 상태인가?
                 # 배터리 충전
                 self.battery += self.CHARGE_SPEED
+                # 충전기를 충전중 상태로 전환
+                WAIT_LIST[wait_num].CHARGE()
                 # 배터리 과충전 불가
                 if self.battery > 100:
                     self.battery = 100
                     # 충전 완료 됐다고 Core에 알리기
+                    # 충전 완료 했으니 충전기로 부터 해제
+
 
             # 에러
             elif self.status == 91 or self.status == 99:
