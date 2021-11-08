@@ -57,15 +57,15 @@ class Detail():
                     str = str.replace(str[0], "")
                     self.x.setText(str)
 
-                self.context.main.selected_node.setX(int(self.x.text()))
+                self.context.main.selected_node.point.setX(int(self.x.text()))
                 self.redraw()
             elif str[0] == '-':
                 if len(str) > 1 and str[1:].isdigit():
-                    self.context.main.selected_node.setX(int(self.x.text()))
+                    self.context.main.selected_node.point.setX(int(self.x.text()))
                     self.redraw()
         else:
             self.x.setText("0")
-            self.context.main.selected_node.setX(0)
+            self.context.main.selected_node.point.setX(0)
             self.redraw()
 
     def changedY(self):
@@ -76,15 +76,15 @@ class Detail():
                     str = str.replace(str[0], "")
                     self.y.setText(str)
 
-                self.context.main.selected_node.setY(int(self.y.text()))
+                self.context.main.selected_node.point.setY(int(self.y.text()))
                 self.redraw()
             elif str[0] == '-':
                 if len(str) > 1 and str[1:].isdigit():
-                    self.context.main.selected_node.setY(int(self.y.text()))
+                    self.context.main.selected_node.point.setY(int(self.y.text()))
                     self.redraw()
         else:
             self.y.setText("0")
-            self.context.main.selected_node.setY(0)
+            self.context.main.selected_node.point.setY(0)
             self.redraw()
 
     def deleteNode(self):
@@ -110,6 +110,9 @@ class DetailPath(Detail):
                               parent.width() * 0.3, self.y.height())
         self.cross.setEnabled(False)
 
+    def setDetail(self, obj):
+        pass
+
 class DetailPort(Detail):
     def __init__(self, context, parent):
         super(DetailPort, self).__init__(context, parent)
@@ -117,6 +120,9 @@ class DetailPort(Detail):
         QLabel("type", self.widget).move(parent.width() * 0.54, parent.height() * 0.22 + 5)
         QLabel("freq", self.widget).move(parent.width() * 0.04, parent.height() * 0.27 + 5)
         QLabel("vtype", self.widget).move(parent.width() * 0.54-5, parent.height() * 0.27 + 5)
+        QLabel("Unload Ports", self.widget).move(parent.width() * 0.05, parent.height() * 0.33)
+        QLabel("------------------------------------------", self.widget) \
+            .move(parent.width() * 0.05, parent.height() * 0.34)
 
         self.name = QLineEdit("port", self.widget)
         self.name.setGeometry(parent.width() * 0.15, parent.height() * 0.22,
@@ -142,9 +148,63 @@ class DetailPort(Detail):
         self.vtype.addItem("Reel Direct")
         self.vtype.setCurrentIndex(0)
 
+        QLabel("Ports", self.widget).move(parent.width() * 0.05, parent.height() * 0.36)
+        self.port_list = QListWidget(self.widget)
+        self.port_list.setGeometry(parent.width() * 0.05, parent.height() * 0.38,
+                                   parent.width() * 0.4, parent.height() * 0.3)
+
+        QLabel("Connected Ports", self.widget).move(parent.width() * 0.55, parent.height() * 0.36)
+        self.connected_port_list = QListWidget(self.widget)
+        self.connected_port_list.setGeometry(parent.width() * 0.55, parent.height() * 0.38,
+                                             parent.width() * 0.4, parent.height() * 0.3)
+
+        self.port_list.itemClicked.connect(self.addList)
+        self.connected_port_list.itemClicked.connect(self.removeList)
+
+    def setDetail(self, port):
+        self.type.setCurrentIndex(self.type.findText(port.type))
+        #self.vtype.setCurrentIndex(self.vtype.findText(port.vtype))
+
+        self.updateList()
+
+    def updateList(self):
+        self.port_list.clear()
+        self.connected_port_list.clear()
+
+        port = self.context.main.selected_node
+        for p in self.context.main.ports:
+            if p.type != "unload" or p.id == port.id:
+                continue
+            fail = True
+
+            for unload_ports in port.unload_list:
+                if p.id == int(unload_ports):
+                    self.connected_port_list.addItem(str(p.id) + '\n' + p.name)
+                    fail = False
+
+            if fail:
+                self.port_list.addItem(str(p.id) + '\n' + p.name)
+
+    def addList(self):
+        selected_id, selected_name = self.port_list.currentItem().text().split('\n')
+
+        if selected_id:
+            self.context.main.selected_node.unload_list.append(selected_id)
+            self.updateList()
+
+    def removeList(self):
+        selected_id, selected_name = self.connected_port_list.currentItem().text().split('\n')
+
+        if selected_id:
+            self.context.main.selected_node.unload_list.remove(selected_id)
+            self.updateList()
+
 class DetailWaitPoint(Detail):
     def __init__(self, context, parent):
         super(DetailWaitPoint, self).__init__(context, parent)
+
+    def setDetail(self, obj):
+        pass
 
 class SideBar(QWidget):
     def __init__(self, context, parent):
@@ -185,5 +245,6 @@ class SideBar(QWidget):
         self.details[idx].show()
 
     def setDetail(self, obj):
-        self.details[self.current].x.setText(str(obj.x))
-        self.details[self.current].y.setText(str(obj.y))
+        self.details[self.current].x.setText(str(obj.point.x()))
+        self.details[self.current].y.setText(str(obj.point.y()))
+        self.details[self.current].setDetail(obj)
