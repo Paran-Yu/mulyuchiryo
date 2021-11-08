@@ -69,8 +69,8 @@ class Vehicle:
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].x
-            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].y
+            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].X
+            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].Y
                 
 
     def turn(self, NODE_LIST):
