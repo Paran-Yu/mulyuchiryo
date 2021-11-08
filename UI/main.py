@@ -27,26 +27,31 @@ class MainPage(QWidget):
 
         self.zoom = QPointF()
         self.ctrl_pressed = False
+        self.shift_pressed = False
         self.mouse_left = False
         self.node_selected = False
+        self.draw_path = False
 
         self.tools = [
-            "path",
+            "node",
             "port",
             "wait_point",
+            "path",
             "vehicle",
             "mouse",
         ]
-        self.current_tool = 4
-        self.paths = []
+        self.current_tool = 5
+        self.nodes = []
         self.ports = []
         self.wait_points = []
+        self.paths = []
         self.vehicles = []
 
         self.positions = [
-            self.paths,
+            self.nodes,
             self.ports,
             self.wait_points,
+            self.paths,
             self.vehicles,
         ]
 
@@ -128,9 +133,9 @@ class MainPage(QWidget):
         btn_open_layout.clicked.connect(self.openLayout)
 
         # draw
-        btn_path = QPushButton("Path", self.sub_menu_wrapper)
-        btn_path.toggled.connect(lambda: self.changeTools(0))
-        btn_path.setCheckable(True)
+        btn_node = QPushButton("Node", self.sub_menu_wrapper)
+        btn_node.toggled.connect(lambda: self.changeTools(0))
+        btn_node.setCheckable(True)
 
         btn_port = QPushButton("Port", self.sub_menu_wrapper)
         btn_port.toggled.connect(lambda: self.changeTools(1))
@@ -139,6 +144,10 @@ class MainPage(QWidget):
         btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
         btn_wait_point.toggled.connect(lambda: self.changeTools(2))
         btn_wait_point.setCheckable(True)
+
+        btn_path = QPushButton("Path", self.sub_menu_wrapper)
+        btn_path.toggled.connect(lambda: self.changeTools(3))
+        btn_path.setCheckable(True)
 
         self.subMenus = [
             # file
@@ -153,9 +162,10 @@ class MainPage(QWidget):
             ],
             # draw
             [
-                btn_path,
+                btn_node,
                 btn_port,
                 btn_wait_point,
+                btn_path,
             ],
             # vehicle
             [
@@ -224,6 +234,7 @@ class MainPage(QWidget):
         self.canvas_label = QLabel(self.centralWidget)
         self.canvas_label.resize(self.rect.width(), self.rect.height() - height)
         self.image_original = None
+        self.canvas_prev = None
 
         # 객체들의 정보를 수정, 확인할 수 있는 사이드바 생성
         self.side_bar = SideBar(self.context, self.centralWidget)
@@ -244,7 +255,7 @@ class MainPage(QWidget):
                 if btn.isChecked():
                     return
 
-            self.current_tool = 4
+            self.current_tool = 5
 
     # 기존 작업 불러오기
     def load(self):
@@ -285,10 +296,16 @@ class MainPage(QWidget):
         if e.key() == Qt.Key_Control:
             self.ctrl_pressed = True
 
+        if e.key() == Qt.Key_Shift:
+            self.shift_pressed = True
+
     # 키보드 떼는 이벤트
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_Control:
             self.ctrl_pressed = False
+
+        if e.key() == Qt.Key_Shift:
+            self.shift_pressed = False
 
     # 휠 이벤트
     def wheelEvent(self, e):
@@ -317,53 +334,44 @@ class MainPage(QWidget):
                 nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
                 ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
                      * self.canvas.height() / self.canvas_label.height()
+                # path 메뉴인 경우, 선을 미리 보여줌.
+                if self.draw_path:
+                    self.canvas_prev = QImage(self.canvas)
+                    qp = QPainter(self.canvas_prev)
 
-                self.selected_node.point.setX(nx)
-                self.selected_node.point.setY(ny)
+                    qp.setPen(QPen(QColor(0, 0, 0), 10))
+                    qp.drawLine(self.selected_node.point.x(), self.selected_node.point.y(), nx, ny)
 
-                self.side_bar.widget.show()
+                    qp.end()
 
-                self.side_bar.setDetail(self.selected_node)
+                else:
+                    # 쉬프트를 누르고 끌 경우, 직선상으로 이동
+                    if self.shift_pressed:
+                        dx = abs(self.sp.x() - nx)
+                        dy = abs(self.sp.y() - ny)
 
+                        if dx < dy:
+                            self.selected_node.point.setX(self.sp.x())
+                            self.selected_node.point.setY(ny)
+                        else:
+                            self.selected_node.point.setX(nx)
+                            self.selected_node.point.setY(self.sp.y())
+                    else:
+                        self.selected_node.point.setX(nx)
+                        self.selected_node.point.setY(ny)
 
+                    self.side_bar.widget.show()
 
-        '''
-        끌기 작업에서 불필요하다고 판단해서 주석처리.
-        나중에 필요할 지도 몰라서 냅둠
-        elif not self.ctrl_pressed:
-            # path 그리기 도구일 때 왼쪽 마우스 처리.
-            # TODO: move this for mousePressEvent. (We don't need draw line.)
-            if self.mouse_left and self.current_tool == "path":
-                # TODO: Paint at another label.
-                #qp = QPainter(self.image_original)
-                qp = QPainter(self.canvas)
-
-                # TODO: Change the Pen Size to Fit the Screen Size.
-                qp.setPen(QPen(QColor(0, 0, 0), 15))
-                #nx = (e.x() - self.img_label.x()) * self.image_original.width() / self.img_label.width()
-                #ny = (e.y() - self.img_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height)\
-                #     * self.image_original.height() / self.img_label.height()
-
-                nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
-                ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
-                     * self.canvas.height() / self.canvas_label.height()
-
-                qp.drawPoint(nx, ny)
-
-                # TODO: erase above drawPoint and draw all paths, ports, vehicles in paintEvent.
-                self.paths.append(QPoint(nx, ny))
-                qp.end()
-                self.drawCanvas()
-        '''
+                    self.side_bar.setDetail(self.selected_node)
 
     # 모든 객체들을 화면에 그림.
     def drawCanvas(self):
-        for path in self.paths:
+        for node in self.nodes:
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 0), 15))
-            qp.drawPoint(path.point)
-            qp.drawEllipse(path.point, 4, 4)
+            qp.drawPoint(node.point)
+            qp.drawEllipse(node.point, 4, 4)
 
             qp.end()
         for port in self.ports:
@@ -381,6 +389,14 @@ class MainPage(QWidget):
 
             qp.setPen(QPen(QColor(0, 0, 255), 15))
             qp.drawPoint(wait_point.point)
+
+            qp.end()
+
+        for edge in self.paths:
+            qp = QPainter(self.canvas)
+
+            qp.setPen(QPen(QColor(0, 0, 0), 10))
+            qp.drawLine(edge.start, edge.end)
 
             qp.end()
         # TODO: Add Ports, Wait Points and Vehicles
@@ -411,14 +427,20 @@ class MainPage(QWidget):
                     self.node_selected = True
                     # select clicked node.
                     type, idx = self.selector.selectNode(nx, ny)
-                    self.selected_node = self.positions[type][idx]
 
-                    self.side_bar.widget.show()
-                    self.side_bar.getDetail(type)
-                    self.side_bar.setDetail(self.selected_node)
+                    if idx != -1:
+                        self.selected_node = self.positions[type][idx]
+                        self.sp = QPoint(self.selected_node.point.x(), self.selected_node.point.y())
+
+                        self.side_bar.widget.show()
+                        self.side_bar.getDetail(type)
+                        self.side_bar.setDetail(self.selected_node)
+
+                        if self.tools[self.current_tool] == "path":
+                            self.draw_path = True
 
                 # 그리기 도구일 때 좌표를 찾아서 저장.
-                elif self.tools[self.current_tool] != "mouse":
+                elif self.tools[self.current_tool] not in ["mouse", "path"]:
                     '''self.mouse_left and '''
                     self.node_selected = True
                     nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
@@ -430,6 +452,8 @@ class MainPage(QWidget):
                     self.selected_node = p(self.count, QPoint(nx, ny))
                     self.positions[self.current_tool].append(self.selected_node)
                     self.drawCanvas()
+
+                    self.sp = QPoint(nx, ny)
 
                     self.side_bar.widget.show()
                     self.side_bar.getDetail(self.current_tool)
@@ -445,12 +469,43 @@ class MainPage(QWidget):
                 self.side_bar.widget.show()
             else:
                 self.side_bar.widget.hide()
-            pass
 
     # 마우스 해제 이벤트
     def mouseReleaseEvent(self, e):
         self.mouse_left = False
         self.node_selected = False
+        self.draw_path = False
+
+        # 노드와 노드를 정상적으로 연결하면, Edge를 등록함.
+        if self.tools[self.current_tool] == "path" and self.canvas_prev:
+            self.canvas_prev = None
+            nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
+            ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
+                 * self.canvas.height() / self.canvas_label.height()
+
+            if self.canvas.pixel(nx, ny) != 0x00ffffff:
+                type, idx = self.selector.selectNode(nx, ny)
+
+                start = self.selected_node
+                end = self.positions[type][idx]
+
+                # 쉬프트를 누른 경우, 두 노드가 직선상에 있도록 만듬.
+                if self.shift_pressed:
+                    dx = abs(start.point.x() - nx)
+                    dy = abs(start.point.y() - ny)
+
+                    if dx < dy:
+                        end.point.setX(start.point.x())
+                    else:
+                        end.point.setY(start.point.y())
+
+                    # 노드의 위치가 변경될 수 있으므로, 화면을 지워줌.
+                    self.eraseCanvas()
+
+                edge = Edge(start.point, end.point)
+                self.paths.append(edge)
+
+                self.drawCanvas()
 
     # 화면 갱신 이벤트
     def paintEvent(self, event):
@@ -467,6 +522,11 @@ class MainPage(QWidget):
             pixmap = QPixmap(self.canvas_scaled)
             self.canvas_label.setPixmap(pixmap)
 
+            # path의 미리보기가 있다면 보여줌.
+            if self.canvas_prev:
+                pixmap = QPixmap(self.canvas_prev.scaled(self.canvas_label.width(), self.canvas_label.height()))
+                self.canvas_label.setPixmap(pixmap)
+
 # 테스트를 위한 임시 클래스
 class p:
     def __init__(self, id, p, t="unload", name="NODE"):
@@ -476,6 +536,12 @@ class p:
         self.name = name
         # port 클래스에서 연결된 unload 포트를 관리하기 위함.
         self.unload_list = []
+
+class Edge:
+    def __init__(self, start, end):
+        self.id = id
+        self.start = start
+        self.end = end
 
 # Run App.
 if __name__ == '__main__':
