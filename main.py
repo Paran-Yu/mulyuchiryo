@@ -50,12 +50,19 @@ def read_map():
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate():
-    simulator.simulate(simulate_speed, port_list, wait_list, vehicle_list)
-    simulate_routine()
+    # simulation 초기화
+    simulator.simulate_init(simulate_speed, port_list, wait_list, vehicle_list)
+    # 반복 루틴 실행
+    simulate_routine(vehicle_list)
 
 
 # simulate_speed마다 루틴 실행
 def simulate_routine():
+    # Vehicle 동작
+
+    # Port 업데이트
+
+    # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_routine()).start()
 
 
@@ -63,4 +70,3 @@ def simulate_routine():
 # Test용 main
 if __name__ == "__main__":
     read_map()
-    
