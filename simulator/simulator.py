@@ -1,7 +1,7 @@
 import random
 
-# main func of simulator
-def simulate(simulate_speed, port_list, wait_list, vehicle_list):
+# simulate 초기화
+def simulate_init(simulate_speed, port_list, wait_list, vehicle_list):
     port_init(port_list)
     pass
 
