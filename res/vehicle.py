@@ -32,6 +32,7 @@ class Vehicle:
         self.status = 0
         self.loaded = 0
         self.battery = -1
+        self.cmd = ""
         self.path = []  # 각 노드(경유지)가 object일지 좌표일지 정해야할듯
         self.command_list = []
         self.count = 0

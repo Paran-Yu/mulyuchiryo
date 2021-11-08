@@ -6,9 +6,10 @@ def simulate_init(port_list, wait_list, vehicle_list):
     wait_init(wait_list, vehicle_list)
 
 # simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(port_list, wait_list, vehicle_list):
+def simulate_routine(node_list, port_list, vehicle_list):
     print("routine start")
     port_update(port_list)
+    vehicle_update(node_list, vehicle_list)
 
 
 # PORT
@@ -35,3 +36,18 @@ def wait_init(wait_list, vehicle_list):
         used_wait.using = True
 
 # VEHICLE
+def vehicle_update(node_list, vehicle_list):
+    for vehicle in vehicle_list:
+        # status와 현재 받은 cmd는 분리
+        # load
+        if vehicle.cmd == 22:
+            pass
+        # unload
+        elif vehicle.cmd == 21:
+            pass
+        # wait
+        elif vehicle.cmd == 20:
+            pass
+        # charge
+        elif vehicle.cmd == 23:
+            pass
