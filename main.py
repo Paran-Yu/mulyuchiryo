@@ -51,22 +51,21 @@ def read_map():
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate():
     # simulation 초기화
-    simulator.simulate_init(simulate_speed, port_list, wait_list, vehicle_list)
-    # 반복 루틴 실행
-    simulate_routine(vehicle_list)
+    simulator.simulate_init(port_list, wait_list, vehicle_list)
+    # 시뮬레이션 무한 루프 실행
+    simulate_loop()
 
 
 # simulate_speed마다 루틴 실행
-def simulate_routine():
-    # Vehicle 동작
-
-    # Port 업데이트
-
+# TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
+def simulate_loop():
+    simulator.simulate_routine(port_list, wait_list, vehicle_list)
     # simulate_speed마다 루틴 함수를 새로 수행
-    threading.Timer(simulate_speed, simulate_routine()).start()
+    threading.Timer(simulate_speed, simulate_loop).start()
 
 
 #######################
 # Test용 main
 if __name__ == "__main__":
     read_map()
+    start_simulate()

@@ -1,9 +1,15 @@
 import random
 
 # simulate 초기화
-def simulate_init(simulate_speed, port_list, wait_list, vehicle_list):
+def simulate_init(port_list, wait_list, vehicle_list):
     port_init(port_list)
-    pass
+    wait_init(wait_list, vehicle_list)
+
+# simulate_speed초 마다 한번씩 호출된다.
+def simulate_routine(port_list, wait_list, vehicle_list):
+    print("routine start")
+    port_update(port_list)
+
 
 # PORT
 # port의 time cnt를 0~FREQ 사이의 랜덤값으로 지정
@@ -23,5 +29,8 @@ def port_update(port_list):
                 x.count = 0
 
 # WAIT POINT
+def wait_init(wait_list, vehicle_list):
+    pass
+
 
 # VEHICLE
