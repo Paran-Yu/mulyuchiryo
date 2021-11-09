@@ -36,6 +36,8 @@ class Vehicle:
         self.path = []
         self.turn_flag = 0
         self.turning = -1
+        self.dAngle = 0
+        self.desti_angle = 0
         self.count = 0
         self.dCharge = 0
 
@@ -83,27 +85,48 @@ class Vehicle:
             self.path.pop(0)
 
 
-    def turn(self):
+    def turn(self, node_list):
         # 1. 회전 방향 결정
         if self.turning == 0:
-            pass
+            next_node = node_list[self.path[0] - 1].getPos()
+            nextnext_node = node_list[self.path[1] - 1].getPos()
+            dx = next_node[0] - self.x
+            dy = next_node[1] - self.y
+            dx1 = nextnext_node[0] - next_node[0]
+            dy1 = nextnext_node[1] - next_node[1]
+            old_angle = self.getAngle(dx, dy)
+            new_angle = self.getAngle(dx1, dy1)
+            self.desti_angle = new_angle
+            self.dAngle = new_angle - old_angle
+            if self.dAngle > 180:
+                self.dAngle = 360 - self.dAngle
+            elif self.dAngle < -180:
+                self.dAngle = 360 + self.dAngle
 
+            if self.dAngle > 0:
+                # CW
+                self.turning == 1
+            else:
+                # CCW
+                self.turning == 2
+
+        # 2. 실제 회전
         # CW
-
+        if self.turning == 1:
+            self.angle += self.ROTATE_SPEED
+            if self.angle >= 360:
+                self.angle -= 360
         # CCW
-        self.angle += (self.ROTATE_SPEED)    # 초
-            
-        # 360 == 0 보정
-        if 360 < self.angle:
-            self.angle -= 360
-        elif self.angle < 0:
-            self.angle += 360
+        elif self.turning == 2:
+            self.angle -= self.ROTATE_SPEED
+            if self.angle < 0:
+                self.angle += 360
 
-        # turn 완료시 관련 값 reset
-        self.turn_flag = 0
-        self.turning = -1
-        
-
+        # 3. turn 완료 근사 및  관련 값 reset
+        if abs(self.angle - self.desti_angle) < 18:
+            self.angle = self.desti_angle
+            self.turn_flag = 0
+            self.turning = -1
 
     def getNode(self):
         return self.node
@@ -133,13 +156,11 @@ class Vehicle:
         else:
             return False
 
-    def getAngle(self, destination):
-        radian = atan2(destination.y - self.y, destination.x - self.x)
+    def get_angle(self, dx, dy):
+        radian = atan2(dx, -dy)
         degree = degrees(radian)
-        if degree > 0:
-            degree -= 360
-        degree = abs(degree)
-        degree = (degree+90) % 360
+        if degree < 0:
+            degree += 360
         return degree
 
     def vehicle_routine(self, node_list):
