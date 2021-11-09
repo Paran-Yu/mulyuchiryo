@@ -141,6 +141,7 @@ class RotatingRectangle(patches.Rectangle):
 
 vehicle_rects = []
 vehicle_texts = []
+vehicle_arrows = []
 
 # 차량
 for vehicle in vehicle_list:
@@ -155,10 +156,17 @@ for vehicle in vehicle_list:
         facecolor = 'purple',
         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
     )
+    vehicle_arrow = patches.FancyArrowPatch(
+        (vehicle.x, vehicle.y), 
+        (vehicle.x, vehicle.y-vehicle.HEIGHT),
+        mutation_scale=15
+    )
     # print(vehicle_rect.xy)
     ax.add_patch(vehicle_rect)
+    ax.add_patch(vehicle_arrow)
     vehicle_rects.append(vehicle_rect)
     vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
+    vehicle_arrows.append(vehicle_arrow)
     pass
 
 plt.pause(1)
@@ -177,6 +185,9 @@ while True:
         # print(vehicle.path, vehicle.status)
         # break
 
+    def AngleToMfc(degree):
+        return (degree+270)%360
+
     #  전에 있던 것 업데이트 해주기
     for i in range(len(vehicle_rects)):
         # print(vehicle_rects[i])
@@ -185,6 +196,9 @@ while True:
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_texts[i].set_text(vehicle_list[i].velocity)
+        x = vehicle_list[i].x + vehicle.HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle.angle))
+        y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
+        vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x, y))
         # print(vehicle_rects[i])
 
     plt.pause(1)
