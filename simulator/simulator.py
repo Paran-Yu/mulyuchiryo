@@ -38,7 +38,11 @@ def wait_init(wait_list, vehicle_list):
 # VEHICLE
 def vehicle_update(node_list, vehicle_list):
     for vehicle in vehicle_list:
-        # status와 현재 받은 cmd는 분리
+        # 1. 충돌 체크
+        # n^2이 되는데 반드시 필요한지 검토 필요
+
+        # 2. 명령 수행
+        # status와 현재 받은 cmd를 분리
         # load
         if vehicle.cmd == 22:
             pass
@@ -51,3 +55,7 @@ def vehicle_update(node_list, vehicle_list):
         # charge
         elif vehicle.cmd == 23:
             pass
+
+
+def move_vehicle(vehicle):
+    pass
