@@ -191,87 +191,86 @@ class Vehicle:
         return degree
 
     def threadFunc(self, NODE_LIST):
-        while True:
-            # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
+        # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
 
-            # 로직 설명
-            # 중요한 2가지 변수: status, path(node, desti_node 포함함)
-            # Core에서 명령이 내려오면 path, status 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
-            # status와 path에 따라 차량은 이동을 시작하며
-            # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
-            # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
-            # 대기인 경우 명령을 받을 수 있음
+        # 로직 설명
+        # 중요한 2가지 변수: status, path(node, desti_node 포함함)
+        # Core에서 명령이 내려오면 path, status 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
+        # status와 path에 따라 차량은 이동을 시작하며
+        # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
+        # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
+        # 대기인 경우 명령을 받을 수 있음
 
-            # 초기상태 / 대기 / 물건 들고 대기
-            if self.status == 00 or self.status == 10 or self.status == 11:
-                self.count += 1
-                if self.count >= 5:
-                    # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
-                    self.count = 0
-                    # Core에 알림!
-                    pass
-                # 대기 배터리 방전
-                self.battery -= self.DISCHARGE_WAIT
-
-            # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
-            elif self.status in [20, 21, 22, 23]:
-
-                # 현재 경유지에 도착했다면
-                if self.getPos() == [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos():
-                    self.node = self.path.pop(0)    # node 갱신, path에서 삭제
-
-                # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
-                if self.path.length == 0:
-                    if self.status == 20:
-                        self.status = 10    # WAITING
-                    elif self.status == 21: 
-                        self.status = 40    # UNLOAD
-                    elif self.status == 22:
-                        self.status = 30    # LOAD
-                    elif self.status == 23:
-                        self.status = 80    # CHARGING
-                
-                # 목적지가 있다면 회전 & 가감속
-                else:
-                    angle_diff = self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
-                    if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                        self.move(NODE_LIST)
-                    else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
-                        self.turn(NODE_LIST)
-                    
-                self.battery -= self.DISCHARGE_WORK
-
-            # LOAD
-            elif self.status == 30:
-                self.load(NODE_LIST)
-                self.battery -= self.DISCHARGE_WORK
-                
-            # UNLOAD
-            elif self.status == 40:
-                self.unload(NODE_LIST)
-                self.battery -= self.DISCHARGE_WORK
-            
-            # 충전 / 물건 들고 충전
-            elif self.status == 80 or self.status == 81:
-                charger = [node for node in NODE_LIST if node.NUM == self.node()][0]
-                # 충전소가 충전이 가능한 상태인가?
-                pass    # 다른 차량과 충돌한게 아니라면 충전소에는 제약이 없는 것으로 알고 있음
-                # 충전기를 충전중 상태로 전환
-                charger.using = True
-                # 배터리 충전
-                self.battery += self.CHARGE_SPEED
-                # 배터리 과충전 불가, 충전 종료?
-                if self.battery >= 100:
-                    self.battery = 100
-                    # 충전 완료 됐다고 Core에 알리기
-                    pass
-                    # 충전 완료 했으니 충전기로 부터 해제
-                    charger.using = False
-                    # 대기로 status 전환
-                    self.status = 10
-
-
-            # 에러
-            elif self.status == 91 or self.status == 99:
+        # 초기상태 / 대기 / 물건 들고 대기
+        if self.status == 00 or self.status == 10 or self.status == 11:
+            self.count += 1
+            if self.count >= 5:
+                # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
+                self.count = 0
+                # Core에 알림!
                 pass
+            # 대기 배터리 방전
+            self.battery -= self.DISCHARGE_WAIT
+
+        # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
+        elif self.status in [20, 21, 22, 23]:
+
+            # 현재 경유지에 도착했다면
+            if self.getPos() == [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos():
+                self.node = self.path.pop(0)    # node 갱신, path에서 삭제
+
+            # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
+            if self.path.length == 0:
+                if self.status == 20:
+                    self.status = 10    # WAITING
+                elif self.status == 21: 
+                    self.status = 40    # UNLOAD
+                elif self.status == 22:
+                    self.status = 30    # LOAD
+                elif self.status == 23:
+                    self.status = 80    # CHARGING
             
+            # 목적지가 있다면 회전 & 가감속
+            else:
+                angle_diff = self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
+                if angle_diff==0:   # 현재 목적지를 향해 보고 있다
+                    self.move(NODE_LIST)
+                else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
+                    self.turn(NODE_LIST)
+                
+            self.battery -= self.DISCHARGE_WORK
+
+        # LOAD
+        elif self.status == 30:
+            self.load(NODE_LIST)
+            self.battery -= self.DISCHARGE_WORK
+            
+        # UNLOAD
+        elif self.status == 40:
+            self.unload(NODE_LIST)
+            self.battery -= self.DISCHARGE_WORK
+        
+        # 충전 / 물건 들고 충전
+        elif self.status == 80 or self.status == 81:
+            charger = [node for node in NODE_LIST if node.NUM == self.node()][0]
+            # 충전소가 충전이 가능한 상태인가?
+            pass    # 다른 차량과 충돌한게 아니라면 충전소에는 제약이 없는 것으로 알고 있음
+            # 충전기를 충전중 상태로 전환
+            charger.using = True
+            # 배터리 충전
+            self.battery += self.CHARGE_SPEED
+            # 배터리 과충전 불가, 충전 종료?
+            if self.battery >= 100:
+                self.battery = 100
+                # 충전 완료 됐다고 Core에 알리기
+                pass
+                # 충전 완료 했으니 충전기로 부터 해제
+                charger.using = False
+                # 대기로 status 전환
+                self.status = 10
+
+
+        # 에러
+        elif self.status == 91 or self.status == 99:
+            pass
+        
