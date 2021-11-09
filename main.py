@@ -68,7 +68,7 @@ imgplot = plt.imshow(img)
 # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
 for node in node_list:
     plt.plot(node.X, node.Y, 'ro')
-    plt.text(node.X, node.Y, node.NUM, fontsize=8)
+    plt.text(node.X, node.Y, f'{node.X, node.Y}', fontsize=8)
 # plt.text([node.X for node in node_list],[node.Y for node in node_list], str([node.NUM for node in node_list][0]))
 # 도로
 # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
@@ -150,10 +150,11 @@ while True:
 
     # 이동 명령
     for vehicle in vehicle_list:
-        print(vehicle)
-        vehicle.command([26], 20)
+        # print(vehicle)
+        vehicle.command([3], 20)
         vehicle.move(node_list)
-        print(vehicle.path, vehicle.status)
+        print(vehicle.velocity, (vehicle.x, vehicle.y))
+        # print(vehicle.path, vehicle.status)
         # break
 
 
@@ -178,13 +179,13 @@ while True:
 
     # 2) 전에 있던 것 업데이트 해주기
     for i in range(len(vehicle_rects)):
-        print(vehicle_rects[i])
-        print(vehicle_list[i], vehicle_list[i].getPos())
+        # print(vehicle_rects[i])
+        # print(vehicle_list[i], vehicle_list[i].getPos())
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_texts[i].set_text(vehicle_list[i].velocity)
-        print(vehicle_rects[i])
+        # print(vehicle_rects[i])
 
     plt.pause(1)
     # break
