@@ -66,8 +66,7 @@ imgplot = plt.imshow(img)
 # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
 for node in node_list:
     plt.plot(node.X, node.Y, 'ro')
-    plt.text(node.X, node.Y, f'{node.X, node.Y}', fontsize=8)
-# plt.text([node.X for node in node_list],[node.Y for node in node_list], str([node.NUM for node in node_list][0]))
+    plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8)
 # 도로
 # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
 for path in path_list:
@@ -82,16 +81,10 @@ for path in path_list:
     else:                   # Y축 동일 -> 수평
         plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
-# plt.show()
-# plt.plot()
-# plt.draw()
-# fig = plt.figure()
-
 ax = plt.gca()
 plt.pause(1)
 
 # 여기서부터는 병렬처리 쓰레드의 적용을 받아야할 것 같다.
-
 
 # 기존 Rectangle은 회전시 중심 기준이 아니라서 어려움, https://stackoverflow.com/questions/60413174/rotating-rectangles-around-point-with-matplotlib
 class RotatingRectangle(patches.Rectangle):
@@ -122,6 +115,7 @@ class RotatingRectangle(patches.Rectangle):
 
 vehicle_rects = []
 vehicle_texts = []
+
 # 차량
 for vehicle in vehicle_list:
     # print(vehicle.x, vehicle.y)
@@ -141,41 +135,23 @@ for vehicle in vehicle_list:
     vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
     pass
 
-# print(vehicle_rects)
 plt.pause(1)
+
+vehicle_list[0].command([26], 20)
+vehicle_list[1].command([28], 20)
+vehicle_list[2].command([30], 20)
 
 while True:
 
     # 이동 명령
     for vehicle in vehicle_list:
         # print(vehicle)
-        vehicle.command([3], 20)
         vehicle.move(node_list)
         print(vehicle.velocity, (vehicle.x, vehicle.y))
         # print(vehicle.path, vehicle.status)
         # break
 
-
-    # 이동했다 치고 다시 보여주려면
-    # # 1) 전에 있던 걸 지우고 새로 그리기(지우는 방법을 모르겠음)
-    # for vehicle in vehicle_list:
-    #     vehicle.x, vehicle.y = vehicle.y, vehicle.x
-    #     # print(vehicle.x, vehicle.y)
-    #     vehicle_rect = RotatingRectangle(
-    #         [vehicle.x, vehicle.y],
-    #         vehicle.WIDTH,
-    #         vehicle.HEIGHT,
-    #         angle=vehicle.angle,
-    #         fill=True,
-    #         edgecolor = 'blue',
-    #         facecolor = 'purple',
-    #         rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
-    #     )
-    #     ax.add_patch(vehicle_rect)
-    #     pass
-
-
-    # 2) 전에 있던 것 업데이트 해주기
+    #  전에 있던 것 업데이트 해주기
     for i in range(len(vehicle_rects)):
         # print(vehicle_rects[i])
         # print(vehicle_list[i], vehicle_list[i].getPos())
@@ -187,15 +163,3 @@ while True:
 
     plt.pause(1)
     # break
-
-
-
-# 이미지 크기 자체를 늘려봤지만 19200x10800은 3MB짜리 이미지가 나온다. 19만은 상상도 안 된다.
-# https://ponyozzang.tistory.com/600
-# from PIL import Image
-
-# img = Image.open('./example.png')
-# img_resize = img.resize((19200, 10800), Image.LANCZOS)  # resizes image in-place
-# img_resize.save('img_resize.png')
-# imgplot = plt.imshow(img)
-# plt.show()
