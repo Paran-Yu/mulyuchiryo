@@ -106,29 +106,41 @@ class Vehicle:
 
     def load(self, NODE_LIST):
         if self.loaded == False:
+            port = [node for node in NODE_LIST if node.NUM == self.node()][0]
             # 포트가 load가능한 상태인지 확인
-            pass
+            if port.status == 0:    # 1, -1일때는 load가능/load중
+                return False
+            # load 중으로 전환
+            port.status = -1
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                [node for node in NODE_LIST if node.NUM == self.node()][0].LOAD()  # PORT.LOAD() 메서드 필요
+                # 포트 load 완료, status 업데이트
+                port.status = 0
                 # 대기 상태로 전환
                 self.status = 11
                 self.loaded = 1
+                # Core에 load된 차량 있다고 알림
         else:
             return False
 
     def unload(self, NODE_LIST):
         if self.loaded:
+            port = [node for node in NODE_LIST if node.NUM == self.node()][0]
             # 포트가 unload가능한 상태인지 확인
-            pass
+            if port.status == 0:    # 1, -1일때는 load가능/load중
+                return False
+            # unload 중으로 전환
+            self.status = -1
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                [node for node in NODE_LIST if node.NUM == self.node()][0].UNLOAD()    # PORT.UNLOAD() 메서드 필요
+                # 포트 unload 완료, status 업데이트
+                port.status = 0
                 # 대기 상태로 전환
                 self.status = 10
                 self.loaded = 0
+                # Core에 unload된 차량 있다고 알림
         else:
             return False
 
@@ -241,18 +253,22 @@ class Vehicle:
             
             # 충전 / 물건 들고 충전
             elif self.status == 80 or self.status == 81:
+                charger = [node for node in NODE_LIST if node.NUM == self.node()][0]
                 # 충전소가 충전이 가능한 상태인가?
                 pass    # 다른 차량과 충돌한게 아니라면 충전소에는 제약이 없는 것으로 알고 있음
                 # 충전기를 충전중 상태로 전환
-                [node for node in NODE_LIST if node.NUM == self.node()][0].CHARGE()
+                charger.using = True
                 # 배터리 충전
                 self.battery += self.CHARGE_SPEED
                 # 배터리 과충전 불가, 충전 종료?
                 if self.battery >= 100:
                     self.battery = 100
                     # 충전 완료 됐다고 Core에 알리기
+                    pass
                     # 충전 완료 했으니 충전기로 부터 해제
+                    charger.using = False
                     # 대기로 status 전환
+                    self.status = 10
 
 
             # 에러
