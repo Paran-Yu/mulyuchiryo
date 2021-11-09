@@ -73,9 +73,6 @@ def simulate_loop():
 if __name__ == "__main__":
     read_map()
     start_simulate()
-<<<<<<< HEAD
-
-
 
 # 1920x1080, example.xml scale=1로 조정하고 했습니다.
 print(img, map_data, vehicle_list)
@@ -192,5 +189,3 @@ while True:
 
     plt.pause(1)
     # break
-=======
->>>>>>> develop
