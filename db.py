@@ -58,18 +58,20 @@ class DB:
 
         cur.commit()
 
+    def db_clear(self):
+        cur = self.db.cursor()
+        cur.execute("DROP table scene")
+        cur.execute("DROP table vehicle")
+        cur.execute("DROP table command")
 
     def get_vehicle_work(self):
         pass
 
-
     def get_vehicle_charge(self):
         pass
 
-
     def get_total_work(self):
         pass
-
 
     def get_node_freq(self):
         pass
