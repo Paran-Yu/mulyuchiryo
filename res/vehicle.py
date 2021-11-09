@@ -1,9 +1,5 @@
-from time import sleep
 from math import atan2, degrees, isclose, sqrt, dist
 
-PORT_LIST = []
-NODE_LIST = []
-TIME = 1
 
 class Vehicle:
     def __init__(self, name):
@@ -32,8 +28,7 @@ class Vehicle:
         self.status = 0
         self.loaded = 0
         self.battery = -1
-        self.path = []  # 각 노드(경유지)가 object일지 좌표일지 정해야할듯
-        self.command_list = []
+        self.path = []
         self.count = 0
 
     # new_node로 이동
@@ -46,11 +41,10 @@ class Vehicle:
             return True
         else:
             # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
-            pass
             return False
 
-    def move(self):
-        coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
+    def move(self, NODE_LIST):
+        coord_diff = tuple(map(lambda i, j: i - j, [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos(), self.getPos()))
         # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
         if isclose(coord_diff[0], 0):
             distance = coord_diff[1]
@@ -75,34 +69,32 @@ class Vehicle:
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
         if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].x
-            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].y
+            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].X
+            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].Y
                 
 
-    def turn(self):
-        # 각도 차이에 따라 더할지 뺄지 로직 필요
-        if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
+    def turn(self, NODE_LIST):
+        if self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
             if 0 < self.angle <= 180:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 180 < self.angle < 360:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
             if 90 < self.angle <= 270:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 270 < self.angle or self.angle < 90:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
             if 180 < self.angle < 360:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 0 <= self.angle < 180:
                 self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
+        elif self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
             if 270 < self.angle or self.angle <= 90:
                 self.angle -= (self.ROTATE_SPEED)    # 초
             elif 90 < self.angle < 270:
                 self.angle += (self.ROTATE_SPEED)    # 초
-            
-        # 360도는 0도다
+
         if 360 < self.angle:
             self.angle -= 360
         elif self.angle < 0:
@@ -112,31 +104,43 @@ class Vehicle:
         # if (angle_diff%360) 
         # self.angle += (self.ROTATE_SPEED)    # 초
 
-    def load(self, port_num):
+    def load(self, NODE_LIST):
         if self.loaded == False:
+            port = [node for node in NODE_LIST if node.NUM == self.node()][0]
             # 포트가 load가능한 상태인지 확인
-            pass
+            if port.status == 0:    # 1, -1일때는 load가능/load중
+                return False
+            # load 중으로 전환
+            port.status = -1
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[port_num].LOAD()
+                # 포트 load 완료, status 업데이트
+                port.status = 0
                 # 대기 상태로 전환
                 self.status = 11
                 self.loaded = 1
+                # Core에 load된 차량 있다고 알림
         else:
             return False
 
-    def unload(self, port_num):
+    def unload(self, NODE_LIST):
         if self.loaded:
+            port = [node for node in NODE_LIST if node.NUM == self.node()][0]
             # 포트가 unload가능한 상태인지 확인
-            pass
+            if port.status == 0:    # 1, -1일때는 load가능/load중
+                return False
+            # unload 중으로 전환
+            self.status = -1
             self.count += 1
             if self.count >= 30:
                 self.count = 0
-                PORT_LIST[port_num].UNLOAD()
+                # 포트 unload 완료, status 업데이트
+                port.status = 0
                 # 대기 상태로 전환
                 self.status = 10
                 self.loaded = 0
+                # Core에 unload된 차량 있다고 알림
         else:
             return False
 
@@ -164,7 +168,7 @@ class Vehicle:
     def checkCrash(self, car):
         # 1. self와 car 두 점 사이의 거리 구하기
         # 1) 피타고라스 정리
-        distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
+        # distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
         # 2) math.dist()
         s = [self.x, self.y]
         c = [car.x, car.y]
@@ -175,9 +179,7 @@ class Vehicle:
         else:
             return False
 
-
-
-    def getAngle(self, destination):
+    def getAngleTo(self, destination):
         # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
         # atan2 결과값은 -180~180이므로, 방위각(정북과 타겟좌표 사이의 각도)을 구하자
         radian = atan2(destination.y - self.y , destination.x - self.x)
@@ -188,91 +190,87 @@ class Vehicle:
         degree = (degree+90)%360
         return degree
 
-    # 매 1초마다 실행
-    def threadFunc(self):
-        while True:
-            # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
-            # for i in range(len(CARS_LIST)):
-            #     if self is CARS_LIST[i]: # 이게 될까?
-            #         continue
-            #     crashed = self.checkCrash(CARS_LIST[i])
-            #     if crashed:
-            #         self.status = 91
-            #         return -1   # 종료..?
+    def vehicle_routine(self, NODE_LIST):
+        # 충돌여부 조사 (다른 차량 정보 모두 필요) -> 모든 차량 정보일텐데 본인은 어떻게 제외시킬까?->main.py에서 별도 스레드로 관리
 
-            # 로직 설명
-            # 중요한 3가지 변수: status, path(node, desti_node 포함함), status
-            # Core에서 명령이 내려오면 path, command_list 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
-            # path에 따라 차량은 이동을 시작하며, status를 업데이트함
-            # 목적지에 도착하면 path는 empty하며 command_list에 적힌 명령을 실행함(대기, 충전, L, U 등), status 업데이트
-            # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
-            # 대기인 경우 명령을 받을 수 있음
+        # 로직 설명
+        # 중요한 2가지 변수: status, path(node, desti_node 포함함)
+        # Core에서 명령이 내려오면 path, status 변화됨. (명령은 스레드 초 단위와 상관 없이 전달)
+        # status와 path에 따라 차량은 이동을 시작하며
+        # 목적지에 도착하면 path는 empty하며 status에 적힌 다음 명령을 실행함(대기, 충전, L, U 등), status 업데이트
+        # 해당 명령이 종료되면(충전, L, U 끝), 대기로 전환, status 업데이트
+        # 대기인 경우 명령을 받을 수 있음
 
-
-
-            # 초기상태 / 대기 / 물건 들고 대기
-            if self.status == 00 or self.status == 10 or self.status == 11:
-                # 대기 카운트 += 1초
-                self.count += 1
-                if self.count >= 5: # 5초마다 알림
-                    # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
-                    self.count = 0
-                    # Core에 알림!
-                    pass
-                # 대기 배터리 방전
-                self.battery -= self.DISCHARGE_WAIT
-
-            # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
-            elif self.status in [20, 21, 22, 23]:
-
-                # 현재 경유지에 도착했다면
-                if self.getPos() == [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos():
-                    self.node = self.path.pop(0)    # node 갱신, path에서 삭제
-
-                # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
-                if self.path.length == 0:
-                    if self.status == 20:
-                        self.status = 10    # WAITING
-                    elif self.status == 21: 
-                        self.status = 40    # UNLOAD
-                    elif self.status == 22:
-                        self.status = 30    # LOAD
-                    elif self.status == 23:
-                        self.status = 80    # CHARGING
-                
-                # 목적지가 있다면 회전 & 가감속
-                else:
-                    angle_diff = self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
-                    if angle_diff==0:   # 현재 목적지를 향해 보고 있다
-                        self.move()
-                    else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
-                        self.turn()
-                    
-                # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK
-
-            # LOAD
-            elif self.status == 30:
-                self.load()
-                # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK
-                
-            # UNLOAD
-            elif self.status == 40:
-                self.unload()
-                # 동작 배터리 방전
-                self.battery -= self.DISCHARGE_WORK
-            
-            # 충전 / 물건 들고 충전
-            elif self.status == 80 or self.status == 81:
-                # 배터리 충전
-                self.battery += self.CHARGE_SPEED
-                # 배터리 과충전 불가
-                if self.battery > 100:
-                    self.battery = 100
-                    # 충전 완료 됐다고 Core에 알리기
-
-            # 에러
-            elif self.status == 91 or self.status == 99:
+        # 초기상태 / 대기 / 물건 들고 대기
+        if self.status == 00 or self.status == 10 or self.status == 11:
+            self.count += 1
+            if self.count >= 5:
+                # 예외사항! count가 2일때 명령이 발생하면 count 초기화가 없음-> 명령 메서드에 count 초기화 추가
+                self.count = 0
+                # Core에 알림!
                 pass
+            # 대기 배터리 방전
+            self.battery -= self.DISCHARGE_WAIT
+
+        # 대기를 위해 이동, UNLOAD 위해 이동 중, LOAD 위해 이동, 충전소로 이동
+        elif self.status in [20, 21, 22, 23]:
+
+            # 현재 경유지에 도착했다면
+            if self.getPos() == [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos():
+                self.node = self.path.pop(0)    # node 갱신, path에서 삭제
+
+            # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
+            if self.path.length == 0:
+                if self.status == 20:
+                    self.status = 10    # WAITING
+                elif self.status == 21: 
+                    self.status = 40    # UNLOAD
+                elif self.status == 22:
+                    self.status = 30    # LOAD
+                elif self.status == 23:
+                    self.status = 80    # CHARGING
             
+            # 목적지가 있다면 회전 & 가감속
+            else:
+                angle_diff = self.getAngleTo([node for node in NODE_LIST if node.NUM == self.path[0]][0]) - self.angle
+                if angle_diff==0:   # 현재 목적지를 향해 보고 있다
+                    self.move(NODE_LIST)
+                else:   # 현재 목적지를 보고 있지 않다면, 회전을 해야겠지
+                    self.turn(NODE_LIST)
+                
+            self.battery -= self.DISCHARGE_WORK
+
+        # LOAD
+        elif self.status == 30:
+            self.load(NODE_LIST)
+            self.battery -= self.DISCHARGE_WORK
+            
+        # UNLOAD
+        elif self.status == 40:
+            self.unload(NODE_LIST)
+            self.battery -= self.DISCHARGE_WORK
+        
+        # 충전 / 물건 들고 충전
+        elif self.status == 80 or self.status == 81:
+            charger = [node for node in NODE_LIST if node.NUM == self.node()][0]
+            # 충전소가 충전이 가능한 상태인가?
+            pass    # 다른 차량과 충돌한게 아니라면 충전소에는 제약이 없는 것으로 알고 있음
+            # 충전기를 충전중 상태로 전환
+            charger.using = True
+            # 배터리 충전
+            self.battery += self.CHARGE_SPEED
+            # 배터리 과충전 불가, 충전 종료?
+            if self.battery >= 100:
+                self.battery = 100
+                # 충전 완료 됐다고 Core에 알리기
+                pass
+                # 충전 완료 했으니 충전기로 부터 해제
+                charger.using = False
+                # 대기로 status 전환
+                self.status = 10
+
+
+        # 에러
+        elif self.status == 91 or self.status == 99:
+            pass
+        
