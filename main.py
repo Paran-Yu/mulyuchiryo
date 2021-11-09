@@ -150,7 +150,7 @@ for vehicle in vehicle_list:
         [vehicle.x, vehicle.y],
         vehicle.WIDTH,
         vehicle.HEIGHT,
-        angle=vehicle.angle,   # anti-clockwise angle
+        angle=0,#vehicle.angle,   # anti-clockwise angle
         fill=True,
         edgecolor = 'blue',
         facecolor = 'purple',
@@ -171,16 +171,16 @@ for vehicle in vehicle_list:
 
 plt.pause(1)
 
-vehicle_list[0].command([26], 20)
-vehicle_list[1].command([28], 20)
-vehicle_list[2].command([30], 20)
+vehicle_list[0].command([26,1], 20)
+vehicle_list[1].command([28,1], 20)
+vehicle_list[2].command([30,1], 20)
 
 while True:
 
     # 이동 명령
     for vehicle in vehicle_list:
         # print(vehicle)
-        vehicle.move(node_list)
+        vehicle.vehicle_routine(node_list)
         print(vehicle.velocity, (vehicle.x, vehicle.y))
         # print(vehicle.path, vehicle.status)
         # break
@@ -195,7 +195,7 @@ while True:
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text(vehicle_list[i].velocity)
+        vehicle_texts[i].set_text((vehicle_list[i].velocity, vehicle_list[i].angle))
         x = vehicle_list[i].x + vehicle.HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle.angle))
         y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
         vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x, y))

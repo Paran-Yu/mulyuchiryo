@@ -50,7 +50,7 @@ class Vehicle:
             distance = coord_diff[1]
         else:
             distance = coord_diff[0]
-        if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
+        if distance <= self.getBrakeDis() * 1.2:  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
             self.velocity -= self.ACCEL
         else:
             self.velocity += self.ACCEL
@@ -68,7 +68,7 @@ class Vehicle:
             self.y -= self.velocity
 
         # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
-        if distance <= 0.000001 and self.velocity <= 0.01:
+        if distance <= 10 and self.velocity <= 10:
             self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].X
             self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].Y
                 
@@ -182,7 +182,7 @@ class Vehicle:
     def getAngleTo(self, destination):
         # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
         # atan2 결과값은 -180~180이므로, 방위각(정북과 타겟좌표 사이의 각도)을 구하자
-        radian = atan2(destination.y - self.y , destination.x - self.x)
+        radian = atan2(destination.Y - self.y , destination.X - self.x)
         degree = degrees(radian)
         if degree > 0:
             degree -= 360
@@ -220,7 +220,7 @@ class Vehicle:
                 self.node = self.path.pop(0)    # node 갱신, path에서 삭제
 
             # 더 이상 목적지가 추가적으로 없다면 최종 목적지이므로 다음 명령 확인
-            if self.path.length == 0:
+            if len(self.path) == 0:
                 if self.status == 20:
                     self.status = 10    # WAITING
                 elif self.status == 21: 
