@@ -1,4 +1,4 @@
-from math import atan2, degrees, sqrt, sin, cos
+from math import atan2, degrees, radians, sqrt, sin, cos
 
 PORT_LIST = []
 NODE_LIST = []
@@ -40,26 +40,35 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
+    def command(self, path, cmd):
+        self.path = path
+        self.cmd = cmd
+
     def move(self, node_list):
+        print("move!")
         # 1. 다음 목표 node가 회전하는 node인가
         next_node = node_list[self.path[0] - 1].getPos()
+        dx = next_node[0] - self.x
+        dy = next_node[1] - self.y
+        print("dx, dy: ", dx, dy)
         if len(self.path) == 1:
             # next node가 마지막 목표라면 무조건 멈춤
             self.turn_flag = 1
         else:
             nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx = next_node[0] - self.x
-            dy = next_node[1] - self.y
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
             if dy == dy1 == 0:
                 pass
+            elif dy == 0 or dy1 == 0:
+                self.turn_flag = 1
             elif dx/dy != dx1/dy1:
                 self.turn_flag = 1
 
         # 2. 다음 목표 node와의 거리
         distance = sqrt(dx ** 2 + dy ** 2)
-
+        print("distance: ", distance)
+        print("brake: ", self.getBrakeDis())
         # 3. 회전 여부에 따른 가감속
         if (self.turn_flag == 1) and (distance <= self.getBrakeDis()):
             self.velocity -= self.ACCEL
@@ -69,46 +78,59 @@ class Vehicle:
                 self.velocity = self.MAX_SPEED
 
         # 4. x, y 좌표 갱신
-        self.x += self.velocity * sin(self.angle)
-        self.y += self.velocity * cos(self.angle)
+        print("angle: ", self.angle)
+        print("velocity:", self.velocity)
+        sin_dx = sin(radians(self.angle))
+        cos_dy = cos(radians(self.angle))
+        print(sin_dx, cos_dy)
+        if abs(sin_dx) < 0.1: sin_dx = 0
+        if abs(cos_dy) < 0.1: cos_dy = 0
+        self.x += self.velocity * sin_dx
+        self.y -= self.velocity * cos_dy
+        print("sin,cos: ", sin_dx, cos_dy)
+        print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
-        if distance <= 100:
+        if distance <= 200:
             self.x = next_node[0]
             self.y = next_node[1]
-
-        # 6. 필요시 회전
-        if self.turn_flag == 1:
-            self.turning = 0
-        else:
-            self.path.pop(0)
+            # 6. 필요시 회전
+            if self.turn_flag == 1:
+                self.turning = 0
+            else:
+                self.path.pop(0)
 
 
     def turn(self, node_list):
+        print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
+            cur_node = node_list[self.node - 1].getPos()
             next_node = node_list[self.path[0] - 1].getPos()
             nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx = next_node[0] - self.x
-            dy = next_node[1] - self.y
+            dx = next_node[0] - cur_node[0]
+            dy = next_node[1] - cur_node[1]
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
-            old_angle = self.getAngle(dx, dy)
-            new_angle = self.getAngle(dx1, dy1)
+            print(dx, dy, dx1, dy1)
+            old_angle = self.get_angle(dx, dy)
+            new_angle = self.get_angle(dx1, dy1)
+            print(old_angle, new_angle)
             self.desti_angle = new_angle
             self.dAngle = new_angle - old_angle
             if self.dAngle > 180:
                 self.dAngle = 360 - self.dAngle
             elif self.dAngle < -180:
                 self.dAngle = 360 + self.dAngle
-
+            print(self.dAngle)
             if self.dAngle > 0:
                 # CW
-                self.turning == 1
+                self.turning = 1
             else:
                 # CCW
-                self.turning == 2
+                self.turning = 2
 
+            print(self.turning)
         # 2. 실제 회전
         # CW
         if self.turning == 1:
@@ -126,6 +148,7 @@ class Vehicle:
             self.angle = self.desti_angle
             self.turn_flag = 0
             self.turning = -1
+            self.path.pop(0)
 
     def getNode(self):
         return self.node
@@ -146,7 +169,7 @@ class Vehicle:
         return self.status
     
     def getBrakeDis(self):
-        return (self.velocity**2)/(2*self.ACCEL)
+        return (self.velocity**2)/(2*self.ACCEL)*1.8
 
     def checkCrash(self, car):
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
