@@ -1,8 +1,8 @@
 class Node:
-    def __init__(self, name_input, x_input, y_input):
+    def __init__(self, num, x_input, y_input):
         super().__init__()
 
-        self.NUM = name_input
+        self.NUM = num
         self.X = x_input
         self.Y = y_input
         self.isCross = False
@@ -14,7 +14,8 @@ class Node:
         return (self.X, self.Y)
 
 class Port(Node):
-    def __init__(self, name):
+    def __init__(self, num, x_input, y_input, name):
+        super().__init__(num, x_input, y_input)
         self.PORT_NAME = name
         self.TYPE = ""
         self.FREQ = -1
@@ -29,7 +30,8 @@ class Port(Node):
 
 
 class WaitPoint(Node):
-    def __init__(self, name):
+    def __init__(self, num, x_input, y_input, name):
+        super().__init__(num, x_input, y_input)
         self.WAIT_NAME = name
         self.CHARGE = False
 
