@@ -183,6 +183,7 @@ while True:
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
+        vehicle_texts[i].set_text(vehicle_list[i].velocity)
         print(vehicle_rects[i])
 
     plt.pause(1)
