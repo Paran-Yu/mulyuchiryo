@@ -65,7 +65,11 @@ imgplot = plt.imshow(img)
 
 
 # 노드
-fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
+# fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
+for node in node_list:
+    plt.plot(node.X, node.Y, 'ro')
+    plt.text(node.X, node.Y, node.NUM, fontsize=8)
+# plt.text([node.X for node in node_list],[node.Y for node in node_list], str([node.NUM for node in node_list][0]))
 # 도로
 # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
 for path in path_list:
@@ -119,6 +123,7 @@ class RotatingRectangle(patches.Rectangle):
         self._apply_rotation()
 
 vehicle_rects = []
+vehicle_texts = []
 # 차량
 for vehicle in vehicle_list:
     # print(vehicle.x, vehicle.y)
@@ -135,6 +140,7 @@ for vehicle in vehicle_list:
     # print(vehicle_rect.xy)
     ax.add_patch(vehicle_rect)
     vehicle_rects.append(vehicle_rect)
+    vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
     pass
 
 # print(vehicle_rects)
@@ -176,6 +182,7 @@ while True:
         print(vehicle_list[i], vehicle_list[i].getPos())
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
+        vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
         print(vehicle_rects[i])
 
     plt.pause(1)
