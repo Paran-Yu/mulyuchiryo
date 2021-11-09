@@ -1,5 +1,5 @@
 from time import sleep
-from math import atan2, degrees, isclose, sqrt, dist
+from math import atan2, degrees, isclose, sqrt, dist, sin, cos
 
 PORT_LIST = []
 NODE_LIST = []
@@ -34,115 +34,79 @@ class Vehicle:
         self.battery = -1
         self.cmd = ""
         self.path = []
+        self.turn_flag = 0
+        self.turning = -1
         self.count = 0
         self.dCharge = 0
 
-    # new_node로 이동
-    def command(self, path, status):
-        if self.status in [00, 10, 20, 22, 80] or self.path.length == 0:    
-            self.count = 0
-            self.path = path    
-            self.desti_node = path[-1]  # desti_node는 path의 마지막 (path[-1]), self.node는 도착할때마다 업데이트
-            self.status = status    # 충전소로 가서 충전하는건지, 대기하러 가는건지 명령 정보 필요. 20, 22 등 명령을 오버라이드 가능.
-            return True
+    def move(self, node_list):
+        # 1. 다음 목표 node가 회전하는 node인가
+        next_node = node_list[self.path[0] - 1].getPos()
+        if len(self.path) == 1:
+            # next node가 마지막 목표라면 무조건 멈춤
+            self.turn_flag = 1
         else:
-            # Core에 에러쏴주기: 이미 명령받고 이동(21, 40, 80) 중인 경우
-            pass
-            return False
+            nextnext_node = node_list[self.path[1] - 1].getPos()
+            dx = next_node[0] - self.x
+            dy = next_node[1] - self.y
+            dx1 = nextnext_node[0] - next_node[0]
+            dy1 = nextnext_node[1] - next_node[1]
+            if dy == dy1 == 0:
+                pass
+            elif dx/dy != dx1/dy1:
+                self.turn_flag = 1
 
-    def move(self):
-        coord_diff = [node for node in NODE_LIST if node.NUM == self.path[0]][0].getPos() - self.getPos() # 현재 목적지와의 거리 # (x, y)
-        # 벡터->스칼라 변환 필요. 같은 방위각이므로 x,y 중 하나는 0일 것임.
-        if isclose(coord_diff[0], 0):
-            distance = coord_diff[1]
-        else:
-            distance = coord_diff[0]
-        if distance <= self.getBrakeDis():  # 지금부터 브레이크를 밟아야 현재 목적지에서 정지
+        # 2. 다음 목표 node와의 거리
+        distance = sqrt(dx ** 2 + dy ** 2)
+
+        # 3. 회전 여부에 따른 가감속
+        if (self.turn_flag == 1) and (distance <= self.getBrakeDis()):
             self.velocity -= self.ACCEL
         else:
             self.velocity += self.ACCEL
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
                 self.velocity = self.MAX_SPEED
-        # 속도는 현재 위치에 영향을 준다 (벡터값으로 바꾸거나, 각도에 따라 바꿔야할듯)->현재는 직각으로만 움직이므로...
-        # 현재 위치를 벡터값으로 하고 velocity에 방향에 더해주는 방법...?
-        if isclose(self.angle, 90):
-            self.x += self.velocity
-        elif isclose(self.angle, 270):
-            self.x -= self.velocity
-        elif isclose(self.angle, 0):
-            self.y += self.velocity
-        elif isclose(self.angle, 180):
-            self.y -= self.velocity
 
-        # 어느 노드에 도착했다는 것은 어떻게 할까? distance, x, y가 정확히 0이 될 일은 거의 없을텐데->일정 threshold 이하면 그 위치로 보정
-        if distance <= 0.000001 and self.velocity <= 0.01:
-            self.x = [node for node in NODE_LIST if node.NUM == self.path[0]][0].x
-            self.y = [node for node in NODE_LIST if node.NUM == self.path[0]][0].y
-                
+        # 4. x, y 좌표 갱신
+        self.x += self.velocity * sin(self.angle)
+        self.y += self.velocity * cos(self.angle)
+
+        # 5. node 근접시 도착한 것으로 보정
+        if distance <= 100:
+            self.x = next_node[0]
+            self.y = next_node[1]
+
+        # 6. 필요시 회전
+        if self.turn_flag == 1:
+            self.turning = 0
+        else:
+            self.path.pop(0)
+
 
     def turn(self):
-        # 각도 차이에 따라 더할지 뺄지 로직 필요
-        if self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 0:
-            if 0 < self.angle <= 180:
-                self.angle -= (self.ROTATE_SPEED)    # 초
-            elif 180 < self.angle < 360:
-                self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 90:
-            if 90 < self.angle <= 270:
-                self.angle -= (self.ROTATE_SPEED)    # 초
-            elif 270 < self.angle or self.angle < 90:
-                self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 180:
-            if 180 < self.angle < 360:
-                self.angle -= (self.ROTATE_SPEED)    # 초
-            elif 0 <= self.angle < 180:
-                self.angle += (self.ROTATE_SPEED)    # 초
-        elif self.getAngle([node for node in NODE_LIST if node.NUM == self.path[0]][0]) == 270:
-            if 270 < self.angle or self.angle <= 90:
-                self.angle -= (self.ROTATE_SPEED)    # 초
-            elif 90 < self.angle < 270:
-                self.angle += (self.ROTATE_SPEED)    # 초
+        # 1. 회전 방향 결정
+        if self.turning == 0:
+            pass
+
+        # CW
+
+        # CCW
+        self.angle += (self.ROTATE_SPEED)    # 초
             
-        # 360도는 0도다
+        # 360 == 0 보정
         if 360 < self.angle:
             self.angle -= 360
         elif self.angle < 0:
             self.angle += 360
-                
-        # 직각이 아닐때는 정확히 계산해줘야한다. 아직 로직 완성 못함
-        # if (angle_diff%360) 
-        # self.angle += (self.ROTATE_SPEED)    # 초
 
-    def load(self, port_num):
-        if self.loaded == False:
-            # 포트가 load가능한 상태인지 확인
-            pass
-            self.count += 1
-            if self.count >= 30:
-                self.count = 0
-                PORT_LIST[port_num].LOAD()
-                # 대기 상태로 전환
-                self.status = 11
-                self.loaded = 1
-        else:
-            return False
+        # turn 완료시 관련 값 reset
+        self.turn_flag = 0
+        self.turning = -1
+        
 
-    def unload(self, port_num):
-        if self.loaded:
-            # 포트가 unload가능한 상태인지 확인
-            pass
-            self.count += 1
-            if self.count >= 30:
-                self.count = 0
-                PORT_LIST[port_num].UNLOAD()
-                # 대기 상태로 전환
-                self.status = 10
-                self.loaded = 0
-        else:
-            return False
 
     def getNode(self):
-        return self.node        # 이동중일때는 가장 최근 회전한 노드, 그렇지 않은 경우 현재 위치의 노드 반환
+        return self.node
 
     def getPos(self):
         return (self.x, self.y)
@@ -170,14 +134,12 @@ class Vehicle:
             return False
 
     def getAngle(self, destination):
-        # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
-        # atan2 결과값은 -180~180이므로, 방위각(정북과 타겟좌표 사이의 각도)을 구하자
-        radian = atan2(destination.y - self.y , destination.x - self.x)
+        radian = atan2(destination.y - self.y, destination.x - self.x)
         degree = degrees(radian)
         if degree > 0:
             degree -= 360
         degree = abs(degree)
-        degree = (degree+90)%360
+        degree = (degree+90) % 360
         return degree
 
     def vehicle_routine(self, node_list):
@@ -187,7 +149,10 @@ class Vehicle:
         # 2. 작업 - status 업데이트
         # path 이동
         if len(self.path) != 0:
-            self.move(node_list)
+            if self.turning == -1:
+                self.move(node_list)
+            else:
+                self.turn(node_list)
         # 이동 완료시 작업 수행
         else:
             # status와 현재 받은 cmd를 분리
@@ -228,10 +193,10 @@ class Vehicle:
         if self.status == 10:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
-                self.cnt += 1
-                self.dCharge += self.CHARGE_SPEED
-                self.battery += self.CHARGE_SPEED
-            # 종료조건
+            self.cnt += 1
+            self.dCharge += self.CHARGE_SPEED
+            self.battery += self.CHARGE_SPEED
+            # 종료 조건
             if self.battery > 60:
                 if self.cnt > 300 or self.dCharge > 10:
                     self.cnt = 0
