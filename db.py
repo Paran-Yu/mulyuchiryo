@@ -59,4 +59,18 @@ class DB:
         cur.commit()
 
 
+    def get_vehicle_work(self):
+        pass
+
+
+    def get_vehicle_charge(self):
+        pass
+
+
+    def get_total_work(self):
+        pass
+
+
+    def get_node_freq(self):
+        pass
 
