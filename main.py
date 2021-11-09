@@ -3,11 +3,9 @@ import threading
 import mapreader
 from simulator import simulator
 
-import time
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from matplotlib.transforms import Affine2D
 import matplotlib.image as mpimg
 
 # simulate attribute
