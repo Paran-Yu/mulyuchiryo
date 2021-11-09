@@ -1,5 +1,4 @@
-from time import sleep
-from math import atan2, degrees, isclose, sqrt, dist, sin, cos
+from math import atan2, degrees, sqrt, sin, cos
 
 PORT_LIST = []
 NODE_LIST = []
