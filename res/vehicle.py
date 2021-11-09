@@ -35,6 +35,7 @@ class Vehicle:
         self.cmd = ""
         self.path = []
         self.count = 0
+        self.dCharge = 0
 
     # new_node로 이동
     def command(self, path, status):
@@ -162,20 +163,11 @@ class Vehicle:
         return (self.velocity**2)/(2*self.ACCEL)
 
     def checkCrash(self, car):
-        # 1. self와 car 두 점 사이의 거리 구하기
-        # 1) 피타고라스 정리
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
-        # 2) math.dist()
-        s = [self.x, self.y]
-        c = [car.x, car.y]
-        distance = dist(s, c)
-        # 2. 두 점 사이의 거리 < self.diagonal/2 + car.diagonal/2 이면 충돌
         if distance <= self.diagonal/2 + car.diagonal/2:
             return True
         else:
             return False
-
-
 
     def getAngle(self, destination):
         # 벡터 말고 좌표평면계로 계산, 북이 0도, 동 90, 남 180, 서 270
@@ -188,9 +180,9 @@ class Vehicle:
         degree = (degree+90)%360
         return degree
 
-    # 매 1초마다 실행
     def vehicle_routine(self, node_list):
         # 1. 충돌 감지
+        # n^2의 위험이 있어 검토 필요
 
         # 2. 작업 - status 업데이트
         # path 이동
@@ -206,6 +198,7 @@ class Vehicle:
                     node_list[self.desti_node - 1].status = -1
                 self.count += 1
                 if self.count == self.LOAD_SPEED:
+                    self.count = 0
                     self.cmd = 10
                     self.status = 10
                     self.loaded = 1
@@ -217,6 +210,7 @@ class Vehicle:
                     node_list[self.desti_node - 1].status = -1
                 self.count += 1
                 if self.count == self.LOAD_SPEED:
+                    self.count += 1
                     self.cmd = 10
                     self.status = 10
                     self.loaded = 0
@@ -233,8 +227,21 @@ class Vehicle:
         # 3. 배터리 충/방전
         if self.status == 10:
             self.battery -= self.DISCHARGE_WAIT
-        elif self.status == 80:
-            self.battery += self.CHARGE_SPEED
+        elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
+                self.cnt += 1
+                self.dCharge += self.CHARGE_SPEED
+                self.battery += self.CHARGE_SPEED
+            # 종료조건
+            if self.battery > 60:
+                if self.cnt > 300 or self.dCharge > 10:
+                    self.cnt = 0
+                    self.dCharge = 0
+                    self.status = 81
+        elif self.status == 81:     # 명령을 받을 수 있는 충전 상태
+            if self.battery < 100:
+                self.battery += self.CHARGE_SPEED
         else:
             self.battery -= self.DISCHARGE_WORK
-            
+
+        # 4. DB에 저장
+        # 상위 경로에서 처리
