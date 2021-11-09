@@ -34,6 +34,7 @@ class Vehicle:
         self.cmd = ""
         self.path = []
         self.turn_flag = 0
+        self.last_flag = 0
         self.turning = -1
         self.dAngle = 0
         self.desti_angle = 0
@@ -53,7 +54,7 @@ class Vehicle:
         print("dx, dy: ", dx, dy)
         if len(self.path) == 1:
             # next node가 마지막 목표라면 무조건 멈춤
-            self.turn_flag = 1
+            self.last_flag = 1
         else:
             nextnext_node = node_list[self.path[1] - 1].getPos()
             dx1 = nextnext_node[0] - next_node[0]
@@ -70,8 +71,13 @@ class Vehicle:
         print("distance: ", distance)
         print("brake: ", self.getBrakeDis())
         # 3. 회전 여부에 따른 가감속
-        if (self.turn_flag == 1) and (distance <= self.getBrakeDis()):
-            self.velocity -= self.ACCEL
+        if self.turn_flag == 1 or self.last_flag == 1:
+            if distance <= self.getBrakeDis():
+                self.velocity -= self.ACCEL
+            else:
+                self.velocity += self.ACCEL
+                if self.velocity > self.MAX_SPEED:  # 최고속도 제한
+                    self.velocity = self.MAX_SPEED
         else:
             self.velocity += self.ACCEL
             if self.velocity > self.MAX_SPEED:  # 최고속도 제한
@@ -99,6 +105,7 @@ class Vehicle:
                 self.turning = 0
             else:
                 self.path.pop(0)
+                self.last_flag = 0
 
 
     def turn(self, node_list):
