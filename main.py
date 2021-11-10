@@ -96,11 +96,8 @@ for node in node_list:
 # 도로
 # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
 for path in path_list:
-    # 시작점 start
     start = [node for node in node_list if node.NUM == path[0]][0]
-    # 끝점 end
     end = [node for node in node_list if node.NUM == path[1]][0]
-    # print(start, end)
     # 수직인지 수평인지 판별 필요
     if start.X == end.X:    # X축 동일 -> 수직
         plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
@@ -162,18 +159,18 @@ for vehicle in vehicle_list:
         (vehicle.x, vehicle.y-vehicle.HEIGHT),
         mutation_scale=15
     )
-    vehicle_desti_arrow = patches.FancyArrowPatch(
-        (vehicle.x, vehicle.y), 
-        (vehicle.x, vehicle.y), 
-        mutation_scale=15
-    )
+    # vehicle_desti_arrow = patches.FancyArrowPatch(
+    #     (vehicle.x, vehicle.y), 
+    #     (vehicle.x, vehicle.y), 
+    #     mutation_scale=15
+    # )
     ax.add_patch(vehicle_rect)
     ax.add_patch(vehicle_arrow)
-    ax.add_patch(vehicle_desti_arrow)
+    # ax.add_patch(vehicle_desti_arrow)
     vehicle_rects.append(vehicle_rect)
     vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
     vehicle_arrows.append(vehicle_arrow)
-    vehicle_desti_arrows.append(vehicle_desti_arrow)
+    # vehicle_desti_arrows.append(vehicle_desti_arrow)
     pass
 
 plt.pause(1)
@@ -207,7 +204,7 @@ while True:
         y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
         vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x, y))
         # print(vehicle_rects[i])
-        vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x,y))
+        # vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x,y))
 
     plt.pause(1)
     # break
