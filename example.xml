@@ -164,7 +164,7 @@
         </port>
         <port>
             <num>48</num>
-            <x>647</x>
+            <x>577</x>
             <y>739</y>
             <name>U01</name>
             <type>unload</type>
@@ -173,7 +173,7 @@
         </port>
         <port>
             <num>50</num>
-            <x>717</x>
+            <x>647</x>
             <y>739</y>
             <name>U02</name>
             <type>unload</type>
@@ -182,18 +182,18 @@
         </port>
         <port>
             <num>52</num>
-            <x>787</x>
+            <x>717</x>
             <y>739</y>
-            <name>U02</name>
+            <name>U03</name>
             <type>unload</type>
             <freq>206</freq>
             <v_type></v_type>
         </port>
         <port>
             <num>54</num>
-            <x>1245</x>
+            <x>787</x>
             <y>739</y>
-            <name>U02</name>
+            <name>U04</name>
             <type>unload</type>
             <freq>206</freq>
             <v_type></v_type>
@@ -840,8 +840,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>25</start_node>
             <start_angle>90</start_angle>
         </vehicle>
@@ -860,8 +860,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>27</start_node>
             <start_angle>90</start_angle>
         </vehicle>
@@ -880,8 +880,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>29</start_node>
             <start_angle>90</start_angle>
         </vehicle>

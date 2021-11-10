@@ -47,19 +47,21 @@ def read_map():
     img, map_data = mapreader.read_layout()
     port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_component()
 
-
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate():
     # simulation 초기화
-    simulator.simulate_init(port_list, wait_list, vehicle_list)
+    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list)
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
+
+    while True:
+        simulator.simulator_update(simulate_speed, node_list, vehicle_list)
 
 
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    simulator.simulate_routine(node_list, port_list, vehicle_list)
+    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list)
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
