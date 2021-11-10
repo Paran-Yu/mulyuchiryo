@@ -94,11 +94,7 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     plt.pause(1)
 
 # simulate_speed초 마다 한번씩 호출된다.
-<<<<<<< HEAD
 def simulate_routine(node_list, port_list, wait_list, vehicle_list):
-=======
-def simulate_routine(node_list, port_list, vehicle_list):
->>>>>>> develop
     print("routine start")
     port_update(port_list)
     vehicle_update(node_list, vehicle_list)
