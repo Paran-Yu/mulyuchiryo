@@ -159,18 +159,18 @@ for vehicle in vehicle_list:
         (vehicle.x, vehicle.y-vehicle.HEIGHT),
         mutation_scale=15
     )
-    # vehicle_desti_arrow = patches.FancyArrowPatch(
-    #     (vehicle.x, vehicle.y), 
-    #     (vehicle.x, vehicle.y), 
-    #     mutation_scale=15
-    # )
+    vehicle_desti_arrow = patches.FancyArrowPatch(
+        (vehicle.x, vehicle.y), 
+        (vehicle.x, vehicle.y), 
+        mutation_scale=5
+    )
     ax.add_patch(vehicle_rect)
     ax.add_patch(vehicle_arrow)
-    # ax.add_patch(vehicle_desti_arrow)
+    ax.add_patch(vehicle_desti_arrow)
     vehicle_rects.append(vehicle_rect)
     vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
     vehicle_arrows.append(vehicle_arrow)
-    # vehicle_desti_arrows.append(vehicle_desti_arrow)
+    vehicle_desti_arrows.append(vehicle_desti_arrow)
     pass
 
 plt.pause(1)
@@ -203,8 +203,11 @@ while True:
         x = vehicle_list[i].x + vehicle.HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle.angle))
         y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
         vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x, y))
-        # print(vehicle_rects[i])
-        # vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x,y))
+        if len(vehicle_list[i].path) == 0:
+            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
+        else:
+            desti_node = node_list[vehicle_list[i].path[-1] -1]
+            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
 
     plt.pause(1)
     # break
