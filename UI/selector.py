@@ -15,8 +15,8 @@ class Selector:
         # 노드만 확인하기 위해서 -2를 해줌.
         for t in range(len(self.context.positions) - 2):
             for i in range(len(self.context.positions[t])):
-                if x - 10 < self.context.positions[t][i].point.x() < x + 10 \
-                        and y - 10 < self.context.positions[t][i].point.y() < y + 10:
+                if x - 10 < self.context.positions[t][i].X < x + 10 \
+                        and y - 10 < self.context.positions[t][i].Y < y + 10:
                     type = t
                     idx = i
 
