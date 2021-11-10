@@ -60,7 +60,7 @@ def start_simulate():
     vehicle_list[2].command([30,1], 20)
 
     while True:
-        simulator.vehicle_update(simulate_speed, node_list, vehicle_list)
+        simulator.simulator_update(simulate_speed, node_list, vehicle_list)
 
 
 # simulate_speed마다 루틴 실행

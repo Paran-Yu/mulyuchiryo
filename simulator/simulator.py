@@ -97,7 +97,28 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
 def simulate_routine(node_list, port_list, wait_list, vehicle_list):
     print("routine start")
     port_update(port_list)
-    # vehicle_update(node_list, vehicle_list)
+    vehicle_update(node_list, vehicle_list)
+
+def simulator_update(simulate_speed, node_list, vehicle_list):
+    def AngleToMfc(degree):
+        return (degree+270)%360
+
+    #  전에 있던 것 업데이트 해주기
+    for i in range(len(vehicle_rects)):
+        print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
+        vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
+        vehicle_rects[i].set_angle(vehicle_list[i].angle)
+        vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
+        vehicle_texts[i].set_text((vehicle_list[i].velocity, vehicle_list[i].angle))
+        front_x = vehicle_list[i].x + vehicle_list[i].HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle_list[i].angle))
+        front_y = vehicle_list[i].y + vehicle_list[i].HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle_list[i].angle))
+        vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (front_x, front_y))
+        if len(vehicle_list[i].path) == 0:
+            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
+        else:
+            desti_node = node_list[vehicle_list[i].path[-1] -1]
+            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
+    plt.pause(simulate_speed)
 
 
 # PORT
@@ -124,28 +145,7 @@ def wait_init(wait_list, vehicle_list):
         used_wait.using = True
 
 # VEHICLE
-def vehicle_update(simulate_speed, node_list, vehicle_list):
+def vehicle_update(node_list, vehicle_list):
     for vehicle in vehicle_list:
         vehicle.vehicle_routine(node_list)
         # TODO: DB에 기록
-
-    # matplotlib
-    def AngleToMfc(degree):
-        return (degree+270)%360
-
-    #  전에 있던 것 업데이트 해주기
-    for i in range(len(vehicle_rects)):
-        print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
-        vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_rects[i].set_angle(vehicle_list[i].angle)
-        vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].velocity, vehicle_list[i].angle))
-        front_x = vehicle_list[i].x + vehicle.HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle.angle))
-        front_y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
-        vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (front_x, front_y))
-        if len(vehicle_list[i].path) == 0:
-            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
-        else:
-            desti_node = node_list[vehicle_list[i].path[-1] -1]
-            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
-    plt.pause(simulate_speed)
