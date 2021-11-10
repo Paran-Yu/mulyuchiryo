@@ -23,7 +23,7 @@ class Vehicle:
         self.DISCHARGE_WORK = -1
         self.BREAK_PARAM = 1.8
         self.NODE_TH = 200
-        self.ROTATE_TH
+        self.ROTATE_TH = -1
 
         self.x = -1
         self.y = -1
@@ -47,6 +47,7 @@ class Vehicle:
     def command(self, path, cmd):
         self.path = path
         self.cmd = cmd
+        self.desti_node = self.path[-1]
 
     def move(self, node_list):
         print("move!")
@@ -170,7 +171,7 @@ class Vehicle:
         return (self.x, self.y)
 
     def getDesti(self):
-        if self.path.length != 0:
+        if len(self.path) != 0:
             return self.path[-1]    # 최종 목표 노드 (self.desti_node와 동일)
         else:                       # 도착지가 없는 경우
             return -1
