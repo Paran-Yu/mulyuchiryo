@@ -21,6 +21,9 @@ class Vehicle:
         self.CHARGE_SPEED = -1
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
+        self.BREAK_PARAM = 1.8
+        self.NODE_TH = 200
+        self.ROTATE_TH
 
         self.x = -1
         self.y = -1
@@ -179,7 +182,7 @@ class Vehicle:
         return self.status
     
     def getBrakeDis(self):
-        return (self.velocity**2)/(2*self.ACCEL)*1.8
+        return (self.velocity**2)/(2*self.ACCEL)*self.BREAK_PARAM
 
     def checkCrash(self, car):
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
