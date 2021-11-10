@@ -1,8 +1,5 @@
 from math import atan2, degrees, radians, sqrt, sin, cos
 
-PORT_LIST = []
-NODE_LIST = []
-TIME = 1
 
 class Vehicle:
     def __init__(self, name):
