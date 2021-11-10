@@ -8,9 +8,6 @@ import threading
 import mapreader
 from simulator import simulator
 
-
-import matplotlib.image as mpimg
-
 # simulate attribute
 simulate_speed = 1
 
