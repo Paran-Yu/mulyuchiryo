@@ -54,11 +54,6 @@ def start_simulate():
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
-    # 테스트용 명령 부분
-    vehicle_list[0].command([26,1], 20)
-    vehicle_list[1].command([28,1], 20)
-    vehicle_list[2].command([30,1], 20)
-
     while True:
         simulator.simulator_update(simulate_speed, node_list, vehicle_list)
 
