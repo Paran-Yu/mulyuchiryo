@@ -37,10 +37,11 @@ map_data = {'width': map_width, 'scale': map_scale, 'capacity': map_capa}
 # read_ports
 xml_port_list = ports.findall("port")
 for x in xml_port_list:
-    a = node.Port(x.find("name").text)
-    a.NUM = int(x.find("num").text)
-    a.X = float(x.find("x").text) * map_scale
-    a.Y = float(x.find("y").text) * map_scale
+    name = x.find("name").text
+    num = int(x.find("num").text)
+    x_input = float(x.find("x").text) * map_scale
+    y_input = float(x.find("y").text) * map_scale
+    a = node.Port(num, x_input, y_input, name)
     a.TYPE = x.find("type").text
     a.FREQ = int(x.find("freq").text)
     a.V_TYPE = x.find("v_type").text
@@ -56,10 +57,11 @@ for x in xml_port_list:
 # read_waits
 xml_wait_list = waits.findall("wait")
 for x in xml_wait_list:
-    a = node.WaitPoint(x.find("name").text)
-    a.NUM = int(x.find("num").text)
-    a.X = float(x.find("x").text) * map_scale
-    a.Y = float(x.find("y").text) * map_scale
+    name = x.find("name").text
+    num = int(x.find("num").text)
+    x_input = float(x.find("x").text) * map_scale
+    y_input = float(x.find("y").text) * map_scale
+    a = node.WaitPoint(num, x_input, y_input, name)
     if x.find("charge").text == "y":
         a.CHARGE = True
     wait_list.append(a)
@@ -95,10 +97,12 @@ for x in xml_vehicle_list:
     a.ACCEL = float(x.find("accel").text) * 1000                # m/sec^2 -> mm/sec^2
     a.MAX_SPEED = float(x.find("max_speed").text) * 100 / 6     # m/min -> mm/sec
     a.LU_TYPE = x.find("lu_type").text
+    a.LOAD_SPEED = int(x.find("load_speed").text)
     a.CHARGE_SPEED = float(x.find("charge_speed").text) / 60    # %/min -> %/sec
     a.DISCHARGE_WAIT = float(x.find("discharge_wait").text) / 60    # %/min -> %/sec
     a.DISCHARGE_WORK = float(x.find("discharge_work").text) / 60    # %/min -> %/sec
     a.node = int(x.find("start_node").text)
+    a.ROTATE_TH = a.ROTATE_SPEED
     start_node = [node for node in node_list if node.NUM == a.node][0]
     a.x = start_node.X
     a.y = start_node.Y

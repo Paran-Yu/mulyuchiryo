@@ -39,7 +39,7 @@ class RotatingRectangle(patches.Rectangle):
 def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     port_init(port_list)
     wait_init(wait_list, vehicle_list)
-    
+
     img = plt.imread('./example.png')
     imgplot = plt.imshow(img)
     # 노드
@@ -94,7 +94,11 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     plt.pause(1)
 
 # simulate_speed초 마다 한번씩 호출된다.
+<<<<<<< HEAD
 def simulate_routine(node_list, port_list, wait_list, vehicle_list):
+=======
+def simulate_routine(node_list, port_list, vehicle_list):
+>>>>>>> develop
     print("routine start")
     port_update(port_list)
     vehicle_update(node_list, vehicle_list)
@@ -125,11 +129,11 @@ def wait_init(wait_list, vehicle_list):
 
 # VEHICLE
 def vehicle_update(node_list, vehicle_list):
-
-    # 이동 명령
     for vehicle in vehicle_list:
         vehicle.vehicle_routine(node_list)
+        # TODO: DB에 기록
 
+    # matplotlib
     def AngleToMfc(degree):
         return (degree+270)%360
 
@@ -147,3 +151,4 @@ def vehicle_update(node_list, vehicle_list):
         else:
             desti_node = node_list[vehicle_list[i].path[-1] -1]
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
+

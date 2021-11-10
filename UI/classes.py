@@ -10,14 +10,11 @@ class Node:
     def __lt__(self, other):
         return self.NUM < other.NUM
 
-    def getPos(self):
-        return (self.X, self.Y)
-
 class Port(Node):
-    def __init__(self, num, x_input, y_input, name):
+    def __init__(self, num, x_input, y_input, name="Port"):
         super().__init__(num, x_input, y_input)
         self.PORT_NAME = name
-        self.TYPE = ""
+        self.TYPE = "unload"
         self.FREQ = -1
         self.V_TYPE = ""
         self.UNLOAD_LIST = []
@@ -28,9 +25,8 @@ class Port(Node):
     def get_unload(self):
         return self.UNLOAD_LIST
 
-
 class WaitPoint(Node):
-    def __init__(self, num, x_input, y_input, name):
+    def __init__(self, num, x_input, y_input, name="WaitPoint"):
         super().__init__(num, x_input, y_input)
         self.WAIT_NAME = name
         self.CHARGE = False
@@ -45,3 +41,8 @@ class WaitPoint(Node):
 
     def isUsing(self):
         return self.using
+
+class Path:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
