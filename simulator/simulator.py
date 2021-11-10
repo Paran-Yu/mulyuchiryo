@@ -8,7 +8,7 @@ vehicle_texts = []
 vehicle_arrows = []
 vehicle_desti_arrows = []
 
-# 기존 Rectangle은 회전시 중심 기준이 아니라서 어려움, https://stackoverflow.com/questions/60413174/rotating-rectangles-around-point-with-matplotlib
+
 class RotatingRectangle(patches.Rectangle):
     def __init__(self, xy, width, height, rel_point_of_rot, **kwargs):
         super().__init__(xy, width, height, **kwargs)
@@ -35,11 +35,56 @@ class RotatingRectangle(patches.Rectangle):
         self.xy_center = xy
         self._apply_rotation()
 
+
 # simulate 초기화
 def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     port_init(port_list)
     wait_init(wait_list, vehicle_list)
+    plot_init(node_list, path_list, vehicle_list)
 
+
+# simulate_speed초 마다 한번씩 호출된다.
+def simulate_routine(node_list, port_list, wait_list, vehicle_list):
+    print("routine start")
+    port_update(port_list)
+    vehicle_update(node_list, vehicle_list)
+
+
+# PORT
+# port의 time cnt를 0~FREQ 사이의 랜덤값으로 지정
+def port_init(port_list):
+    for x in port_list:
+        cnt = random.randrange(0, x.FREQ+1)
+        x.count = cnt
+
+
+def port_update(port_list):
+    for x in port_list:
+        # LOAD: 반송물이 사라져야 카운트 시작
+        # UNLOAD: 반송물을 받은 후에야 count가 reset 된다.
+        if x.status == 0:
+            x.count += 1
+            if x.count == x.FREQ:
+                x.status = 1
+                x.count = 0
+
+
+# WAIT POINT
+def wait_init(wait_list, vehicle_list):
+    for x in vehicle_list:
+        used_wait = [wait for wait in wait_list if wait.NUM == x.node][0]
+        used_wait.using = True
+
+
+# VEHICLE
+def vehicle_update(node_list, vehicle_list):
+    for vehicle in vehicle_list:
+        vehicle.vehicle_routine(node_list)
+        # TODO: DB에 기록
+
+
+# PLOT
+def plot_init(node_list, path_list, vehicle_list):
     img = plt.imread('./example.png')
     imgplot = plt.imshow(img)
     # 노드
@@ -50,12 +95,12 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
-        start = node_list[path[0] -1]
-        end = node_list[path[1] -1]
+        start = node_list[path[0] - 1]
+        end = node_list[path[1] - 1]
         # 수직인지 수평인지 판별 필요
-        if start.X == end.X:    # X축 동일 -> 수직
+        if start.X == end.X:  # X축 동일 -> 수직
             plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
-        else:                   # Y축 동일 -> 수평
+        else:  # Y축 동일 -> 수평
             plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
     ax = plt.gca()
@@ -69,18 +114,18 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
             vehicle.HEIGHT,
             angle=vehicle.angle,
             fill=True,
-            edgecolor = 'blue',
-            facecolor = 'purple',
-            rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
+            edgecolor='blue',
+            facecolor='purple',
+            rel_point_of_rot=[vehicle.WIDTH / 2, vehicle.HEIGHT / 2]
         )
         vehicle_arrow = patches.FancyArrowPatch(
-            (vehicle.x, vehicle.y), 
-            (vehicle.x, vehicle.y-vehicle.HEIGHT),
+            (vehicle.x, vehicle.y),
+            (vehicle.x, vehicle.y - vehicle.HEIGHT),
             mutation_scale=15
         )
         vehicle_desti_arrow = patches.FancyArrowPatch(
-            (vehicle.x, vehicle.y), 
-            (vehicle.x, vehicle.y), 
+            (vehicle.x, vehicle.y),
+            (vehicle.x, vehicle.y),
             mutation_scale=5
         )
         ax.add_patch(vehicle_rect)
@@ -93,13 +138,8 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
 
     plt.pause(1)
 
-# simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(node_list, port_list, wait_list, vehicle_list):
-    print("routine start")
-    port_update(port_list)
-    vehicle_update(node_list, vehicle_list)
 
-def simulator_update(simulate_speed, node_list, vehicle_list):
+def plot_update(simulate_speed, node_list, vehicle_list):
     def AngleToMfc(degree):
         return (degree+270)%360
 
@@ -119,33 +159,3 @@ def simulator_update(simulate_speed, node_list, vehicle_list):
             desti_node = node_list[vehicle_list[i].path[-1] -1]
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
     plt.pause(simulate_speed)
-
-
-# PORT
-# port의 time cnt를 0~FREQ 사이의 랜덤값으로 지정
-def port_init(port_list):
-    for x in port_list:
-        cnt = random.randrange(0, x.FREQ+1)
-        x.count = cnt
-
-def port_update(port_list):
-    for x in port_list:
-        # LOAD: 반송물이 사라져야 카운트 시작
-        # UNLOAD: 반송물을 받은 후에야 count가 reset 된다.
-        if x.status == 0:
-            x.count += 1
-            if x.count == x.FREQ:
-                x.status = 1
-                x.count = 0
-
-# WAIT POINT
-def wait_init(wait_list, vehicle_list):
-    for x in vehicle_list:
-        used_wait = [wait for wait in wait_list if wait.NUM == x.node][0]
-        used_wait.using = True
-
-# VEHICLE
-def vehicle_update(node_list, vehicle_list):
-    for vehicle in vehicle_list:
-        vehicle.vehicle_routine(node_list)
-        # TODO: DB에 기록
