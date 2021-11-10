@@ -1,10 +1,12 @@
 import sys
+import os.path
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
 from classes import *
+import pickle
 
 class Context:
     def __init__(self):
@@ -59,6 +61,8 @@ class MainPage(QWidget):
 
         self.selector = Selector(self)
         self.context.selector = self.selector
+
+        self.layout_name = None
 
         self.initUI()
 
@@ -134,6 +138,12 @@ class MainPage(QWidget):
         # file
         btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
+        btn_save = QPushButton("Save", self.sub_menu_wrapper)
+        btn_save.clicked.connect(self.save)
+        btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
+        btn_save_as.clicked.connect(self.saveAs)
+        btn_load = QPushButton("Load", self.sub_menu_wrapper)
+        btn_load.clicked.connect(self.load)
 
         # draw
         btn_node = QPushButton("Node", self.sub_menu_wrapper)
@@ -155,10 +165,9 @@ class MainPage(QWidget):
         self.subMenus = [
             # file
             [
-                QPushButton("Open", self.sub_menu_wrapper),
-                QPushButton("Save", self.sub_menu_wrapper),
-                QPushButton("Save\nAs", self.sub_menu_wrapper),
-                QPushButton("Load", self.sub_menu_wrapper),
+                btn_save,
+                btn_save_as,
+                btn_load,
                 btn_open_layout,
                 QPushButton("Set\nScale", self.sub_menu_wrapper),
                 QPushButton("Close", self.sub_menu_wrapper),
@@ -262,17 +271,84 @@ class MainPage(QWidget):
 
     # 기존 작업 불러오기
     def load(self):
-        pass
+        self.layout_name = QFileDialog.getOpenFileName(self, 'Load Layout', './', "Layout 파일 (*.layout)")
 
-    # 현재 작업 저장
+        if self.layout_name[0]:
+            with open(self.layout_name[0], 'rb') as f:
+                # 이미지 파일 경로를 불러옴
+                self.fname = pickle.load(f)
+
+                # 이미지 파일 존재 확인 후 나머지 정보도 불러옴
+                if os.path.exists(self.fname[0]):
+                    self.count = pickle.load(f)
+                    self.nodes = pickle.load(f)
+                    self.ports = pickle.load(f)
+                    self.wait_points = pickle.load(f)
+                    self.paths = pickle.load(f)
+                    self.vehicles = pickle.load(f)
+                # 경로에 이미지가 더 이상 존재하지 않는다면 경고 메시지 출력
+                else:
+                    alert = QMessageBox()
+                    alert.setWindowTitle("No Such File")  # 메세지창의 상단 제목
+                    alert.setIcon(QMessageBox.Information)  # 메세지창 내부에 표시될 아이콘
+                    alert.setText("저장된 이미지가 존재하지 않습니다.")  # 메세지 제목
+                    alert.setInformativeText("src: " + self.fname[0])  # 메세지 내용
+                    alert.setStandardButtons(QMessageBox.Ok)  # 메세지창의 버튼
+                    alert.setDefaultButton(QMessageBox.Ok)  # 포커스가 지정된 기본 버튼
+
+                    alert.exec_()
+                    return
+
+            self.openImage(self.fname)
+            self.positions = [
+                self.nodes,
+                self.ports,
+                self.wait_points,
+                self.paths,
+                self.vehicles,
+            ]
+
+            self.eraseCanvas()
+            self.drawCanvas()
+
+    # 현재 작업 내용 저장
     def save(self):
-        pass
+        if self.layout_name is None:
+            self.saveAs()
+
+        else:
+            with open(self.layout_name[0], 'wb') as f:
+                pickle.dump(self.fname, f)
+                pickle.dump(self.count, f)
+                pickle.dump(self.nodes, f)
+                pickle.dump(self.ports, f)
+                pickle.dump(self.wait_points, f)
+                pickle.dump(self.paths, f)
+                pickle.dump(self.vehicles, f)
+
+    # 다른 이름으로 저장
+    def saveAs(self):
+        name = QFileDialog.getSaveFileName(self, 'Save file', './', "Layout 파일 (*.layout)")
+        if name[0]:
+            self.layout_name = name
+            # 이미지 경로 및 기타 정보 저장
+            with open(self.layout_name[0], 'wb') as f:
+                pickle.dump(self.fname, f)
+                pickle.dump(self.count, f)
+                pickle.dump(self.nodes, f)
+                pickle.dump(self.ports, f)
+                pickle.dump(self.wait_points, f)
+                pickle.dump(self.paths, f)
+                pickle.dump(self.vehicles, f)
 
     # 도면 열기
     def openLayout(self):
         # 파일 오픈
-        fname = QFileDialog.getOpenFileName(self, 'Open file', './', "Image Files (*.jpg *.jpeg *.bmp *.png)")
+        self.fname = QFileDialog.getOpenFileName(self, 'Open file', './', "Image Files (*.jpg *.jpeg *.bmp *.png)")
 
+        self.openImage(self.fname)
+
+    def openImage(self, fname):
         if fname[0]:
             # 원본 이미지를 저장할 객체
             self.image_original = QImage()
