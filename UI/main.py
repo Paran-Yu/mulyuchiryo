@@ -4,10 +4,12 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
+from classes import *
 
 class Context:
     def __init__(self):
         self.main = None
+        self.class_list = [Node, Port, WaitPoint, Path]
 
 class MainPage(QWidget):
     # auto increment ID.
@@ -56,6 +58,7 @@ class MainPage(QWidget):
         ]
 
         self.selector = Selector(self)
+        self.context.selector = self.selector
 
         self.initUI()
 
@@ -340,7 +343,7 @@ class MainPage(QWidget):
                     qp = QPainter(self.canvas_prev)
 
                     qp.setPen(QPen(QColor(0, 0, 0), 10))
-                    qp.drawLine(self.selected_node.point.x(), self.selected_node.point.y(), nx, ny)
+                    qp.drawLine(self.selected_node.X, self.selected_node.Y, nx, ny)
 
                     qp.end()
 
@@ -351,14 +354,14 @@ class MainPage(QWidget):
                         dy = abs(self.sp.y() - ny)
 
                         if dx < dy:
-                            self.selected_node.point.setX(self.sp.x())
-                            self.selected_node.point.setY(ny)
+                            self.selected_node.X = self.sp.x()
+                            self.selected_node.Y = int(ny)
                         else:
-                            self.selected_node.point.setX(nx)
-                            self.selected_node.point.setY(self.sp.y())
+                            self.selected_node.X = int(nx)
+                            self.selected_node.Y = self.sp.y()
                     else:
-                        self.selected_node.point.setX(nx)
-                        self.selected_node.point.setY(ny)
+                        self.selected_node.X = int(nx)
+                        self.selected_node.Y = int(ny)
 
                     self.side_bar.widget.show()
 
@@ -370,17 +373,17 @@ class MainPage(QWidget):
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 0), 15))
-            qp.drawPoint(node.point)
-            qp.drawEllipse(node.point, 4, 4)
+            qp.drawPoint(node.X, node.Y)
+            qp.drawEllipse(node.X, node.Y, 4, 4)
 
             qp.end()
         for port in self.ports:
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(255, 0, 0), 15))
-            qp.drawPoint(port.point)
+            qp.drawPoint(port.X, port.Y)
             qp.setPen(QPen(QColor(255, 0, 0), 1))
-            qp.drawRect(port.point.x()-7.5, port.point.y()-7.5, 15, 15)
+            qp.drawRect(port.X-7.5, port.Y-7.5, 15, 15)
 
             qp.end()
 
@@ -388,15 +391,15 @@ class MainPage(QWidget):
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 255), 15))
-            qp.drawPoint(wait_point.point)
+            qp.drawPoint(wait_point.X, wait_point.Y)
 
             qp.end()
 
-        for edge in self.paths:
+        for path in self.paths:
             qp = QPainter(self.canvas)
 
             qp.setPen(QPen(QColor(0, 0, 0), 10))
-            qp.drawLine(edge.start, edge.end)
+            qp.drawLine(path.start.X, path.start.Y, path.end.X, path.end.Y)
 
             qp.end()
         # TODO: Add Ports, Wait Points and Vehicles
@@ -430,7 +433,7 @@ class MainPage(QWidget):
 
                     if idx != -1:
                         self.selected_node = self.positions[type][idx]
-                        self.sp = QPoint(self.selected_node.point.x(), self.selected_node.point.y())
+                        self.sp = QPoint(self.selected_node.X, self.selected_node.Y)
 
                         self.side_bar.widget.show()
                         self.side_bar.getDetail(type)
@@ -443,13 +446,11 @@ class MainPage(QWidget):
                 elif self.tools[self.current_tool] not in ["mouse", "path"]:
                     '''self.mouse_left and '''
                     self.node_selected = True
-                    nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
-                    ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
-                         * self.canvas.height() / self.canvas_label.height()
 
                     # Count increment per every node creation
                     self.count += 1
-                    self.selected_node = p(self.count, QPoint(nx, ny))
+                    self.selected_node = self.context.class_list[self.current_tool](self.count, int(nx), int(ny))
+                    self.selected_node.count = 0    # 연결된 node 수를 알기 위한 변수.
                     self.positions[self.current_tool].append(self.selected_node)
                     self.drawCanvas()
 
@@ -489,21 +490,45 @@ class MainPage(QWidget):
                 start = self.selected_node
                 end = self.positions[type][idx]
 
+                # 스스로에게 연결되는 path 제외
+                if start == end:
+                    return
+
                 # 쉬프트를 누른 경우, 두 노드가 직선상에 있도록 만듬.
                 if self.shift_pressed:
-                    dx = abs(start.point.x() - nx)
-                    dy = abs(start.point.y() - ny)
+                    dx = abs(start.X - nx)
+                    dy = abs(start.Y - ny)
+
+                    if dx == dy == 0:
+                        return
 
                     if dx < dy:
-                        end.point.setX(start.point.x())
+                        end.X = start.X
                     else:
-                        end.point.setY(start.point.y())
+                        end.Y = start.Y
 
                     # 노드의 위치가 변경될 수 있으므로, 화면을 지워줌.
                     self.eraseCanvas()
 
-                edge = Edge(start.point, end.point)
-                self.paths.append(edge)
+                path = Path(start, end)
+
+                # 두 노드사이 중복되는 path 제외
+                for p in self.paths:
+                    if path.start == p.start and path.end == p.end\
+                            or path.start == p.end and path.end == p.start:
+                        return
+
+                start.count += 1
+                if start.count > 2:
+                    start.isCross = True
+
+                end.count += 1
+                if end.count > 2:
+                    end.isCross = True
+
+                self.paths.append(path)
+
+                self.side_bar.setDetail(self.selected_node)
 
                 self.drawCanvas()
 
@@ -515,7 +540,6 @@ class MainPage(QWidget):
 
             # Convert QImage to QPixmap
             # QPixmap은 수정이, QImage는 출력이 안되기 때문.
-            # TODO: print all nodes in here.
             pixmap = QPixmap(self.image_scaled)
             self.img_label.setPixmap(pixmap)
 
@@ -526,22 +550,6 @@ class MainPage(QWidget):
             if self.canvas_prev:
                 pixmap = QPixmap(self.canvas_prev.scaled(self.canvas_label.width(), self.canvas_label.height()))
                 self.canvas_label.setPixmap(pixmap)
-
-# 테스트를 위한 임시 클래스
-class p:
-    def __init__(self, id, p, t="unload", name="NODE"):
-        self.id = id
-        self.point = p
-        self.type = t
-        self.name = name
-        # port 클래스에서 연결된 unload 포트를 관리하기 위함.
-        self.unload_list = []
-
-class Edge:
-    def __init__(self, start, end):
-        self.id = id
-        self.start = start
-        self.end = end
 
 # Run App.
 if __name__ == '__main__':
