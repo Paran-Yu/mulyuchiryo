@@ -97,10 +97,12 @@ for x in xml_vehicle_list:
     a.ACCEL = float(x.find("accel").text) * 1000                # m/sec^2 -> mm/sec^2
     a.MAX_SPEED = float(x.find("max_speed").text) * 100 / 6     # m/min -> mm/sec
     a.LU_TYPE = x.find("lu_type").text
+    a.LOAD_SPEED = int(x.find("load_speed").text)
     a.CHARGE_SPEED = float(x.find("charge_speed").text) / 60    # %/min -> %/sec
     a.DISCHARGE_WAIT = float(x.find("discharge_wait").text) / 60    # %/min -> %/sec
     a.DISCHARGE_WORK = float(x.find("discharge_work").text) / 60    # %/min -> %/sec
     a.node = int(x.find("start_node").text)
+    a.ROTATE_TH = a.ROTATE_SPEED
     start_node = [node for node in node_list if node.NUM == a.node][0]
     a.x = start_node.X
     a.y = start_node.Y

@@ -59,7 +59,7 @@ def start_simulate():
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    simulator.simulate_routine(port_list, wait_list, vehicle_list)
+    simulator.simulate_routine(node_list, port_list, vehicle_list)
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
