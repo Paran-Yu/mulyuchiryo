@@ -201,6 +201,7 @@ class Vehicle:
 
         # 2. 작업 - status 업데이트
         # path 이동
+        print("cmd start!: ", self.cmd)
         if len(self.path) != 0:
             if self.turning == -1:
                 self.move(node_list)
@@ -215,44 +216,48 @@ class Vehicle:
                     self.status = 30
                     node_list[self.desti_node - 1].status = -1
                 self.count += 1
-                if self.count == self.LOAD_SPEED:
+                if self.count >= self.LOAD_SPEED:
                     self.count = 0
                     self.cmd = 10
                     self.status = 10
                     self.loaded = 1
                     node_list[self.desti_node - 1].status = 0
+                print("load! - ", self.count)
             # unload
             elif self.cmd == 21:
                 if self.status != 40:
                     self.status = 40
                     node_list[self.desti_node - 1].status = -1
                 self.count += 1
-                if self.count == self.LOAD_SPEED:
+                if self.count >= self.LOAD_SPEED:
                     self.count += 1
                     self.cmd = 10
                     self.status = 10
                     self.loaded = 0
                     node_list[self.desti_node - 1].status = 0
+                print("unload! - ", self.count)
             # wait
             elif self.cmd == 20:
                 self.cmd = 10
                 self.status = 10
+                print("wait!")
             # charge
             elif self.cmd == 23:
                 self.cmd = 10
                 self.status = 80
+                print("charge!")
 
         # 3. 배터리 충/방전
         if self.status == 10:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
-            self.cnt += 1
+            self.count += 1
             self.dCharge += self.CHARGE_SPEED
             self.battery += self.CHARGE_SPEED
             # 종료 조건
             if self.battery > 60:
-                if self.cnt > 300 or self.dCharge > 10:
-                    self.cnt = 0
+                if self.count > 300 or self.dCharge > 10:
+                    self.count = 0
                     self.dCharge = 0
                     self.status = 81
         elif self.status == 81:     # 명령을 받을 수 있는 충전 상태
@@ -260,6 +265,8 @@ class Vehicle:
                 self.battery += self.CHARGE_SPEED
         else:
             self.battery -= self.DISCHARGE_WORK
+        print("status: ", self.status)
+        print("battery: ", self.battery)
 
         # 4. DB에 저장
         # 상위 경로에서 처리
