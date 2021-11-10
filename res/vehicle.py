@@ -47,15 +47,18 @@ class Vehicle:
 
     def move(self, node_list):
         print("move!")
-        # 1. 다음 목표 node가 회전하는 node인가
+        # 1. 다음 목표 node가 정지하는 node인가
         next_node = node_list[self.path[0] - 1].getPos()
         dx = next_node[0] - self.x
         dy = next_node[1] - self.y
         print("dx, dy: ", dx, dy)
-        if len(self.path) == 1:
-            # next node가 마지막 목표라면 무조건 멈춤
+        if self.turn_flag == 1 or self.last_flag == 1:
+            pass
+        elif len(self.path) == 1:
+            # next node가 마지막 목표라면 멈춤
             self.last_flag = 1
         else:
+            # 회전하는 노드라면 멈춤
             nextnext_node = node_list[self.path[1] - 1].getPos()
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
