@@ -1,6 +1,5 @@
 from math import atan2, degrees, radians, sqrt, sin, cos
 
-
 class Vehicle:
     def __init__(self, name):
         super().__init__()
@@ -110,7 +109,6 @@ class Vehicle:
             else:
                 self.path.pop(0)
                 self.last_flag = 0
-
 
     def turn(self, node_list):
         print("turn!")
