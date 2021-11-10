@@ -46,6 +46,3 @@ def vehicle_charge():
     ax.grid(True)
     plt.legend()
     plt.show()
-
-
-vehicle_work()
