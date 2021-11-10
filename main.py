@@ -8,9 +8,7 @@ import threading
 import mapreader
 from simulator import simulator
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+
 import matplotlib.image as mpimg
 
 # simulate attribute
@@ -55,7 +53,7 @@ def read_map():
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate():
     # simulation 초기화
-    simulator.simulate_init(port_list, wait_list, vehicle_list)
+    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list)
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
@@ -63,10 +61,13 @@ def start_simulate():
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    simulator.simulate_routine(port_list, wait_list, vehicle_list)
+    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list)
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
+    vehicle_list[0].command([26,1], 20)
+    vehicle_list[1].command([28,1], 20)
+    vehicle_list[2].command([30,1], 20)
 
 #######################
 # Test용 main
@@ -74,140 +75,5 @@ if __name__ == "__main__":
     read_map()
     start_simulate()
 
-# 1920x1080, example.xml scale=1로 조정하고 했습니다.
-print(img, map_data, vehicle_list)
-
-# 어디에서든 imread해도 값은 똑같은 것 같다.
-# img = mpimg.imread('./example.png')
-# print('mpimg:',img)
-img = plt.imread('./example.png')
-# print('plt:',img)
-imgplot = plt.imshow(img)
-
-# print(img[739][1455]) # png는 [R, G, B, A]이며 각 값은 [0, 1], jpg는 [R, G, B]이며 각 값은 [0,255]
-# img.resize((1080, 1920))
 
 
-# 노드
-# fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
-for node in node_list:
-    plt.plot(node.X, node.Y, 'ro')
-    plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8)
-# 도로
-# path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
-for path in path_list:
-    start = [node for node in node_list if node.NUM == path[0]][0]
-    end = [node for node in node_list if node.NUM == path[1]][0]
-    # 수직인지 수평인지 판별 필요
-    if start.X == end.X:    # X축 동일 -> 수직
-        plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
-    else:                   # Y축 동일 -> 수평
-        plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
-
-ax = plt.gca()
-plt.pause(1)
-
-# 여기서부터는 병렬처리 쓰레드의 적용을 받아야할 것 같다.
-
-# 기존 Rectangle은 회전시 중심 기준이 아니라서 어려움, https://stackoverflow.com/questions/60413174/rotating-rectangles-around-point-with-matplotlib
-class RotatingRectangle(patches.Rectangle):
-    def __init__(self, xy, width, height, rel_point_of_rot, **kwargs):
-        super().__init__(xy, width, height, **kwargs)
-        self.rel_point_of_rot = rel_point_of_rot
-        self.xy_center = self.get_xy()
-        self.set_angle(self.angle)
-
-    def _apply_rotation(self):
-        angle_rad = self.angle * np.pi / 180
-        m_trans = np.array([[np.cos(angle_rad), -np.sin(angle_rad)],
-                            [np.sin(angle_rad), np.cos(angle_rad)]])
-        shift = -m_trans @ self.rel_point_of_rot
-        self.set_xy(self.xy_center + shift)
-
-    def set_angle(self, angle):
-        self.angle = angle
-        self._apply_rotation()
-
-    def set_rel_point_of_rot(self, rel_point_of_rot):
-        self.rel_point_of_rot = rel_point_of_rot
-        self._apply_rotation()
-
-    def set_xy_center(self, xy):
-        self.xy_center = xy
-        self._apply_rotation()
-
-vehicle_rects = []
-vehicle_texts = []
-vehicle_arrows = []
-vehicle_desti_arrows = []
-
-# 차량
-for vehicle in vehicle_list:
-    # print(vehicle.x, vehicle.y)
-    vehicle_rect = RotatingRectangle(
-        [vehicle.x, vehicle.y],
-        vehicle.WIDTH,
-        vehicle.HEIGHT,
-        angle=0,#vehicle.angle,   # anti-clockwise angle
-        fill=True,
-        edgecolor = 'blue',
-        facecolor = 'purple',
-        rel_point_of_rot = [vehicle.WIDTH/2, vehicle.HEIGHT/2]
-    )
-    vehicle_arrow = patches.FancyArrowPatch(
-        (vehicle.x, vehicle.y), 
-        (vehicle.x, vehicle.y-vehicle.HEIGHT),
-        mutation_scale=15
-    )
-    vehicle_desti_arrow = patches.FancyArrowPatch(
-        (vehicle.x, vehicle.y), 
-        (vehicle.x, vehicle.y), 
-        mutation_scale=5
-    )
-    ax.add_patch(vehicle_rect)
-    ax.add_patch(vehicle_arrow)
-    ax.add_patch(vehicle_desti_arrow)
-    vehicle_rects.append(vehicle_rect)
-    vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
-    vehicle_arrows.append(vehicle_arrow)
-    vehicle_desti_arrows.append(vehicle_desti_arrow)
-    pass
-
-plt.pause(1)
-
-vehicle_list[0].command([26,1], 20)
-vehicle_list[1].command([28,1], 20)
-vehicle_list[2].command([30,1], 20)
-
-while True:
-
-    # 이동 명령
-    for vehicle in vehicle_list:
-        # print(vehicle)
-        vehicle.vehicle_routine(node_list)
-        print(vehicle.velocity, (vehicle.x, vehicle.y))
-        # print(vehicle.path, vehicle.status)
-        # break
-
-    def AngleToMfc(degree):
-        return (degree+270)%360
-
-    #  전에 있던 것 업데이트 해주기
-    for i in range(len(vehicle_rects)):
-        # print(vehicle_rects[i])
-        # print(vehicle_list[i], vehicle_list[i].getPos())
-        vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_rects[i].set_angle(vehicle_list[i].angle)
-        vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].velocity, vehicle_list[i].angle))
-        x = vehicle_list[i].x + vehicle.HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle.angle))
-        y = vehicle_list[i].y + vehicle.HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle.angle))
-        vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (x, y))
-        if len(vehicle_list[i].path) == 0:
-            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
-        else:
-            desti_node = node_list[vehicle_list[i].path[-1] -1]
-            vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
-
-    plt.pause(1)
-    # break
