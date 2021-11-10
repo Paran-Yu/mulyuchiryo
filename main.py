@@ -57,6 +57,14 @@ def start_simulate():
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
+    # 테스트용 명령 부분
+    vehicle_list[0].command([26,1], 20)
+    vehicle_list[1].command([28,1], 20)
+    vehicle_list[2].command([30,1], 20)
+
+    while True:
+        simulator.vehicle_update(simulate_speed, node_list, vehicle_list)
+
 
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
@@ -65,9 +73,6 @@ def simulate_loop():
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
-    vehicle_list[0].command([26,1], 20)
-    vehicle_list[1].command([28,1], 20)
-    vehicle_list[2].command([30,1], 20)
 
 #######################
 # Test용 main

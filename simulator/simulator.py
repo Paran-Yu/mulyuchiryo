@@ -50,8 +50,8 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
-        start = [node for node in node_list if node.NUM == path[0]][0]
-        end = [node for node in node_list if node.NUM == path[1]][0]
+        start = node_list[path[0] -1]
+        end = node_list[path[1] -1]
         # 수직인지 수평인지 판별 필요
         if start.X == end.X:    # X축 동일 -> 수직
             plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
@@ -67,7 +67,7 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
             [vehicle.x, vehicle.y],
             vehicle.WIDTH,
             vehicle.HEIGHT,
-            angle=0,#vehicle.angle,   # anti-clockwise angle
+            angle=vehicle.angle,
             fill=True,
             edgecolor = 'blue',
             facecolor = 'purple',
@@ -97,7 +97,7 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
 def simulate_routine(node_list, port_list, wait_list, vehicle_list):
     print("routine start")
     port_update(port_list)
-    vehicle_update(node_list, vehicle_list)
+    # vehicle_update(node_list, vehicle_list)
 
 
 # PORT
@@ -124,7 +124,7 @@ def wait_init(wait_list, vehicle_list):
         used_wait.using = True
 
 # VEHICLE
-def vehicle_update(node_list, vehicle_list):
+def vehicle_update(simulate_speed, node_list, vehicle_list):
     for vehicle in vehicle_list:
         vehicle.vehicle_routine(node_list)
         # TODO: DB에 기록
@@ -135,6 +135,7 @@ def vehicle_update(node_list, vehicle_list):
 
     #  전에 있던 것 업데이트 해주기
     for i in range(len(vehicle_rects)):
+        print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
@@ -147,4 +148,4 @@ def vehicle_update(node_list, vehicle_list):
         else:
             desti_node = node_list[vehicle_list[i].path[-1] -1]
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
-
+    plt.pause(simulate_speed)
