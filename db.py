@@ -56,7 +56,6 @@ class DB:
             FOREIGN KEY(vehicle_id) REFERENCES vehicle(id)\
             )')
 
-        cur.commit()
 
     def db_clear(self):
         cur = self.db.cursor()
