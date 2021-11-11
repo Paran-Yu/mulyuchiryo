@@ -6,8 +6,7 @@
     </img>
     <map>
         <width>2481</width>
-        <!-- <scale>65.3</scale> -->
-        <scale>65</scale>
+        <scale>65.3</scale>
         <capa>834</capa>
     </map>
     <ports>
