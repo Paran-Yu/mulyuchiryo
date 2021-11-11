@@ -28,7 +28,7 @@ img = {'path': img_path, 'name': img_name}
 
 # read map size, scale and capa
 map_width = int(mapdata.find("width").text)
-map_scale = int(mapdata.find("scale").text)
+map_scale = float(mapdata.find("scale").text)
 map_capa = int(mapdata.find("capa").text)
 map_data = {'width': map_width, 'scale': map_scale, 'capacity': map_capa}
 
