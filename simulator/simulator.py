@@ -90,7 +90,20 @@ def plot_init(node_list, path_list, vehicle_list):
     # 노드
     # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
     for node in node_list:
-        plt.plot(node.X, node.Y, 'ro')
+        # port
+        if hasattr(node, 'PORT_NAME'):
+            if node.TYPE == 'load':
+                plt.plot(node.X, node.Y, 'y^')
+            elif node.TYPE == 'unload':
+                plt.plot(node.X, node.Y, 'bv')
+            elif node.TYPE == 'lu':
+                plt.plot(node.X, node.Y, 'cD')
+        # wait point
+        elif hasattr(node, 'WAIT_NAME'):
+            plt.plot(node.X, node.Y, 'gP')
+        # node
+        else:
+            plt.plot(node.X, node.Y, 'ro')
         plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8)
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
