@@ -19,9 +19,7 @@ def heuristic(start, goal, node_list):
     # 시간으로 나타내고 싶어서 40으로 나눠주었다.
     return (abs(x1 - x2) + abs(y1 - y2)) / 40
 
-def a_star(start, goal, path_list, node_list):
-
-    # 노드 개수만큼 아주 큰 수를 넣어주었다.
+def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 아주 큰 수를 넣어주었다.
     path = [1000000] * len(node_list)
     cost = [1000000] * len(node_list)
 
@@ -51,7 +49,7 @@ def a_star(start, goal, path_list, node_list):
             continue
 
         # current에서 갈 수 있는 노드마다
-        for each_path in path_list[current_node-1]:
+        for each_path in path_linked_list[current_node]:
             # each_path는 (2, 20.5) 같은 형태
             next_node, next_cost = each_path
             # g = current까지 축적된 cost + 다음 노드로 가는 cost

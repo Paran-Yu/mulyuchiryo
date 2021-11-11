@@ -11795,8 +11795,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>492</start_node>
             <start_angle>90</start_angle>
         </vehicle>
@@ -11815,8 +11815,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>493</start_node>
             <start_angle>90</start_angle>
         </vehicle>
@@ -11835,8 +11835,8 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
             <start_node>494</start_node>
             <start_angle>90</start_angle>
         </vehicle>
