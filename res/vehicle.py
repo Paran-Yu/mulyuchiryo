@@ -23,6 +23,7 @@ class Vehicle:
 
         self.x = -1
         self.y = -1
+        self.back = False
         self.node = -1
         self.desti_node = -1
         self.velocity = -1
@@ -49,6 +50,11 @@ class Vehicle:
 
     def move(self, node_list):
         print("move!")
+        # 0. 후진 여부 확인
+        if self.path[0] < 0:
+            self.path[0] *= -1
+            self.back = True
+
         # 1. 다음 목표 node가 정지하는 node인가
         next_node = node_list[self.path[0] - 1].getPos()
         dx = next_node[0] - self.x
@@ -62,22 +68,24 @@ class Vehicle:
             self.last_flag = 1
         else:
             # 회전하는 노드라면 멈춤
-            nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx1 = nextnext_node[0] - next_node[0]
-            dy1 = nextnext_node[1] - next_node[1]
-            if dy == dy1 == 0:
-                pass
-            elif dy == 0 or dy1 == 0:
-                self.turn_flag = 1
-            elif dx/dy != dx1/dy1:
-                self.turn_flag = 1
+            if self.path[1] > 0:
+                nextnext_node = node_list[self.path[1] - 1].getPos()
+                dx1 = nextnext_node[0] - next_node[0]
+                dy1 = nextnext_node[1] - next_node[1]
+                if dy == dy1 == 0:
+                    pass
+                elif dy == 0 or dy1 == 0:
+                    self.turn_flag = 1
+                elif dx/dy != dx1/dy1:
+                    self.turn_flag = 1
 
         # 2. 다음 목표 node와의 거리
         distance = sqrt(dx ** 2 + dy ** 2)
         print("distance: ", distance)
         print("brake: ", self.getBrakeDis())
+
         # 3. 회전 여부에 따른 가감속
-        if self.turn_flag == 1 or self.last_flag == 1:
+        if self.turn_flag == 1 or self.last_flag == 1 or self.back:
             if distance <= self.getBrakeDis():
                 self.velocity -= self.ACCEL
             else:
@@ -96,8 +104,12 @@ class Vehicle:
         cos_dy = cos(radians(self.angle))
         if abs(sin_dx) < 0.1: sin_dx = 0
         if abs(cos_dy) < 0.1: cos_dy = 0
-        self.x += self.velocity * sin_dx
-        self.y -= self.velocity * cos_dy
+        if self.back == False:
+            self.x += self.velocity * sin_dx
+            self.y -= self.velocity * cos_dy
+        else:
+            self.x -= self.velocity * sin_dx
+            self.y += self.velocity * cos_dy
         print("sin,cos: ", sin_dx, cos_dy)
         print("x,y: ",self.x,self.y)
 
@@ -106,6 +118,7 @@ class Vehicle:
             self.x = next_node[0]
             self.y = next_node[1]
             self.node = self.path[0]
+            self.back = False
             # 6. 필요시 회전
             if self.turn_flag == 1:
                 self.turning = 0
