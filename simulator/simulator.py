@@ -44,9 +44,9 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
 
 
 # simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(node_list, port_list, wait_list, vehicle_list):
+def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list):
     print("routine start")
-    port_update(port_list)
+    port_update(port_list, loadable_port_list, unloadable_port_list)
     vehicle_update(node_list, vehicle_list)
 
 
@@ -58,7 +58,7 @@ def port_init(port_list):
         x.count = cnt
 
 
-def port_update(port_list):
+def port_update(port_list, loadable_port_list, unloadable_port_list):
     for x in port_list:
         # LOAD: 반송물이 사라져야 카운트 시작
         # UNLOAD: 반송물을 받은 후에야 count가 reset 된다.
@@ -66,6 +66,10 @@ def port_update(port_list):
             x.count += 1
             if x.count == x.FREQ:
                 x.status = 1
+                if x.TYPE == "load":
+                    loadable_port_list.append(x.NUM)
+                elif x.TYPE == "unload":
+                    unloadable_port_list.append(x.NUM)
                 x.count = 0
 
 
