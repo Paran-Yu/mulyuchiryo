@@ -4,6 +4,7 @@ from .a_star import a_star, heuristic
 loadable_copy_list = []
 unloadable_copy_list = []
 
+
 def check_wait_point(start, end, port_number, node_list, wait_list, path_linked_list):
     # 예시 : 9,8 (경로에 있는 대기 장소부터 체크 후) 7~0 (가까운 충전/대기 장소 체크)
     for idx in range(start, end, -1):
@@ -12,7 +13,6 @@ def check_wait_point(start, end, port_number, node_list, wait_list, path_linked_
             a_star_path = a_star(wait_list[idx].NUM, port_number, path_linked_list, node_list)
             vehicle_list[idx].command(a_star_path, 21)
             break
-
 
 
 def call_agv(node_list, wait_list, path_linked_list,loadable_port_list, unloadable_port_list):
@@ -33,12 +33,25 @@ def call_agv(node_list, wait_list, path_linked_list,loadable_port_list, unloadab
                         if 340 <= load_port.NUM <= 363:
                             check_wait_point(9, -1, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 좌측 하단 3번 포트
-                        # elif 392 <= load_port.NUM <= 415:
+                        elif 392 <= load_port.NUM <= 415:
+                            check_wait_point(29, 19, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 우측 상단 3번 포트
-                        # elif 364 <= load_port.NUM <= 387:
+                        elif 364 <= load_port.NUM <= 387:
+                            check_wait_point(19, 9, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 우측 하단 3번 포트
-                        # elif 416 <= load_port.NUM <= 439:
+                        elif 416 <= load_port.NUM <= 439:
+                            check_wait_point(39, 29, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 중앙 상단 1번 포트
-                        # elif 388 <= load_port.NUM <= 391:
+                        elif 388 <= load_port.NUM <= 391:
+                            # 숫자가 연속되지 않아서 두 지점을 체크하고
+                            for idx in range(532, 534):
+                                if wait_list[idx].using and wait_list[idx].using.status == 81:
+                                    a_star_path = a_star(wait_list[idx].NUM, port_number, path_linked_list, node_list)
+                                    vehicle_list[idx].command(a_star_path, 21)
+                                    break
+                            #  break가 안 걸렸다면 충전/대기 장소도 체크하기
+                            else:
+                                check_wait_point(49, 41, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 중앙 하단 1번 포트
-                        # elif 440 <= load_port.NUM <= 443:
+                        elif 440 <= load_port.NUM <= 443:
+                            check_wait_point(51, 41, load_port.NUM, node_list, wait_list, path_linked_list)
