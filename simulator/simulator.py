@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+node_texts = []
 vehicle_rects = []
 vehicle_texts = []
 vehicle_arrows = []
@@ -103,8 +104,8 @@ def plot_init(node_list, path_list, vehicle_list):
             plt.plot(node.X, node.Y, 'gP')
         # node
         else:
-            plt.plot(node.X, node.Y, 'ro')
-        plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8)
+            plt.plot(node.X, node.Y, 'r.')
+        node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8))
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
@@ -127,8 +128,8 @@ def plot_init(node_list, path_list, vehicle_list):
             vehicle.HEIGHT,
             angle=vehicle.angle,
             fill=True,
-            edgecolor='blue',
-            facecolor='purple',
+            # edgecolor='blue',
+            # facecolor='purple',
             rel_point_of_rot=[vehicle.WIDTH / 2, vehicle.HEIGHT / 2]
         )
         vehicle_arrow = patches.FancyArrowPatch(
@@ -145,7 +146,7 @@ def plot_init(node_list, path_list, vehicle_list):
         ax.add_patch(vehicle_arrow)
         ax.add_patch(vehicle_desti_arrow)
         vehicle_rects.append(vehicle_rect)
-        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, vehicle.NAME))
+        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, (vehicle.NAME, vehicle.velocity, vehicle.angle, vehicle.loaded)))
         vehicle_arrows.append(vehicle_arrow)
         vehicle_desti_arrows.append(vehicle_desti_arrow)
 
@@ -157,12 +158,13 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         return (degree+270)%360
 
     #  전에 있던 것 업데이트 해주기
+    # Vehicle
     for i in range(len(vehicle_rects)):
         print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].velocity, vehicle_list[i].angle))
+        vehicle_texts[i].set_text((vehicle_list[i].NAME, vehicle_list[i].velocity, vehicle_list[i].angle, vehicle_list[i].loaded))
         front_x = vehicle_list[i].x + vehicle_list[i].HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle_list[i].angle))
         front_y = vehicle_list[i].y + vehicle_list[i].HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle_list[i].angle))
         vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (front_x, front_y))
@@ -171,4 +173,10 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         else:
             desti_node = node_list[vehicle_list[i].path[-1] -1]
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (desti_node.X, desti_node.Y))
+    # Node
+    for i in range(len(node_list)):
+        # node 전부보다는 port, wait만 하면 될 것 같은데
+        if hasattr(node_list[i], 'PORT_NAME'):
+            node_texts[i].set_text(f'{node_list[i].NUM} {node_list[i].status}')
+
     plt.pause(simulate_speed)
