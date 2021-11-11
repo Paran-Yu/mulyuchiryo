@@ -44,6 +44,7 @@ class Vehicle:
         self.path = path
         self.cmd = cmd
         self.desti_node = self.path[-1]
+        self.status = 20
 
     def move(self, node_list):
         print("move!")
@@ -51,6 +52,7 @@ class Vehicle:
         next_node = node_list[self.path[0] - 1].getPos()
         dx = next_node[0] - self.x
         dy = next_node[1] - self.y
+        print("cur next: ",self.node, self.path[0])
         print("dx, dy: ", dx, dy)
         if self.turn_flag == 1 or self.last_flag == 1:
             pass
@@ -91,7 +93,6 @@ class Vehicle:
         print("velocity:", self.velocity)
         sin_dx = sin(radians(self.angle))
         cos_dy = cos(radians(self.angle))
-        print(sin_dx, cos_dy)
         if abs(sin_dx) < 0.1: sin_dx = 0
         if abs(cos_dy) < 0.1: cos_dy = 0
         self.x += self.velocity * sin_dx
@@ -100,9 +101,10 @@ class Vehicle:
         print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
-        if distance <= 200:
+        if distance <= 300:
             self.x = next_node[0]
             self.y = next_node[1]
+            self.node = self.path[0]
             # 6. 필요시 회전
             if self.turn_flag == 1:
                 self.turning = 0
@@ -114,15 +116,11 @@ class Vehicle:
         print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
-            cur_node = node_list[self.node - 1].getPos()
             next_node = node_list[self.path[0] - 1].getPos()
             nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx = next_node[0] - cur_node[0]
-            dy = next_node[1] - cur_node[1]
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
-            print(dx, dy, dx1, dy1)
-            old_angle = self.get_angle(dx, dy)
+            old_angle = self.angle
             new_angle = self.get_angle(dx1, dy1)
             print(old_angle, new_angle)
             self.desti_angle = new_angle
@@ -266,6 +264,7 @@ class Vehicle:
             self.battery -= self.DISCHARGE_WORK
         print("status: ", self.status)
         print("battery: ", self.battery)
+        print("=====================")
 
         # 4. DB에 저장
         # 상위 경로에서 처리
