@@ -101,7 +101,10 @@ def plot_init(node_list, path_list, vehicle_list):
                 plt.plot(node.X, node.Y, 'cD')
         # wait point
         elif hasattr(node, 'WAIT_NAME'):
-            plt.plot(node.X, node.Y, 'gP')
+            if node.CHARGE:
+                plt.plot(node.X, node.Y, 'gP')
+            else:
+                plt.plot(node.X, node.Y, 'rP')
         # node
         else:
             plt.plot(node.X, node.Y, 'r.')
@@ -178,5 +181,7 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         # node 전부보다는 port, wait만 하면 될 것 같은데
         if hasattr(node_list[i], 'PORT_NAME'):
             node_texts[i].set_text(f'{node_list[i].NUM} {node_list[i].status}')
+        elif hasattr(node_list[i], 'WAIT_NAME') and node_list[i].CHARGE:
+            node_texts[i].set_text(f'{node_list[i].NUM} {node_list[i].using}')
 
     plt.pause(simulate_speed)
