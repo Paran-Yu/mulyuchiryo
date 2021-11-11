@@ -76,7 +76,7 @@ for x in xml_node_list:
     node_list.append(a)
 node_list = sorted(node_list)
 
-path_linked_list = [[] for _ in range(len(node_list))]
+path_linked_list = [[] for _ in range(len(node_list)+1)]
 
 # read paths
 xml_path_list = paths.findall("path")
@@ -94,8 +94,8 @@ for x in xml_path_list:
     # 가로로 연결된 노드라면
     else:
         cost = (abs(node_list[from_node-1].X - node_list[to_node-1].X)) / 40
-    path_linked_list[from_node-1].append((to_node, cost))
-    path_linked_list[to_node-1].append((from_node, cost))
+    path_linked_list[from_node].append((to_node, cost))
+    path_linked_list[to_node].append((from_node, cost))
 
 # read vehicles
 xml_vehicle_list = vehicles.findall("vehicle")
