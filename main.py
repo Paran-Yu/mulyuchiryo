@@ -65,7 +65,7 @@ def start_simulate():
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list)
+    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
     # 1초마다 돌아갈 때 코드 (함수화)
 
@@ -77,4 +77,4 @@ def simulate_loop():
 # Test용 main
 if __name__ == "__main__":
     read_map()
-    # start_simulate()
+    start_simulate()
