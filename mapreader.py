@@ -19,7 +19,6 @@ wait_list = []
 node_list = []
 path_list = []
 vehicle_list = []
-path_linked_list = [[] for _ in range(len(node_list))]
 
 # read image data
 img_path = image.find("img_path").text
@@ -77,6 +76,7 @@ for x in xml_node_list:
     node_list.append(a)
 node_list = sorted(node_list)
 
+path_linked_list = [[] for _ in range(len(node_list))]
 
 # read paths
 xml_path_list = paths.findall("path")
