@@ -41,12 +41,19 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
-    def command(self, path, cmd):
+    def command(self, path, cmd, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
         self.count = 0
+        
+        if cmd == 21 or cmd == 22:
+            if self.desti_node in loadable_port_list:
+                loadable_port_list.remove(self.desti_node)
+            elif self.desti_node in unloadable_port_list:
+                unloadable_port_list.remove(self.desti_node)
+
 
     def move(self, node_list):
         print("move!")
