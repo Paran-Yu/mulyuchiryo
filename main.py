@@ -44,9 +44,10 @@ VEHICLE_STATUS = {
 # map data 읽어오기
 def read_map():
     global img, map_data
-    global port_list, wait_list, node_list, path_list, vehicle_list
+    global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
     img, map_data = mapreader.read_layout()
-    port_list, wait_list, node_list, path_list, vehicle_list = mapreader.read_component()
+    port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
+
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate():

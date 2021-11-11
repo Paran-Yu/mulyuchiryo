@@ -127,4 +127,4 @@ def read_layout():
     return img, map_data
 
 def read_component():
-    return port_list, wait_list, node_list, path_list, vehicle_list
+    return port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
