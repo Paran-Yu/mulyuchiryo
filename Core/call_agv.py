@@ -4,6 +4,17 @@ from .a_star import a_star, heuristic
 loadable_copy_list = []
 unloadable_copy_list = []
 
+def check_wait_point(start, end, port_number, node_list, wait_list, path_linked_list):
+    # 예시 : 9,8 (경로에 있는 대기 장소부터 체크 후) 7~0 (가까운 충전/대기 장소 체크)
+    for idx in range(start, end, -1):
+        # AGV가 있고 충전 장소를 나오는 조건을 충족해 있다면
+        if wait_list[idx].using and wait_list[idx].using.status == 81:
+            a_star_path = a_star(wait_list[idx].NUM, port_number, path_linked_list, node_list)
+            vehicle_list[idx].command(a_star_path, 21)
+            break
+
+
+
 def call_agv(node_list, wait_list, path_linked_list,loadable_port_list, unloadable_port_list):
     global loadable_copy_list, unloadable_copy_list
 
@@ -20,13 +31,7 @@ def call_agv(node_list, wait_list, path_linked_list,loadable_port_list, unloadab
                         # load_port에 따라서 분기
                         # 좌측 상단 3번 포트
                         if 340 <= load_port.NUM <= 363:
-                            # 9,8 (대기 장소부터) 7~0 (가까운 충전/대기 장소부터)
-                            for idx in range(9,-1,-1):
-                                # AGV가 있고 충전 장소를 나오는 조건을 충족해 있다면
-                                if wait_list[idx].using and wait_list[idx].using.status == 81:
-                                    a_star_path = a_star(wait_list[idx].NUM, load_port.NUM, path_linked_list, node_list)
-                                    vehicle_list[idx].command(a_star_path, 21)
-                                    break
+                            check_wait_point(9, -1, load_port.NUM, node_list, wait_list, path_linked_list)
                         # # 좌측 하단 3번 포트
                         # elif 392 <= load_port.NUM <= 415:
                         # # 우측 상단 3번 포트
