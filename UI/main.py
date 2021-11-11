@@ -6,12 +6,14 @@ from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
 from classes import *
+from scale import Scale
 import pickle
 
 class Context:
     def __init__(self):
         self.main = None
         self.class_list = [Node, Port, WaitPoint, Path]
+        self.scale = 1
 
 class MainPage(QWidget):
     # auto increment ID.
@@ -138,12 +140,21 @@ class MainPage(QWidget):
         # file
         btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
+
         btn_save = QPushButton("Save", self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
+
         btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
+
         btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
+
+        btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        btn_set_scale.clicked.connect(self.setScale)
+
+        btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        btn_close.clicked.connect(self.close)
 
         # draw
         btn_node = QPushButton("Node", self.sub_menu_wrapper)
@@ -169,8 +180,8 @@ class MainPage(QWidget):
                 btn_save_as,
                 btn_load,
                 btn_open_layout,
-                QPushButton("Set\nScale", self.sub_menu_wrapper),
-                QPushButton("Close", self.sub_menu_wrapper),
+                btn_set_scale,
+                btn_close,
             ],
             # draw
             [
@@ -313,8 +324,11 @@ class MainPage(QWidget):
 
     # 현재 작업 내용 저장
     def save(self):
+        # TODO: Change Image src to real Image by use numpy.
         if self.layout_name is None:
-            self.saveAs()
+            if self.saveAs():
+                return True
+            return False
 
         else:
             with open(self.layout_name[0], 'wb') as f:
@@ -325,9 +339,14 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
+            return True
 
     # 다른 이름으로 저장
     def saveAs(self):
+        # 이미지를 불러온 상태가 아니라면 저장하지 않는다.
+        if not self.image_original:
+            return
+
         name = QFileDialog.getSaveFileName(self, 'Save file', './', "Layout 파일 (*.layout)")
         if name[0]:
             self.layout_name = name
@@ -340,6 +359,9 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
+
+            return True
+        return False
 
     # 도면 열기
     def openLayout(self):
@@ -369,6 +391,37 @@ class MainPage(QWidget):
             self.canvas = QImage(self.image_original.width(), self.image_original.height(),
                                  QImage.Format_ARGB32_Premultiplied)
             self.canvas.fill(0x00ffffff)
+
+    def setScale(self):
+        if self.image_original:
+            qd = Scale()
+            qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                           self.rect.width() * 0.2, self.rect.height() * 0.1)
+            qd.initUI()
+            if qd.exec_():
+                mm = qd.edit_mm.text()
+                if mm.isdigit():
+                    mm = int(mm)
+                    pixel = self.rect.width()
+
+                    scale = round(mm / pixel, 1)
+                    self.context.scale = scale
+
+    def close(self):
+        # 작업 내용 없으면 그냥 종료
+        if not self.image_original:
+            super().close()
+            return
+
+        reply = QMessageBox.question(self, 'Message', 'Are you sure to save and quit?',
+                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            if self.save():
+                super().close()
+        elif reply == QMessageBox.No:
+            super().close()
+
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
