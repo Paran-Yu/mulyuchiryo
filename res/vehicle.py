@@ -193,13 +193,8 @@ class Vehicle:
             return True
         elif self.cmd == 20 and self.count <= 5:
             return True
-        elif self.status == 30:
-            return True
-        elif self.status == 40:
-            return True
         else:
             return False
-
 
     def get_angle(self, dx, dy):
         radian = atan2(dx, -dy)
