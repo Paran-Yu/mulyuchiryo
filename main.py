@@ -19,6 +19,8 @@ wait_list = []
 node_list = []
 path_list = []
 vehicle_list = []
+loadable_port_list = []
+unloadable_port_list = []
 
 VEHICLE_STATUS = {
     00: "INIT",
