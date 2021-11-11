@@ -67,9 +67,9 @@ def port_update(port_list, loadable_port_list, unloadable_port_list):
             if x.count == x.FREQ:
                 x.status = 1
                 if x.TYPE == "load":
-                    loadable_port_list.append(x)
+                    loadable_port_list.append(x.NUM)
                 elif x.TYPE == "unload":
-                    unloadable_port_list.append(x)
+                    unloadable_port_list.append(x.NUM)
                 x.count = 0
 
 

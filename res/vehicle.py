@@ -40,19 +40,18 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
-    def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
+    def command(self, path, cmd, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
         self.count = 0
-        # load, unload하러 가는 경우 찜, command에 추가되어야하는 인자 너무 많아져...
+        
         if cmd == 21 or cmd == 22:
-            desti_node_instance = node_list[self.desti_node - 1]
-            if desti_node_instance in loadable_port_list:
-                loadable_port_list.remove(desti_node_instance)
-            elif desti_node_instance in unloadable_port_list:
-                unloadable_port_list.remove(node_list[self.desti_node - 1])
+            if self.desti_node in loadable_port_list:
+                loadable_port_list.remove(self.desti_node)
+            elif self.desti_node in unloadable_port_list:
+                unloadable_port_list.remove(self.desti_node)
 
 
     def move(self, node_list):
