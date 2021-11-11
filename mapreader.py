@@ -62,7 +62,7 @@ for x in xml_wait_list:
     x_input = float(x.find("x").text) * map_scale
     y_input = float(x.find("y").text) * map_scale
     a = node.WaitPoint(num, x_input, y_input, name)
-    if x.find("charge").text == "y":
+    if x.find("charge").text == "Y":
         a.CHARGE = True
     wait_list.append(a)
     node_list.append(a)
