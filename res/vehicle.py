@@ -45,6 +45,7 @@ class Vehicle:
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
+        self.count = 0
 
     def move(self, node_list):
         print("move!")
@@ -185,6 +186,21 @@ class Vehicle:
         else:
             return False
 
+    def isusable(self):
+        if self.status == 10:
+            return True
+        elif self.status == 81:
+            return True
+        elif self.cmd == 20 and self.count <= 5:
+            return True
+        elif self.status == 30:
+            return True
+        elif self.status == 40:
+            return True
+        else:
+            return False
+
+
     def get_angle(self, dx, dy):
         radian = atan2(dx, -dy)
         degree = degrees(radian)
@@ -243,6 +259,10 @@ class Vehicle:
                 self.cmd = 10
                 self.status = 80
                 print("charge!")
+
+        # wait to move 명령이면 5초 카운트
+        if self.cmd == 20:
+            self.count += 1
 
         # 3. 배터리 충/방전
         if self.status == 10:
