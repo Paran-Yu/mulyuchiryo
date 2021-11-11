@@ -282,6 +282,7 @@ class MainPage(QWidget):
 
     # 기존 작업 불러오기
     def load(self):
+        # TODO: 불러온 뒤 패스가 노드에 연결되게 설정하기.
         self.layout_name = QFileDialog.getOpenFileName(self, 'Load Layout', './', "Layout 파일 (*.layout)")
 
         if self.layout_name[0]:
@@ -297,6 +298,7 @@ class MainPage(QWidget):
                     self.wait_points = pickle.load(f)
                     self.paths = pickle.load(f)
                     self.vehicles = pickle.load(f)
+
                 # 경로에 이미지가 더 이상 존재하지 않는다면 경고 메시지 출력
                 else:
                     alert = QMessageBox()
@@ -318,6 +320,15 @@ class MainPage(QWidget):
                 self.paths,
                 self.vehicles,
             ]
+
+            # path 정보를 기준으로 노드간 연결.
+            for path in self.paths:
+                for type in range(3):
+                    for node in self.positions[type]:
+                        if node.NUM == path.start.NUM:
+                            path.start = node
+                        if node.NUM == path.end.NUM:
+                            path.end = node
 
             self.eraseCanvas()
             self.drawCanvas()
