@@ -46,3 +46,68 @@ class Path:
     def __init__(self, start, end):
         self.start = start
         self.end = end
+
+def AddVehicle(num, type):
+    v_name = "V"
+    if num<10:
+        v_name += "0" + str(num)
+    else:
+        v_name += str(num)
+
+    v = Vehicle(v_name)
+
+    if type == "저상형":
+        v.NUM = num
+        v.TYPE = "저상형"
+        v.WIDTH = 900
+        v.HEIGHT = 700
+        v.DIAGONAL = 1140
+
+    elif type == "Reel Direct":
+        v.NUM = num
+        v.TYPE = "Reel Direct"
+        v.WIDTH = 1700
+        v.HEIGHT = 1400
+        v.DIAGONAL = 2200
+
+    return v
+
+class Vehicle:
+    def __init__(self, name):
+        super().__init__()
+        self.NUM = -1
+        self.NAME = name
+        self.TYPE = "default"
+        self.WIDTH = -1
+        self.HEIGHT = -1
+        self.DIAGONAL = -1
+        self.ROTATE_SPEED = -1
+        self.ACCEL = -1
+        self.MAX_SPEED = -1
+        self.LU_TYPE = "default"
+        self.LOAD_SPEED = -1
+        self.CHARGE_SPEED = -1
+        self.DISCHARGE_WAIT = -1
+        self.DISCHARGE_WORK = -1
+        self.BREAK_PARAM = 1.8
+        self.NODE_TH = 200
+        self.ROTATE_TH = -1
+
+        self.x = -1
+        self.y = -1
+        self.node = -1
+        self.desti_node = -1
+        self.velocity = -1
+        self.angle = -1
+        self.status = 0
+        self.loaded = 0
+        self.battery = -1
+        self.cmd = ""
+        self.path = []
+        self.turn_flag = 0
+        self.last_flag = 0
+        self.turning = -1
+        self.dAngle = 0
+        self.desti_angle = 0
+        self.count = 0
+        self.dCharge = 0
