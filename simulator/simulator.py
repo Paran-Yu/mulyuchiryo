@@ -137,7 +137,8 @@ def plot_init(node_list, path_list, vehicle_list):
         )
         vehicle_arrow = patches.FancyArrowPatch(
             (vehicle.x, vehicle.y),
-            (vehicle.x, vehicle.y - vehicle.HEIGHT),
+            (vehicle.x, vehicle.y - vehicle.HEIGHT/2),
+            # shrinkB=0.1,
             mutation_scale=15
         )
         vehicle_desti_arrow = patches.FancyArrowPatch(
@@ -149,7 +150,7 @@ def plot_init(node_list, path_list, vehicle_list):
         ax.add_patch(vehicle_arrow)
         ax.add_patch(vehicle_desti_arrow)
         vehicle_rects.append(vehicle_rect)
-        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, (vehicle.NAME, vehicle.velocity, vehicle.angle, vehicle.loaded)))
+        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, (vehicle.NAME, round(vehicle.velocity,2), vehicle.angle, vehicle.loaded)))
         vehicle_arrows.append(vehicle_arrow)
         vehicle_desti_arrows.append(vehicle_desti_arrow)
 
@@ -167,9 +168,9 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].NAME, vehicle_list[i].velocity, vehicle_list[i].angle, vehicle_list[i].loaded))
-        front_x = vehicle_list[i].x + vehicle_list[i].HEIGHT * np.cos(np.pi/180*AngleToMfc(vehicle_list[i].angle))
-        front_y = vehicle_list[i].y + vehicle_list[i].HEIGHT * np.sin(np.pi/180*AngleToMfc(vehicle_list[i].angle))
+        vehicle_texts[i].set_text((vehicle_list[i].NAME, round(vehicle_list[i].velocity,2), vehicle_list[i].angle, vehicle_list[i].loaded))
+        front_x = vehicle_list[i].x + vehicle_list[i].HEIGHT/2 * np.cos(np.pi/180*AngleToMfc(vehicle_list[i].angle))
+        front_y = vehicle_list[i].y + vehicle_list[i].HEIGHT/2 * np.sin(np.pi/180*AngleToMfc(vehicle_list[i].angle))
         vehicle_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (front_x, front_y))
         if len(vehicle_list[i].path) == 0:
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
