@@ -26,15 +26,11 @@ unloadable_port_list = []
 VEHICLE_STATUS = {
     00: "INIT",
     10: "WAITING",
-    11: "WAITING&LOADED",
-    20: "MOVING TO WAIT",
-    21: "MOVING TO UNLOAD",
-    22: "MOVING TO LOAD",
-    23: "MOVING TO CHARGE",
+    20: "MOVE",
     30: "LOADING",
     40: "UNLOADING",
     80: "CHARGING",
-    81: "CHARGING&LOADED",
+    81: "CHARGING_WAIT",
     91: "COLLIDED",
     99: "ERROR"
 }
