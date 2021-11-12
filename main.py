@@ -8,6 +8,7 @@ import threading
 import mapreader
 from simulator import simulator
 from Core.a_star import a_star, heuristic
+import Core2.astar as astar, Core2.planner as planner
 
 # simulate attribute
 simulate_speed = 1
@@ -19,6 +20,7 @@ port_list = []
 wait_list = []
 node_list = []
 path_list = []
+path_linked_list = []
 vehicle_list = []
 loadable_port_list = []
 unloadable_port_list = []
@@ -71,6 +73,18 @@ def simulate_loop():
 
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
+
+# searching
+def search_routes():
+    env = planner.Environment(vehicle_list,node_list,path_linked_list)
+    # Searching
+    cbs = planner.CBS(env)
+    solution = cbs.search()
+    if not solution:
+        print(" Solution not found" )
+        return
+    return solution
+    
 
 
 #######################
