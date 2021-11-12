@@ -108,7 +108,11 @@ def plot_init(node_list, path_list, vehicle_list):
         # node
         else:
             plt.plot(node.X, node.Y, 'r.')
-        node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', fontsize=8))
+        node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', 
+            horizontalalignment='right',
+            verticalalignment='top',
+            fontsize=8)
+        )
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
