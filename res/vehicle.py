@@ -124,6 +124,10 @@ class Vehicle:
 
         # 5. node 근접시 도착한 것으로 보정
         if distance <= 300:
+            # 전 node가 wait point였다면 비워주기
+            if hasattr(node_list[self.node - 1], 'using'):
+                node_list[self.node - 1].using = 0
+
             self.x = next_node[0]
             self.y = next_node[1]
             self.node = self.path[0]
@@ -270,6 +274,7 @@ class Vehicle:
             elif self.cmd == 20:
                 self.cmd = 10
                 self.status = 10
+                node_list[self.node-1].using = self.NUM
                 print("wait!")
             # charge
             elif self.cmd == 23:
