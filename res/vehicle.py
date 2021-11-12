@@ -4,6 +4,7 @@ class Vehicle:
     def __init__(self, name):
         super().__init__()
 
+        self.NUM = -1
         self.NAME = name
         self.TYPE = "default"
         self.WIDTH = -1
