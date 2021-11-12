@@ -8,7 +8,6 @@ vehicle_rects = []
 vehicle_texts = []
 vehicle_arrows = []
 vehicle_desti_arrows = []
-collision_marks = []
 
 
 class RotatingRectangle(patches.Rectangle):
@@ -91,7 +90,7 @@ def collision_check(vehicle_list):
             if vehicle_list[i].checkCrash(vehicle_list[j]):
                 x = (vehicle_list[i].x + vehicle_list[j].x)/2
                 y = (vehicle_list[i].y + vehicle_list[j].y)/2
-                collision_marks.append(plt.plot(x,y, 'y*'))
+                plt.plot(x,y, 'y*')
 
 # PLOT
 def plot_init(node_list, path_list, vehicle_list):
