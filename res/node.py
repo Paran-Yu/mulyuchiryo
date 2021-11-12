@@ -35,7 +35,7 @@ class WaitPoint(Node):
         self.WAIT_NAME = name
         self.CHARGE = False
 
-        self.using = False
+        self.using = 0
 
     def getName(self):
         return self.WAIT_NAME
