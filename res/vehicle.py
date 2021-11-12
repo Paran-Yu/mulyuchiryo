@@ -150,7 +150,10 @@ class Vehicle:
             nextnext_node = node_list[self.path[1] - 1].getPos()
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
-            old_angle = self.angle
+            if self.angle == 0:
+                old_angle = 360
+            else:
+                old_angle = self.angle
             new_angle = self.get_angle(dx1, dy1)
             print(old_angle, new_angle)
             self.desti_angle = new_angle
@@ -238,7 +241,7 @@ class Vehicle:
 
         # 2. 작업 - status 업데이트
         # path 이동
-        print("cmd start!: ", self.cmd)
+        print("cmd start!: ", self.NUM)
         if len(self.path) != 0:
             if self.turning == -1:
                 self.move(node_list)
