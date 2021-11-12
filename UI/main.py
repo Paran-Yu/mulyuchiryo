@@ -7,6 +7,7 @@ from sidebar import SideBar
 from selector import Selector
 from classes import *
 from scale import Scale
+from vehicleEditor import VehicleEditor
 import pickle
 
 class Context:
@@ -14,6 +15,7 @@ class Context:
         self.main = None
         self.class_list = [Node, Port, WaitPoint, Path]
         self.scale = 1
+        self.v_count = 0
 
 class MainPage(QWidget):
     # auto increment ID.
@@ -173,6 +175,10 @@ class MainPage(QWidget):
         btn_path.toggled.connect(lambda: self.changeTools(3))
         btn_path.setCheckable(True)
 
+        # Vehicle
+        btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
+        btn_vehicle_edit.clicked.connect(self.editVehicle)
+
         self.subMenus = [
             # file
             [
@@ -192,8 +198,7 @@ class MainPage(QWidget):
             ],
             # vehicle
             [
-                QPushButton("Add", self.sub_menu_wrapper),
-                QPushButton("Delete\nAll", self.sub_menu_wrapper),
+                btn_vehicle_edit,
             ],
             # simulate
             [
@@ -433,6 +438,15 @@ class MainPage(QWidget):
         elif reply == QMessageBox.No:
             super().close()
 
+    def editVehicle(self):
+        editor = VehicleEditor(self.context, self.vehicles)
+        editor.setGeometry(self.width()*0.1, self.height()*0.1,
+                           self.width()*0.4, self.height()*0.3)
+        editor.initUI()
+
+        editor.exec_()
+
+        self.vehicles = editor.vehicles
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
