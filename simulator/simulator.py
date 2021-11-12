@@ -8,6 +8,7 @@ vehicle_rects = []
 vehicle_texts = []
 vehicle_arrows = []
 vehicle_desti_arrows = []
+collision_marks = []
 
 
 class RotatingRectangle(patches.Rectangle):
@@ -49,6 +50,7 @@ def simulate_routine(node_list, port_list, wait_list, vehicle_list):
     print("routine start")
     port_update(port_list)
     vehicle_update(node_list, vehicle_list)
+    collision_check(vehicle_list)
 
 
 # PORT
@@ -69,7 +71,6 @@ def port_update(port_list):
                 x.status = 1
                 x.count = 0
 
-
 # WAIT POINT
 def wait_init(wait_list, vehicle_list):
     for x in vehicle_list:
@@ -83,6 +84,14 @@ def vehicle_update(node_list, vehicle_list):
         vehicle.vehicle_routine(node_list)
         # TODO: DB에 기록
 
+# COLLISION
+def collision_check(vehicle_list):
+    for i in range(len(vehicle_list)):
+        for j in range(i+1, len(vehicle_list)):
+            if vehicle_list[i].checkCrash(vehicle_list[j]):
+                x = (vehicle_list[i].x + vehicle_list[j].x)/2
+                y = (vehicle_list[i].y + vehicle_list[j].y)/2
+                collision_marks.append(plt.plot(x,y, 'y*'))
 
 # PLOT
 def plot_init(node_list, path_list, vehicle_list):
