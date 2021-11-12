@@ -127,13 +127,13 @@ def plot_init(node_list, path_list, vehicle_list):
         # print(vehicle.x, vehicle.y)
         vehicle_rect = RotatingRectangle(
             [vehicle.x, vehicle.y],
-            vehicle.WIDTH,
             vehicle.HEIGHT,
+            vehicle.WIDTH,
             angle=vehicle.angle,
             fill=True,
             # edgecolor='blue',
             # facecolor='purple',
-            rel_point_of_rot=[vehicle.WIDTH / 2, vehicle.HEIGHT / 2]
+            rel_point_of_rot=[vehicle.HEIGHT / 2, vehicle.WIDTH / 2]
         )
         vehicle_arrow = patches.RegularPolygon(
             (vehicle.x, vehicle.y),
