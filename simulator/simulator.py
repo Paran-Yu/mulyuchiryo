@@ -67,9 +67,9 @@ def port_update(port_list, loadable_port_list, unloadable_port_list):
             if x.count == x.FREQ:
                 x.status = 1
                 if x.TYPE == "load":
-                    loadable_port_list.append(x.NUM)
+                    loadable_port_list.append(x)
                 elif x.TYPE == "unload":
-                    unloadable_port_list.append(x.NUM)
+                    unloadable_port_list.append(x)
                 x.count = 0
 
 
@@ -77,7 +77,7 @@ def port_update(port_list, loadable_port_list, unloadable_port_list):
 def wait_init(wait_list, vehicle_list):
     for x in vehicle_list:
         used_wait = [wait for wait in wait_list if wait.NUM == x.node][0]
-        used_wait.using = True
+        used_wait.using = x.NUM
 
 
 # VEHICLE

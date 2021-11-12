@@ -26,15 +26,11 @@ unloadable_port_list = []
 VEHICLE_STATUS = {
     00: "INIT",
     10: "WAITING",
-    11: "WAITING&LOADED",
-    20: "MOVING TO WAIT",
-    21: "MOVING TO UNLOAD",
-    22: "MOVING TO LOAD",
-    23: "MOVING TO CHARGE",
+    20: "MOVE",
     30: "LOADING",
     40: "UNLOADING",
     80: "CHARGING",
-    81: "CHARGING&LOADED",
+    81: "CHARGING_WAIT",
     91: "COLLIDED",
     99: "ERROR"
 }
@@ -66,6 +62,11 @@ def start_simulate():
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
+<<<<<<< HEAD
+=======
+
+    # 1초마다 돌아갈 때 코드 (함수화)
+>>>>>>> 5fa84f39b5813c5b56955138893fdc5ee38ac898
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, wait_list, vehicle_list, path_linked_list)

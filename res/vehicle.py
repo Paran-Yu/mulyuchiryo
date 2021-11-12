@@ -4,6 +4,7 @@ class Vehicle:
     def __init__(self, name):
         super().__init__()
 
+        self.NUM = -1
         self.NAME = name
         self.TYPE = "default"
         self.WIDTH = -1
@@ -41,7 +42,10 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
-    def command(self, path, cmd, loadable_port_list, unloadable_port_list):
+    def __lt__(self, other):
+        return self.NUM < other.NUM
+
+    def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
         self.desti_node = self.path[-1]
@@ -49,10 +53,11 @@ class Vehicle:
         self.count = 0
         
         if cmd == 21 or cmd == 22:
-            if self.desti_node in loadable_port_list:
-                loadable_port_list.remove(self.desti_node)
-            elif self.desti_node in unloadable_port_list:
-                unloadable_port_list.remove(self.desti_node)
+            desti_node_instance = node_list[self.desti_node -1]
+            if desti_node_instance in loadable_port_list:
+                loadable_port_list.remove(desti_node_instance)
+            elif desti_node_instance in unloadable_port_list:
+                unloadable_port_list.remove(desti_node_instance)
 
 
     def move(self, node_list):
@@ -122,6 +127,10 @@ class Vehicle:
 
         # 5. node 근접시 도착한 것으로 보정
         if distance <= 300:
+            # 전 node가 wait point였다면 비워주기
+            if hasattr(node_list[self.node - 1], 'using'):
+                node_list[self.node - 1].using = 0
+
             self.x = next_node[0]
             self.y = next_node[1]
             self.node = self.path[0]
@@ -268,6 +277,7 @@ class Vehicle:
             elif self.cmd == 20:
                 self.cmd = 10
                 self.status = 10
+                node_list[self.node-1].using = self.NUM
                 print("wait!")
             # charge
             elif self.cmd == 23:
