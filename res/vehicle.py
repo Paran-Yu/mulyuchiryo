@@ -42,6 +42,9 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
+    def __lt__(self, other):
+        return self.NUM < other.NUM
+
     def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
