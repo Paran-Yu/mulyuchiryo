@@ -135,12 +135,6 @@ def plot_init(node_list, path_list, vehicle_list):
             # facecolor='purple',
             rel_point_of_rot=[vehicle.WIDTH / 2, vehicle.HEIGHT / 2]
         )
-        # vehicle_arrow = patches.FancyArrowPatch(
-        #     (vehicle.x, vehicle.y),
-        #     (vehicle.x, vehicle.y - vehicle.HEIGHT/2),
-        #     # shrinkB=0.1,
-        #     mutation_scale=15
-        # )
         vehicle_arrow = patches.RegularPolygon(
             (vehicle.x, vehicle.y),
             3,
@@ -165,8 +159,6 @@ def plot_init(node_list, path_list, vehicle_list):
 
 
 def plot_update(simulate_speed, node_list, vehicle_list):
-    # def AngleToMfc(degree):
-    #     return (degree+270)%360
 
     #  전에 있던 것 업데이트 해주기
     # Vehicle
@@ -176,8 +168,6 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_texts[i].set_text((vehicle_list[i].NAME, round(vehicle_list[i].velocity,2), vehicle_list[i].angle, vehicle_list[i].loaded))
-        # front_x = vehicle_list[i].x + vehicle_list[i].HEIGHT/2 * np.cos(np.pi/180*AngleToMfc(vehicle_list[i].angle))
-        # front_y = vehicle_list[i].y + vehicle_list[i].HEIGHT/2 * np.sin(np.pi/180*AngleToMfc(vehicle_list[i].angle))
         vehicle_arrows[i].xy = (vehicle_list[i].x, vehicle_list[i].y)
         vehicle_arrows[i].orientation = np.radians((vehicle_list[i].angle+180)%360)
         if len(vehicle_list[i].path) == 0:
