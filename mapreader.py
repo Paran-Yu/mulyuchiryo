@@ -122,6 +122,7 @@ for x in xml_vehicle_list:
     a.angle = int(x.find("start_angle").text)
     a.battery = 100
     vehicle_list.append(a)
+vehicle_list = sorted(vehicle_list)
 
 def read_layout():
     return img, map_data
