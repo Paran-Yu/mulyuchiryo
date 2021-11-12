@@ -182,7 +182,7 @@ class Vehicle:
 
     def checkCrash(self, car):
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
-        if distance <= self.diagonal/2 + car.diagonal/2:
+        if distance <= self.DIAGONAL/2 + car.DIAGONAL/2:
             return True
         else:
             return False
