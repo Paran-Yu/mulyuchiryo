@@ -1,12 +1,13 @@
 import sys
 import os.path
+import random
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
 from classes import *
-from scale import Scale
+from Scale import *
 from vehicleEditor import VehicleEditor
 import pickle
 
@@ -15,6 +16,8 @@ class Context:
         self.main = None
         self.class_list = [Node, Port, WaitPoint, Path]
         self.scale = 1
+        self.capa = 1
+        self.simulation_speed = 1
         self.v_count = 0
 
 class MainPage(QWidget):
@@ -152,9 +155,6 @@ class MainPage(QWidget):
         btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
 
-        btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
-        btn_set_scale.clicked.connect(self.setScale)
-
         btn_close = QPushButton("Close", self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
 
@@ -179,6 +179,12 @@ class MainPage(QWidget):
         btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
         btn_vehicle_edit.clicked.connect(self.editVehicle)
 
+        # Simulator
+        btn_play = QPushButton("Play", self.sub_menu_wrapper)
+        btn_play.clicked.connect(self.play)
+        btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
+        btn_set_oper.clicked.connect(self.setOperationData)
+
         self.subMenus = [
             # file
             [
@@ -186,7 +192,6 @@ class MainPage(QWidget):
                 btn_save_as,
                 btn_load,
                 btn_open_layout,
-                btn_set_scale,
                 btn_close,
             ],
             # draw
@@ -202,9 +207,9 @@ class MainPage(QWidget):
             ],
             # simulate
             [
-                QPushButton("Play", self.sub_menu_wrapper),
+                btn_play,
                 QPushButton("Stop", self.sub_menu_wrapper),
-                QPushButton("Speed", self.sub_menu_wrapper),
+                btn_set_oper,
             ],
             # report
             [
@@ -303,6 +308,10 @@ class MainPage(QWidget):
                     self.wait_points = pickle.load(f)
                     self.paths = pickle.load(f)
                     self.vehicles = pickle.load(f)
+                    self.context.scale = pickle.load(f)
+                    self.context.capa = pickle.load(f)
+                    self.context.simulation_speed = pickle.load(f)
+                    self.context.v_count = pickle.load(f)
 
                 # 경로에 이미지가 더 이상 존재하지 않는다면 경고 메시지 출력
                 else:
@@ -355,6 +364,10 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
+                pickle.dump(self.context.scale, f)
+                pickle.dump(self.context.capa, f)
+                pickle.dump(self.context.simulation_speed, f)
+                pickle.dump(self.context.v_count, f)
             return True
 
     # 다른 이름으로 저장
@@ -375,7 +388,10 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
-
+                pickle.dump(self.context.scale, f)
+                pickle.dump(self.context.capa, f)
+                pickle.dump(self.context.simulation_speed, f)
+                pickle.dump(self.context.v_count, f)
             return True
         return False
 
@@ -408,20 +424,24 @@ class MainPage(QWidget):
                                  QImage.Format_ARGB32_Premultiplied)
             self.canvas.fill(0x00ffffff)
 
-    def setScale(self):
+    def setOperationData(self):
         if self.image_original:
-            qd = Scale()
+            qd = OperationData()
             qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
-                           self.rect.width() * 0.2, self.rect.height() * 0.1)
+                           self.rect.width() * 0.2, self.rect.height() * 0.3)
             qd.initUI()
             if qd.exec_():
-                mm = qd.edit_mm.text()
-                if mm.isdigit():
-                    mm = int(mm)
-                    pixel = self.rect.width()
+                length = int(qd.edit_length.text())
+                capa = int(qd.edit_capa.text())
+                simulation_speed = int(qd.edit_speed.text())
 
-                    scale = round(mm / pixel, 1)
-                    self.context.scale = scale
+                pixel = self.rect.width()
+                scale = round(length / pixel, 1)
+                self.context.scale = scale
+
+                self.context.capa = capa
+
+                self.context.simulation_speed = simulation_speed
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
@@ -447,6 +467,145 @@ class MainPage(QWidget):
         editor.exec_()
 
         self.vehicles = editor.vehicles
+
+    def play(self):
+        self.XML()
+        # TODO: start Simulation.
+
+    # XML 파일 추출
+    def XML(self):
+        # 전체 노드 수
+        count_node = len(self.nodes)
+        count_ports = len(self.ports)
+        count_wp = len(self.wait_points)
+
+        count = count_node + count_ports + count_wp
+
+        # 방문중인 노드 제외
+        visited = []
+        for i in range(count):
+            visited.append(False)
+
+        # AGV의 각도
+        angle = ["0", "90", "180", "270"]
+
+        with open("data.xml", 'w', encoding="UTF-8") as f:
+            # 인코딩 지정
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+
+            # 레이아웃 저장
+            f.write('<layout>\n')
+
+            # 이미지 파일 저장
+            f.write('\t<img>\n')
+            # 경로
+            f.write('\t\t<img_path>' + self.layout_name[0] + '</img_path>\n')
+            # 이름
+            f.write('\t\t<name>layout.jpg</name>\n')
+            f.write('\t</img>\n')
+
+            # 운영 데이터
+            f.write('\t<map>\n')
+            f.write("\t\t<width>" + str(self.rect.width()) + "</width>\n")    # 가로 길이
+            f.write("\t\t<scale>" + str(self.context.scale) + "</scale>\n")   # 스케일 정보
+            f.write("\t\t<capa>" + str(self.context.capa) + "</capa>\n")      # 일일 반송량
+            f.write('\t</map>\n')
+
+            # 포트
+            f.write('\t<ports>\n')
+            for port in self.ports:
+                f.write('\t\t<port>\n')
+                f.write("\t\t\t<num>" + str(port.NUM) + "</num>\n")
+                f.write("\t\t\t<x>" + str(port.X) + "</x>\n")
+                f.write("\t\t\t<y>" + str(port.Y) + "</y>\n")
+                f.write("\t\t\t<name>" + str(port.PORT_NAME) + "</name>\n")
+                f.write("\t\t\t<type>" + str(port.TYPE) + "</type>\n")
+                f.write("\t\t\t<freq>" + str(port.FREQ) + "</freq>\n")
+                f.write("\t\t\t<v_type>" + str(port.V_TYPE) + "</v_type>\n")
+                # 연결된 unload 포트 목록
+                f.write("\t\t\t<unload>")
+                for connected_port in port.UNLOAD_LIST:
+                    f.write(str(connected_port))    # Unload port NUM
+                f.write("</unload>\n")
+                f.write('\t\t</port>\n')
+            f.write('\t</ports>\n')
+
+            # 대기 장소
+            f.write('\t<waits>\n')
+            for wait_point in self.wait_points:
+                f.write('\t\t<wait>\n')
+                f.write("\t\t\t<num>" + str(wait_point.NUM) + "</num>\n")
+                f.write("\t\t\t<x>" + str(wait_point.X) + "</x>\n")
+                f.write("\t\t\t<y>" + str(wait_point.Y) + "</y>\n")
+                f.write("\t\t\t<name>" + str(wait_point.WAIT_NAME) + "</name>\n")
+                f.write("\t\t\t<charge>" + ("Y" if wait_point.CHARGE else "N") + "</charge>\n")
+                f.write('\t\t</wait>\n')
+            f.write('\t</waits>\n')
+
+            # 노드
+            f.write('\t<nodes>\n')
+            for node in self.nodes:
+                f.write('\t\t<node>\n')
+                f.write("\t\t\t<num>" + str(node.NUM) + "</num>\n")
+                f.write("\t\t\t<x>" + str(node.X) + "</x>\n")
+                f.write("\t\t\t<y>" + str(node.Y) + "</y>\n")
+                f.write("\t\t\t<isCross>" + ("Y" if node.isCross else "N") + "</isCross>\n")
+                f.write('\t\t</node>\n')
+            f.write('\t</nodes>\n')
+
+            # 경로
+            f.write('\t<paths>\n')
+            for path in self.paths:
+                f.write('\t\t<path>\n')
+                f.write("\t\t\t<start>" + str(path.start.NUM) + "</start>\n")   # start NUM
+                f.write("\t\t\t<end>" + str(path.end.NUM) + "</end>\n")         # end NUM
+                f.write('\t\t</path>\n')
+            f.write('\t</paths>\n')
+
+            # AGV
+            f.write('\t<vehicles>\n')
+            for vtype in self.vehicles:
+                for vehicle in vtype:
+                    f.write('\t\t<vehicle>\n')
+                    f.write("\t\t\t<num>" + str(vehicle.NUM) + "</num>\n")
+                    f.write("\t\t\t<name>" + str(vehicle.NAME) + "</name>\n")
+                    f.write("\t\t\t<type>" + str(vehicle.TYPE) + "</type>\n")
+
+                    # AGV 랜덤 배치
+                    idx = random.randrange(0, count)
+                    while visited[idx]:
+                        # 이미 배치된 노드 패스
+                        idx = random.randrange(0, count)
+
+                    visited[idx] = True
+                    type = 0
+                    if idx < count_node:    # Node. position[0][idx]
+                        type = 0
+                    if idx < count_node + count_ports:  # Port. position[1][idx]
+                        type = 1
+                        idx -= (count_node)
+                    else:
+                        type = 2
+                        idx -= (count_node + count_ports)
+
+                    f.write("\t\t\t<node>" + str(self.positions[type][idx].NUM) + "</node>\n")
+                    f.write("\t\t\t<angle>" + angle[random.randrange(0, 4)] + "</angle>\n")
+                    f.write("\t\t\t<width>" + str(vehicle.WIDTH) + "</width>\n")
+                    f.write("\t\t\t<height>" + str(vehicle.HEIGHT) + "</height>\n")
+                    f.write("\t\t\t<diagonal>" + str(vehicle.DIAGONAL) + "</diagonal>\n")
+                    f.write("\t\t\t<rotate_speed>" + str(vehicle.ROTATE_SPEED) + "</rotate_speed>\n")
+                    f.write("\t\t\t<accel>" + str(vehicle.ACCEL) + "</accel>\n")
+                    f.write("\t\t\t<max_speed>" + str(vehicle.MAX_SPEED) + "</max_speed>\n")
+                    f.write("\t\t\t<lu_type>" + str(vehicle.LU_TYPE) + "</lu_type>\n")
+                    f.write("\t\t\t<load_speed>" + str(vehicle.LOAD_SPEED) + "</load_speed>\n")
+                    f.write("\t\t\t<charge_speed>" + str(vehicle.CHARGE_SPEED) + "</charge_speed>\n")
+                    f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
+                    f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
+                    f.write('\t\t</vehicle>\n')
+            f.write('\t</vehicles>\n')
+
+            f.write('</layout>\n')
+            f.close()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
@@ -496,7 +655,7 @@ class MainPage(QWidget):
                     self.canvas_prev = QImage(self.canvas)
                     qp = QPainter(self.canvas_prev)
 
-                    qp.setPen(QPen(QColor(0, 0, 0), 10))
+                    qp.setPen(QPen(QColor(0, 0, 0), 5))
                     qp.drawLine(self.selected_node.X, self.selected_node.Y, nx, ny)
 
                     qp.end()
@@ -552,7 +711,7 @@ class MainPage(QWidget):
         for path in self.paths:
             qp = QPainter(self.canvas)
 
-            qp.setPen(QPen(QColor(0, 0, 0), 10))
+            qp.setPen(QPen(QColor(0, 0, 0), 5))
             qp.drawLine(path.start.X, path.start.Y, path.end.X, path.end.Y)
 
             qp.end()
