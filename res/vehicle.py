@@ -291,7 +291,7 @@ class Vehicle:
                         node_list[self.desti_node - 1].status = -1
                     self.count += 1
                     if self.count >= self.LOAD_SPEED:
-                        self.count += 1
+                        self.count = 0
                         self.cmd = 10
                         self.status = 10
                         self.loaded = 0
