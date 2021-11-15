@@ -145,6 +145,7 @@ class Vehicle:
         print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
+            self.velocity = 0
             next_node = node_list[self.path[0] - 1].getPos()
             nextnext_node = node_list[self.path[1] - 1].getPos()
             dx1 = nextnext_node[0] - next_node[0]
