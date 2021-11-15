@@ -69,6 +69,8 @@ class MainPage(QWidget):
         self.selector = Selector(self)
         self.context.selector = self.selector
 
+        self.actual_length = None
+        self.scale_pressed = None
         self.layout_name = None
 
         self.initUI()
@@ -155,6 +157,10 @@ class MainPage(QWidget):
         btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
 
+        btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        btn_set_scale.clicked.connect(self.setScale)
+        btn_set_scale.setCheckable(True)
+
         btn_close = QPushButton("Close", self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
 
@@ -192,6 +198,7 @@ class MainPage(QWidget):
                 btn_save_as,
                 btn_load,
                 btn_open_layout,
+                btn_set_scale,
                 btn_close,
             ],
             # draw
@@ -266,6 +273,7 @@ class MainPage(QWidget):
 
         self.canvas_label = QLabel(self.centralWidget)
         self.canvas_label.resize(self.rect.width(), self.rect.height() - height)
+
         self.image_original = None
         self.canvas_prev = None
 
@@ -415,33 +423,47 @@ class MainPage(QWidget):
             self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
             self.canvas_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
-            # 가로크기에 맞추기
-            #self.img_label.setPixmap(pm_scaled)
-
             self.image_original.load(fname[0])
             # 불러온 이미지와 같은 크기의 투명 도화지. 이 위에 그림을 그림.
             self.canvas = QImage(self.image_original.width(), self.image_original.height(),
                                  QImage.Format_ARGB32_Premultiplied)
             self.canvas.fill(0x00ffffff)
 
+            self.canvas_height_scale = (self.rect.height() - self.canvas_label.y()) \
+                                       * self.canvas.height() / self.canvas_label.height()
+
     def setOperationData(self):
         if self.image_original:
             qd = OperationData()
             qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
-                           self.rect.width() * 0.2, self.rect.height() * 0.3)
+                           self.rect.width() * 0.2, self.rect.height() * 0.2)
             qd.initUI()
-            if qd.exec_():
-                length = int(qd.edit_length.text())
+            if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
                 capa = int(qd.edit_capa.text())
                 simulation_speed = int(qd.edit_speed.text())
 
-                pixel = self.rect.width()
-                scale = round(length / pixel, 1)
-                self.context.scale = scale
-
                 self.context.capa = capa
-
                 self.context.simulation_speed = simulation_speed
+
+    def setScale(self):
+        # 다시 누른 경우 창이 뜨지 않음
+        if self.image_original and self.subMenus[0][4].isChecked():
+            length = 0
+            if self.actual_length:
+                length = self.actual_length
+
+            qd = Scale(length)
+            qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                           self.rect.width() * 0.2, self.rect.height() * 0.1)
+
+            qd.initUI()
+            result = qd.exec_()
+
+            if result:
+                if qd.edit_length.text():
+                    self.actual_length = int(qd.edit_length.text())
+            else:
+                self.subMenus[0][4].setChecked(False)
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
@@ -516,8 +538,9 @@ class MainPage(QWidget):
             for port in self.ports:
                 f.write('\t\t<port>\n')
                 f.write("\t\t\t<num>" + str(port.NUM) + "</num>\n")
-                f.write("\t\t\t<x>" + str(port.X) + "</x>\n")
-                f.write("\t\t\t<y>" + str(port.Y) + "</y>\n")
+                x, y = self.convertCanvasToMonitor(port.X, port.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<name>" + str(port.PORT_NAME) + "</name>\n")
                 f.write("\t\t\t<type>" + str(port.TYPE) + "</type>\n")
                 f.write("\t\t\t<freq>" + str(port.FREQ) + "</freq>\n")
@@ -535,8 +558,9 @@ class MainPage(QWidget):
             for wait_point in self.wait_points:
                 f.write('\t\t<wait>\n')
                 f.write("\t\t\t<num>" + str(wait_point.NUM) + "</num>\n")
-                f.write("\t\t\t<x>" + str(wait_point.X) + "</x>\n")
-                f.write("\t\t\t<y>" + str(wait_point.Y) + "</y>\n")
+                x, y = self.convertCanvasToMonitor(wait_point.X, wait_point.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<name>" + str(wait_point.WAIT_NAME) + "</name>\n")
                 f.write("\t\t\t<charge>" + ("Y" if wait_point.CHARGE else "N") + "</charge>\n")
                 f.write('\t\t</wait>\n')
@@ -547,8 +571,9 @@ class MainPage(QWidget):
             for node in self.nodes:
                 f.write('\t\t<node>\n')
                 f.write("\t\t\t<num>" + str(node.NUM) + "</num>\n")
-                f.write("\t\t\t<x>" + str(node.X) + "</x>\n")
-                f.write("\t\t\t<y>" + str(node.Y) + "</y>\n")
+                x, y = self.convertCanvasToMonitor(node.X, node.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<isCross>" + ("Y" if node.isCross else "N") + "</isCross>\n")
                 f.write('\t\t</node>\n')
             f.write('\t</nodes>\n')
@@ -779,6 +804,22 @@ class MainPage(QWidget):
                 elif self.tools[self.current_tool] == "mouse":
                     self.side_bar.widget.hide()
 
+            ## Scale 범위 지정
+            #  실제 길이를 입력했고, 버튼이 눌려있는 상태라면
+            if self.actual_length and self.subMenus[0][4].isChecked():
+                if self.scale_pressed:
+                    start = self.scale_pressed
+                    end = e.x()
+
+                    diff = abs(end-start)
+                    self.context.scale = round(self.actual_length / diff, 1)
+
+                    self.subMenus[0][4].setChecked(False)
+
+                    self.scale_pressed = None
+                else:
+                    self.scale_pressed = e.x()
+
         if e.buttons() & Qt.MidButton:
             pass
         if e.buttons() & Qt.RightButton:
@@ -802,6 +843,9 @@ class MainPage(QWidget):
 
             if self.canvas.pixel(nx, ny) != 0x00ffffff:
                 type, idx = self.selector.selectNode(nx, ny)
+
+                if type == -1:
+                    return
 
                 start = self.selected_node
                 end = self.positions[type][idx]
@@ -866,6 +910,12 @@ class MainPage(QWidget):
             if self.canvas_prev:
                 pixmap = QPixmap(self.canvas_prev.scaled(self.canvas_label.width(), self.canvas_label.height()))
                 self.canvas_label.setPixmap(pixmap)
+
+    def convertCanvasToMonitor(self, x, y):
+        nx = x / self.canvas.width() * self.canvas_label.width()
+        ny = y / self.canvas_height_scale * self.rect.height()
+
+        return int(nx), int(ny)
 
 # Run App.
 if __name__ == '__main__':
