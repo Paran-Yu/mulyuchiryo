@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
 from classes import *
-from Scale import *
+from scale import *
 from vehicleEditor import VehicleEditor
 import pickle
 
@@ -581,7 +581,7 @@ class MainPage(QWidget):
                     type = 0
                     if idx < count_node:    # Node. position[0][idx]
                         type = 0
-                    if idx < count_node + count_ports:  # Port. position[1][idx]
+                    elif idx < count_node + count_ports:  # Port. position[1][idx]
                         type = 1
                         idx -= (count_node)
                     else:
@@ -601,6 +601,9 @@ class MainPage(QWidget):
                     f.write("\t\t\t<charge_speed>" + str(vehicle.CHARGE_SPEED) + "</charge_speed>\n")
                     f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
                     f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
+                    # TODO: Erase and Refactoring Simulator. Dupleicated with `node`, `angle`.
+                    f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
+                    f.write("\t\t\t<start_angle>" + angle[random.randrange(0, 4)] + "</start_angle>\n")
                     f.write('\t\t</vehicle>\n')
             f.write('\t</vehicles>\n')
 
