@@ -11784,7 +11784,7 @@
             <num>1</num>
             <name>V01</name>
             <type>LowHeight</type>
-            <node>492</node>
+            <node>498</node>
             <angle>90</angle>
             <width>900</width>
             <height>700</height>
@@ -11795,16 +11795,16 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-            <start_node>492</start_node>
-            <start_angle>90</start_angle>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>498</start_node>
+            <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
             <num>2</num>
             <name>V02</name>
             <type>LowHeight</type>
-            <node>493</node>
+            <node>499</node>
             <angle>90</angle>
             <width>900</width>
             <height>700</height>
@@ -11815,16 +11815,16 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-            <start_node>493</start_node>
-            <start_angle>90</start_angle>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>499</start_node>
+            <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
             <num>3</num>
             <name>V03</name>
             <type>LowHeight</type>
-            <node>494</node>
+            <node>500</node>
             <angle>90</angle>
             <width>900</width>
             <height>700</height>
@@ -11835,9 +11835,29 @@
             <lu_type>UpDown</lu_type>
             <load_speed>30</load_speed>
             <charge_speed>0.83</charge_speed>
-            <discharge_work>0.2</discharge_work>
-            <discharge_wait>1</discharge_wait>
-            <start_node>494</start_node>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>500</start_node>
+            <start_angle>90</start_angle>
+        </vehicle>
+        <vehicle>
+            <num>4</num>
+            <name>V04</name>
+            <type>LowHeight</type>
+            <node>500</node>
+            <angle>90</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>500</start_node>
             <start_angle>90</start_angle>
         </vehicle>
     </vehicles>
