@@ -310,7 +310,6 @@ class Vehicle:
                     print("charge!")
                 # append
                 elif self.cmd == 25:
-                    self.cmd = 10
                     self.status = 11
                     print("append!")
 
