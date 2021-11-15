@@ -2,7 +2,7 @@
 from .a_star import a_star, heuristic
 
 
-def send_agv(node_list, wait_list, vehicle_list, path_linked_list, unloadable_port_list):
+def send_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list):
     for vehicle in vehicle_list:
         # AGV가 대기 장소에 있다면 (우선권)
         if vehicle.status == 11 and vehicle.node == 587:
@@ -14,7 +14,7 @@ def send_agv(node_list, wait_list, vehicle_list, path_linked_list, unloadable_po
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
             elif node_list[290].status != -2:
-                port.status = -2
+                node_list[290].status = -2
                 # append
                 a_star_path = a_star(587, 291, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
@@ -29,7 +29,7 @@ def send_agv(node_list, wait_list, vehicle_list, path_linked_list, unloadable_po
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
             elif node_list[290].status != -2:
-                port.status = -2
+                node_list[290].status = -2
                 # append
                 a_star_path = a_star(17, 291, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
@@ -40,8 +40,8 @@ def send_agv(node_list, wait_list, vehicle_list, path_linked_list, unloadable_po
 
         # vehicle.node
         # node_list 이용, port의 loaded == 1인지 확인
-        if vehicle.status == 10 and node_list[vehicle.node-1].loaded == 1:
-            unloadable_port_list.remove(node_list[vehicle.node-1])
+        if vehicle.status == 10 and node_list[vehicle.node-1].status == 1:
+            loadable_port_list.remove(node_list[vehicle.node-1])
             # 위치에 따라서 분기
             # 좌측 상단 3번 포트
             if 340 <= vehicle.node <= 363:
@@ -108,7 +108,7 @@ def send_agv(node_list, wait_list, vehicle_list, path_linked_list, unloadable_po
         # 922에 도착하는 순간부터 path[0]이 73
         if vehicle.desti_node == 17 and vehicle.path and vehicle.path[0] == 73:
             for port in unloadable_port_list:
-                if port.NUM == 290 and port.status != -2:
+                if port.NUM == 290 and port.status == 1:
                     # 찜하기
                     port.status = -2
                     # 290으로 가는 append 로직
