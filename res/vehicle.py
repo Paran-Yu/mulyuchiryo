@@ -319,7 +319,7 @@ class Vehicle:
                 self.count += 1
 
         # 3. 배터리 충/방전
-        if self.status == 10:
+        if self.status == 10 or 11:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
             self.count += 1
