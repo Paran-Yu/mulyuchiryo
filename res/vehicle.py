@@ -46,6 +46,12 @@ class Vehicle:
     def __lt__(self, other):
         return self.NUM < other.NUM
 
+    def emergency(self, cmd):
+        if cmd == 0:
+            self.interrupt = 0
+        elif cmd == 1:
+            self.interrupt = 1
+
     def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
@@ -245,7 +251,7 @@ class Vehicle:
     def vehicle_routine(self, node_list):
         # 1. 충돌 방지 명령
         if self.interrupt == 1:
-            pass
+            self.brake()
 
         # 2. 작업 - status 업데이트
         else:
