@@ -287,7 +287,9 @@ class CBS(object):
         plan = {}
         for agent, path in solution.items():
             path_dict_list = [{'t':state.time, 'x':state.location[0], 'y':state.location[1], 'node': state.node} for state in path]
-            plan[agent] = path_dict_list
+            path = [state.node for state in path]
+            # plan[agent] = path_dict_list
+            plan[agent] = path
         return plan
         
         
