@@ -162,7 +162,7 @@ def plot_init(node_list, path_list, vehicle_list):
         ax.add_patch(vehicle_arrow)
         ax.add_patch(vehicle_desti_arrow)
         vehicle_rects.append(vehicle_rect)
-        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, (vehicle.NAME, round(vehicle.velocity,2), vehicle.angle, vehicle.loaded)))
+        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, f'{vehicle.NAME} {round(vehicle.velocity/100*6,2)}m/min {vehicle.angle}° {vehicle.loaded}'))
         vehicle_arrows.append(vehicle_arrow)
         vehicle_desti_arrows.append(vehicle_desti_arrow)
 
@@ -178,7 +178,7 @@ def plot_update(simulate_speed, node_list, vehicle_list):
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].NAME, round(vehicle_list[i].velocity,2), vehicle_list[i].angle, vehicle_list[i].loaded))
+        vehicle_texts[i].set_text(f'{vehicle_list[i].NAME} {round(vehicle_list[i].velocity/100*6,2)}m/min {vehicle_list[i].angle}° {vehicle_list[i].loaded}')
         vehicle_arrows[i].xy = (vehicle_list[i].x, vehicle_list[i].y)
         vehicle_arrows[i].orientation = np.radians((vehicle_list[i].angle+180)%360)
         if len(vehicle_list[i].path) == 0:
