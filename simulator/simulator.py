@@ -55,8 +55,11 @@ def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_por
 # port의 time cnt를 0~FREQ 사이의 랜덤값으로 지정
 def port_init(port_list):
     for x in port_list:
-        cnt = random.randrange(0, x.FREQ+1)
-        x.count = cnt
+        if x.TYPE == 'load':
+            cnt = random.randrange(0, x.FREQ+1)
+            x.count = cnt
+        elif x.TYPE == 'unload':
+            x.count = x.FREQ
 
 
 def port_update(port_list, loadable_port_list, unloadable_port_list):
