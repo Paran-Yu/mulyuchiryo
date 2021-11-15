@@ -20,7 +20,6 @@ class Vehicle:
         self.DISCHARGE_WORK = -1
         self.BREAK_PARAM = 1.8
         self.NODE_TH = 200
-        self.ROTATE_TH = -1
 
         self.x = -1
         self.y = -1
