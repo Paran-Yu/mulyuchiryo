@@ -18,7 +18,7 @@ class Vehicle:
         self.CHARGE_SPEED = -1
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
-        self.BREAK_PARAM = 1.8
+        self.BREAK_PARAM = 2
         self.NODE_TH = 200
         self.ROTATE_TH = -1
 
@@ -133,7 +133,7 @@ class Vehicle:
         print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
-        if distance <= 300:
+        if distance <= 400:
             # 전 node가 wait point였다면 비워주기
             if hasattr(node_list[self.node - 1], 'using'):
                 node_list[self.node - 1].using = 0
@@ -150,6 +150,7 @@ class Vehicle:
                 self.last_flag = 0
 
     def turn(self, node_list):
+        self.velocity = 0
         print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
