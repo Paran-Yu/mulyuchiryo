@@ -77,7 +77,7 @@ def search_routes():
     cbs = planner.CBS(env)
     solution = cbs.search()
     if not solution:
-        print(" Solution not found" )
+        print("Solution not found" )
         return
     return solution
     
@@ -87,4 +87,8 @@ def search_routes():
 # Test용 main
 if __name__ == "__main__":
     read_map()
+    # test
+    for v in vehicle_list:
+        v.desti_node = v.node+7
+    print(search_routes())
     start_simulate()

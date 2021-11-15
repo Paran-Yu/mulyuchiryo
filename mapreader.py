@@ -1,7 +1,7 @@
 from xml.etree import ElementTree
 from res import vehicle, node
 
-tree = ElementTree.parse('data.xml')
+tree = ElementTree.parse('example.xml')
 root = tree.getroot()
 
 image = root.find("img")

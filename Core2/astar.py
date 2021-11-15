@@ -23,12 +23,13 @@ class AStar():
         """
 
         initial_state = self.agent_dict[agent_name]["start"]
+        # 다음 노드로 이동하는데 걸리는 비용
         step_cost = 1
         
         closed_set = set()          # 갈 수 없는
         open_set = {initial_state}  # 갈 수 있는
 
-        came_from = {}              # 왔던 거리
+        came_from = {}              # 왔던 노드
 
         g_score = {} 
         g_score[initial_state] = 0  # 현재 노드에서 출발지까지 총 cost
@@ -37,24 +38,30 @@ class AStar():
 
         # 시작위치와 현재(목적지) 위치의 휴리스틱 계산
         f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
+        
 
         # 갈 수 있는 위치
         while open_set:
+            # dictionary.setdefault(key, float("inf")) -> key값에 해당되는 값이 딕셔너리에 있으면 그 값을, 없으면 무한수를 반환
             temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
+            
+            # 비용이 가장 작은 것 
             current = min(temp_dict, key=temp_dict.get)
+            # print("현재", current.location,current.node)
 
+            self.is_at_goal(current, agent_name)
             # 목적지 도착 -> 경로 return
             if self.is_at_goal(current, agent_name):
                 return self.reconstruct_path(came_from, current)
 
-
-            open_set -= {current}
-            closed_set |= {current}
+            open_set -= {current} #차집합
+            closed_set |= {current} #합집합
             
             # 이웃 충돌 제어
             neighbor_list = self.get_neighbors(current)
-
+            # print(n.node for n in neighbor_list)
             for neighbor in neighbor_list:
+                # print(neighbor.node)
                 if neighbor in closed_set:
                     continue
                 
@@ -64,7 +71,8 @@ class AStar():
                     open_set |= {neighbor}
                 elif tentative_g_score >= g_score.setdefault(neighbor, float("inf")):
                     continue
-
+                
+                # print("갈 수 있음")
                 came_from[neighbor] = current
 
                 g_score[neighbor] = tentative_g_score

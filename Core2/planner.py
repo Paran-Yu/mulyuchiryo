@@ -2,7 +2,7 @@ from math import fabs
 from itertools import combinations
 from copy import deepcopy
 
-from astar import AStar
+from .astar import AStar
 
 class State(object):
     def __init__(self, time, location, node):
@@ -12,11 +12,11 @@ class State(object):
     def __eq__(self, other):
         return self.time == other.time and self.location == other.location
     def __hash__(self):
-        return hash(str(self.time)+str(self.location.x) + str(self.location.y))
+        return hash(str(self.time)+str(self.location[0]) + str(self.location[1]))
     def is_equal_except_time(self, state):
         return self.location == state.location
     def __str__(self):
-        return str((self.time, self.location.x, self.location.y))
+        return str((self.time, self.location[0], self.location[1]))
 
 class Conflict(object):
     VERTEX = 1
@@ -84,6 +84,10 @@ class Environment(object):
         # AGV의 시작위치와 도착위치 저장
         # 'name': start, goal
         self.make_agent_dict()
+        # print("agent_dict: ", self.agent_dict)
+        # for k,v in self.agent_dict.items():
+        #     print(k)
+        #     print(v['start'].location, v['start'].node, v['goal'].location, v['goal'].node)
 
         # 간선과 노드(vertex 점, edge 선)
         self.constraints = Constraints()
@@ -97,7 +101,7 @@ class Environment(object):
         neighbors = []
 
         # Wait action
-        n = State(state.time + 1, state.location)
+        n = State(state.time + 1, state.location, state.node)
         if self.state_valid(n):
             neighbors.append(n)
         # Move
@@ -183,22 +187,23 @@ class Environment(object):
 
     def admissible_heuristic(self, state, agent_name):
         goal = self.agent_dict[agent_name]["goal"]
-        return fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y)
+        return fabs(state.location[0] - goal.location[0]) + fabs(state.location[1] - goal.location[1])
 
 
     def is_at_goal(self, state, agent_name):
         goal_state = self.agent_dict[agent_name]["goal"]
+        # print("도착",goal_state.location, goal_state.node)
         return state.is_equal_except_time(goal_state)
 
     # AGV 현재위치와 시간 update
     def make_agent_dict(self):
-        for agent in self.vehicle_list:
+        for agent in self.agents:
             start_state = State(0, (agent.x, agent.y), agent.node)
 
             destination_node = [node for node in self.node_list if node.NUM == agent.desti_node][0]
             goal_state = State(0, (destination_node.X,destination_node.Y), agent.desti_node)
 
-            self.agent_dict.update({agent.NAME:{'start':start_state, 'goal':goal_state, 'node':agent.node}})
+            self.agent_dict.update({agent.NUM:{'start':start_state, 'goal':goal_state, 'node':agent.node}})
 
     def compute_solution(self):
         solution = {}
@@ -281,7 +286,7 @@ class CBS(object):
     def generate_plan(self, solution):
         plan = {}
         for agent, path in solution.items():
-            path_dict_list = [{'t':state.time, 'x':state.location.x, 'y':state.location.y, 'node': state.node} for state in path]
+            path_dict_list = [{'t':state.time, 'x':state.location[0], 'y':state.location[1], 'node': state.node} for state in path]
             plan[agent] = path_dict_list
         return plan
         
