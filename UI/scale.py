@@ -40,12 +40,13 @@ class OperationData(QDialog):
     def __init__(self):
         super().__init__()
 
-    def initUI(self):
+    def initUI(self, capa, speed):
         self.label_capa = QLabel("하루 반송량", self)
         self.label_capa.move(self.width() * 0.1, self.height() * 0.1)
 
         self.edit_capa = QLineEdit(self)
         self.edit_capa.move(self.width() * 0.4, self.height() * 0.1)
+        self.edit_capa.setText(str(capa))
         self.edit_capa.textChanged.connect(lambda: self.validate(self.edit_capa))
 
         self.label_speed = QLabel("시뮬레이션 속도", self)
@@ -53,6 +54,7 @@ class OperationData(QDialog):
 
         self.edit_speed = QLineEdit(self)
         self.edit_speed.move(self.width() * 0.4, self.height() * 0.4)
+        self.edit_speed.setText(str(speed))
         self.edit_speed.textChanged.connect(lambda: self.validate(self.edit_speed))
 
         self.btn_OK = QPushButton("OK", self)
