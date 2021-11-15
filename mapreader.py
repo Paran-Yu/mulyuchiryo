@@ -114,7 +114,6 @@ for x in xml_vehicle_list:
     a.DISCHARGE_WAIT = float(x.find("discharge_wait").text) / 60    # %/min -> %/sec
     a.DISCHARGE_WORK = float(x.find("discharge_work").text) / 60    # %/min -> %/sec
     a.node = int(x.find("start_node").text)
-    a.ROTATE_TH = a.ROTATE_SPEED
     start_node = [node for node in node_list if node.NUM == a.node][0]
     a.x = start_node.X
     a.y = start_node.Y

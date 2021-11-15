@@ -20,7 +20,6 @@ class Vehicle:
         self.DISCHARGE_WORK = -1
         self.BREAK_PARAM = 2
         self.NODE_TH = 200
-        self.ROTATE_TH = -1
 
         self.x = -1
         self.y = -1
@@ -197,7 +196,7 @@ class Vehicle:
                 self.angle += 360
 
         # 3. turn 완료 근사 및  관련 값 reset
-        if abs(self.angle - self.desti_angle) < 18:
+        if abs(self.angle - self.desti_angle) < self.ROTATE_SPEED:
             self.angle = self.desti_angle
             self.turn_flag = 0
             self.turning = -1
@@ -232,7 +231,7 @@ class Vehicle:
 
     def checkCrash(self, car):
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
-        if distance <= self.diagonal/2 + car.diagonal/2:
+        if distance <= self.DIAGONAL/2 + car.DIAGONAL/2:
             return True
         else:
             return False
@@ -291,7 +290,7 @@ class Vehicle:
                         node_list[self.desti_node - 1].status = -1
                     self.count += 1
                     if self.count >= self.LOAD_SPEED:
-                        self.count += 1
+                        self.count = 0
                         self.cmd = 10
                         self.status = 10
                         self.loaded = 0
