@@ -20,7 +20,6 @@ class Vehicle:
         self.DISCHARGE_WORK = -1
         self.BREAK_PARAM = 1.8
         self.NODE_TH = 200
-        self.ROTATE_TH = -1
 
         self.x = -1
         self.y = -1
@@ -181,7 +180,7 @@ class Vehicle:
                 self.angle += 360
 
         # 3. turn 완료 근사 및  관련 값 reset
-        if abs(self.angle - self.desti_angle) < 18:
+        if abs(self.angle - self.desti_angle) < self.ROTATE_SPEED:
             self.angle = self.desti_angle
             self.turn_flag = 0
             self.turning = -1
