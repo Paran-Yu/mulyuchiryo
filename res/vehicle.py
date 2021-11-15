@@ -43,6 +43,7 @@ class Vehicle:
         self.dCharge = 0
         self.interrupt = 0
 
+
     def __lt__(self, other):
         return self.NUM < other.NUM
 
@@ -53,7 +54,11 @@ class Vehicle:
             self.interrupt = 1
 
     def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
-        self.path = path
+        if self.cmd == 25:
+            self.path += path
+        else:
+            self.path = path
+
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
@@ -303,13 +308,17 @@ class Vehicle:
                     self.cmd = 10
                     self.status = 80
                     print("charge!")
+                # append
+                elif self.cmd == 25:
+                    self.status = 11
+                    print("append!")
 
             # wait to move 명령이면 5초 카운트
             if self.cmd == 20:
                 self.count += 1
 
         # 3. 배터리 충/방전
-        if self.status == 10:
+        if self.status == 10 or 11:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
             self.count += 1
