@@ -4,6 +4,7 @@ class Vehicle:
     def __init__(self, name):
         super().__init__()
 
+        self.NUM = -1
         self.NAME = name
         self.TYPE = "default"
         self.WIDTH = -1
@@ -23,6 +24,7 @@ class Vehicle:
 
         self.x = -1
         self.y = -1
+        self.back = False
         self.node = -1
         self.desti_node = -1
         self.velocity = -1
@@ -40,17 +42,36 @@ class Vehicle:
         self.count = 0
         self.dCharge = 0
 
-    def command(self, path, cmd):
+    def __lt__(self, other):
+        return self.NUM < other.NUM
+
+    def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
         self.path = path
         self.cmd = cmd
         self.desti_node = self.path[-1]
+        self.status = 20
+        self.count = 0
+        
+        if cmd == 21 or cmd == 22:
+            desti_node_instance = node_list[self.desti_node -1]
+            if desti_node_instance in loadable_port_list:
+                loadable_port_list.remove(desti_node_instance)
+            elif desti_node_instance in unloadable_port_list:
+                unloadable_port_list.remove(desti_node_instance)
+
 
     def move(self, node_list):
         print("move!")
+        # 0. 후진 여부 확인
+        if self.path[0] < 0:
+            self.path[0] *= -1
+            self.back = True
+
         # 1. 다음 목표 node가 정지하는 node인가
         next_node = node_list[self.path[0] - 1].getPos()
         dx = next_node[0] - self.x
         dy = next_node[1] - self.y
+        print("cur next: ",self.node, self.path[0])
         print("dx, dy: ", dx, dy)
         if self.turn_flag == 1 or self.last_flag == 1:
             pass
@@ -59,22 +80,24 @@ class Vehicle:
             self.last_flag = 1
         else:
             # 회전하는 노드라면 멈춤
-            nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx1 = nextnext_node[0] - next_node[0]
-            dy1 = nextnext_node[1] - next_node[1]
-            if dy == dy1 == 0:
-                pass
-            elif dy == 0 or dy1 == 0:
-                self.turn_flag = 1
-            elif dx/dy != dx1/dy1:
-                self.turn_flag = 1
+            if self.path[1] > 0:
+                nextnext_node = node_list[self.path[1] - 1].getPos()
+                dx1 = nextnext_node[0] - next_node[0]
+                dy1 = nextnext_node[1] - next_node[1]
+                if dy == dy1 == 0:
+                    pass
+                elif dy == 0 or dy1 == 0:
+                    self.turn_flag = 1
+                elif dx/dy != dx1/dy1:
+                    self.turn_flag = 1
 
         # 2. 다음 목표 node와의 거리
         distance = sqrt(dx ** 2 + dy ** 2)
         print("distance: ", distance)
         print("brake: ", self.getBrakeDis())
+
         # 3. 회전 여부에 따른 가감속
-        if self.turn_flag == 1 or self.last_flag == 1:
+        if self.turn_flag == 1 or self.last_flag == 1 or self.back:
             if distance <= self.getBrakeDis():
                 self.velocity -= self.ACCEL
             else:
@@ -91,18 +114,27 @@ class Vehicle:
         print("velocity:", self.velocity)
         sin_dx = sin(radians(self.angle))
         cos_dy = cos(radians(self.angle))
-        print(sin_dx, cos_dy)
         if abs(sin_dx) < 0.1: sin_dx = 0
         if abs(cos_dy) < 0.1: cos_dy = 0
-        self.x += self.velocity * sin_dx
-        self.y -= self.velocity * cos_dy
+        if self.back == False:
+            self.x += self.velocity * sin_dx
+            self.y -= self.velocity * cos_dy
+        else:
+            self.x -= self.velocity * sin_dx
+            self.y += self.velocity * cos_dy
         print("sin,cos: ", sin_dx, cos_dy)
         print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
-        if distance <= 200:
+        if distance <= 300:
+            # 전 node가 wait point였다면 비워주기
+            if hasattr(node_list[self.node - 1], 'using'):
+                node_list[self.node - 1].using = 0
+
             self.x = next_node[0]
             self.y = next_node[1]
+            self.node = self.path[0]
+            self.back = False
             # 6. 필요시 회전
             if self.turn_flag == 1:
                 self.turning = 0
@@ -114,15 +146,11 @@ class Vehicle:
         print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
-            cur_node = node_list[self.node - 1].getPos()
             next_node = node_list[self.path[0] - 1].getPos()
             nextnext_node = node_list[self.path[1] - 1].getPos()
-            dx = next_node[0] - cur_node[0]
-            dy = next_node[1] - cur_node[1]
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
-            print(dx, dy, dx1, dy1)
-            old_angle = self.get_angle(dx, dy)
+            old_angle = self.angle
             new_angle = self.get_angle(dx1, dy1)
             print(old_angle, new_angle)
             self.desti_angle = new_angle
@@ -187,6 +215,16 @@ class Vehicle:
         else:
             return False
 
+    def isusable(self):
+        if self.status == 10:
+            return True
+        elif self.status == 81:
+            return True
+        elif self.cmd == 20 and self.count <= 5:
+            return True
+        else:
+            return False
+
     def get_angle(self, dx, dy):
         radian = atan2(dx, -dy)
         degree = degrees(radian)
@@ -239,12 +277,17 @@ class Vehicle:
             elif self.cmd == 20:
                 self.cmd = 10
                 self.status = 10
+                node_list[self.node-1].using = self.NUM
                 print("wait!")
             # charge
             elif self.cmd == 23:
                 self.cmd = 10
                 self.status = 80
                 print("charge!")
+
+        # wait to move 명령이면 5초 카운트
+        if self.cmd == 20:
+            self.count += 1
 
         # 3. 배터리 충/방전
         if self.status == 10:
@@ -266,6 +309,7 @@ class Vehicle:
             self.battery -= self.DISCHARGE_WORK
         print("status: ", self.status)
         print("battery: ", self.battery)
+        print("=====================")
 
         # 4. DB에 저장
         # 상위 경로에서 처리
