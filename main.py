@@ -7,7 +7,7 @@ import time
 import threading
 import mapreader
 from simulator import simulator
-from Core.a_star import a_star, heuristic
+from Core.call_agv import call_agv
 
 # simulate attribute
 simulate_speed = 1
@@ -61,10 +61,12 @@ def start_simulate():
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
+    global loadable_port_list, unloadable_port_list
+
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
-    # 1초마다 돌아갈 때 코드 (함수화)
-
+    call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
+    # send_agv(node_list, wait_list, vehicle_list, path_linked_list)
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
