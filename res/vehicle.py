@@ -181,7 +181,7 @@ class Vehicle:
                 self.angle += 360
 
         # 3. turn 완료 근사 및  관련 값 reset
-        if abs(self.angle - self.desti_angle) < 18:
+        if abs(self.angle - self.desti_angle) < self.ROTATE_SPEED:
             self.angle = self.desti_angle
             self.turn_flag = 0
             self.turning = -1
