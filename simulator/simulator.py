@@ -80,8 +80,10 @@ def port_update(port_list, loadable_port_list, unloadable_port_list):
 # WAIT POINT
 def wait_init(wait_list, vehicle_list):
     for x in vehicle_list:
-        used_wait = [wait for wait in wait_list if wait.NUM == x.node][0]
-        used_wait.using = x.NUM
+        used_wait = [wait for wait in wait_list if wait.NUM == x.node]
+        if used_wait:
+            used_wait = used_wait[0]
+            used_wait.using = x.NUM
 
 
 # VEHICLE
