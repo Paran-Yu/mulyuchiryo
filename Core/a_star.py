@@ -2,9 +2,6 @@ import threading
 import time
 from queue import PriorityQueue
 
-# 여기에 들어가있는 노드들은 5초 동안 동선 탐색에서 제외한다.
-exclusion_list = []
-
 # Manhattan distance와 Euclidean distance 중 Manhattan distance을 선택함
 # 방식은 크게 중요하지 않다고 생각했음. 다만 Euclidean distance는 계산하는데 더 시간이 오래 걸릴 것 같아서
 # Manhattan distance를 선택함
@@ -26,6 +23,9 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
     final_path = []
     Q = PriorityQueue()
     
+    # 여기에 들어가있는 노드들은 동선 탐색에서 제외한다.
+    exclusion_list = []
+
     # Q.put((우선 순위, 노드))
     # 우선 순위에 cost를 넣겠다. 그러면 cost가 작은 노드부터 나올 것이다.
     Q.put((0, start, None))
@@ -88,10 +88,10 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
     final_path = final_path[::-1]
 
     # AGV 분산하기
-    for each_node in final_path:
-        if each_node == 9:
-            cost_thread = threading.Thread(target=control_cost, args=[each_node])
-            cost_thread.start()
+    # for each_node in final_path:
+    #     if each_node == 9:
+    #         cost_thread = threading.Thread(target=control_cost, args=[each_node])
+    #         cost_thread.start()
 
     return final_path
 

@@ -11,6 +11,7 @@ def check_wait_point(start, end, port_number, node_list, vehicle_list, wait_list
         # AGV가 있고 충전 장소를 나오는 조건을 충족해 있다면
         if wait_list[idx].using and vehicle_list[wait_list[idx].using-1].status in [0, 81]:
             a_star_path = a_star(wait_list[idx].NUM, port_number, path_linked_list, node_list)
+            print(a_star_path)
             vehicle_list[wait_list[idx].using-1].command(a_star_path, 21, node_list, loadable_port_list, unloadable_port_list)
             break
 
@@ -26,15 +27,10 @@ def call_agv(node_list, wait_list, vehicle_list, path_linked_list,loadable_port_
             for load_port in loadable_port_list:
                 for unload_port in unloadable_port_list:
                     # 아래 조건 충족시 반송 시작
-                    print("비교~~~~~~~~~~~~~")
-                    print(unload_port.NUM)
-                    print(load_port.UNLOAD_LIST)
                     if unload_port.NUM in load_port.UNLOAD_LIST:
-                        print("시작~~~~~~~~~~~~")
                         # load_port에 따라서 분기
                         # 좌측 상단 3번 포트
                         if 340 <= load_port.NUM <= 363:
-                            print("111111111111111111111")
                             check_wait_point(9, -1, load_port.NUM, node_list,  vehicle_list, wait_list, path_linked_list, loadable_port_list, unloadable_port_list)
                         # # 좌측 하단 3번 포트
                         elif 392 <= load_port.NUM <= 415:
@@ -50,7 +46,7 @@ def call_agv(node_list, wait_list, vehicle_list, path_linked_list,loadable_port_
                             # 숫자가 연속되지 않아서 두 지점을 체크하고
                             for idx in range(39, 41):
                                 if wait_list[idx].using and vehicle_list[wait_list[idx].using-1].status in [0, 81]:
-                                    a_star_path = a_star(wait_list[idx].NUM, port_number, path_linked_list, node_list)
+                                    a_star_path = a_star(wait_list[idx].NUM, load_port.NUM, path_linked_list, node_list)
                                     vehicle_list[wait_list[idx].using-1].command(a_star_path, 21, node_list, loadable_port_list, unloadable_port_list)
                                     break
                             #  break가 안 걸렸다면 충전/대기 장소도 체크하기
