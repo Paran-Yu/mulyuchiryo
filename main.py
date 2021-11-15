@@ -48,13 +48,13 @@ def read_map():
 
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
-def start_simulate():
+def start_simulate(plot=True):
     # simulation 초기화
-    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list)
+    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
-    while True:
+    while plot:
         simulator.plot_update(simulate_speed, node_list, vehicle_list)
 
 
@@ -75,4 +75,4 @@ def simulate_loop():
 # Test용 main
 if __name__ == "__main__":
     read_map()
-    start_simulate()
+    start_simulate(plot=False)

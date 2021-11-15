@@ -38,10 +38,11 @@ class RotatingRectangle(patches.Rectangle):
 
 
 # simulate 초기화
-def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
+def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot):
     port_init(port_list)
     wait_init(wait_list, vehicle_list)
-    plot_init(node_list, path_list, vehicle_list)
+    if plot:
+        plot_init(node_list, path_list, vehicle_list)
 
 
 # simulate_speed초 마다 한번씩 호출된다.
