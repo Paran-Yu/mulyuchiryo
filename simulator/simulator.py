@@ -59,7 +59,7 @@ def port_init(port_list):
             cnt = random.randrange(0, x.FREQ+1)
             x.count = cnt
         elif x.TYPE == 'unload':
-            x.count = x.FREQ
+            x.count = x.FREQ - 1
 
 
 def port_update(port_list, loadable_port_list, unloadable_port_list):
@@ -80,8 +80,10 @@ def port_update(port_list, loadable_port_list, unloadable_port_list):
 # WAIT POINT
 def wait_init(wait_list, vehicle_list):
     for x in vehicle_list:
-        used_wait = [wait for wait in wait_list if wait.NUM == x.node][0]
-        used_wait.using = x.NUM
+        used_wait = [wait for wait in wait_list if wait.NUM == x.node]
+        if used_wait:
+            used_wait = used_wait[0]
+            used_wait.using = x.NUM
 
 
 # VEHICLE
@@ -174,7 +176,7 @@ def plot_update(simulate_speed, node_list, vehicle_list):
     #  전에 있던 것 업데이트 해주기
     # Vehicle
     for i in range(len(vehicle_rects)):
-        print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
+        #print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))

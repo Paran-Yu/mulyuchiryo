@@ -18,7 +18,7 @@ class Vehicle:
         self.CHARGE_SPEED = -1
         self.DISCHARGE_WAIT = -1
         self.DISCHARGE_WORK = -1
-        self.BREAK_PARAM = 1.8
+        self.BREAK_PARAM = 2
         self.NODE_TH = 200
 
         self.x = -1
@@ -40,12 +40,24 @@ class Vehicle:
         self.desti_angle = 0
         self.count = 0
         self.dCharge = 0
+        self.interrupt = 0
+
 
     def __lt__(self, other):
         return self.NUM < other.NUM
 
+    def emergency(self, cmd):
+        if cmd == 0:
+            self.interrupt = 0
+        elif cmd == 1:
+            self.interrupt = 1
+
     def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
-        self.path = path
+        if self.cmd == 25:
+            self.path += path
+        else:
+            self.path = path
+
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
@@ -125,7 +137,7 @@ class Vehicle:
         print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
-        if distance <= 300:
+        if distance <= 400:
             # 전 node가 wait point였다면 비워주기
             if hasattr(node_list[self.node - 1], 'using'):
                 node_list[self.node - 1].using = 0
@@ -142,6 +154,7 @@ class Vehicle:
                 self.last_flag = 0
 
     def turn(self, node_list):
+        self.velocity = 0
         print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
@@ -150,7 +163,10 @@ class Vehicle:
             nextnext_node = node_list[self.path[1] - 1].getPos()
             dx1 = nextnext_node[0] - next_node[0]
             dy1 = nextnext_node[1] - next_node[1]
-            old_angle = self.angle
+            if self.angle == 0:
+                old_angle = 360
+            else:
+                old_angle = self.angle
             new_angle = self.get_angle(dx1, dy1)
             print(old_angle, new_angle)
             self.desti_angle = new_angle
@@ -186,6 +202,12 @@ class Vehicle:
             self.turn_flag = 0
             self.turning = -1
             self.path.pop(0)
+
+    def brake(self):
+        if self.velocity > 0:
+            self.velocity -= self.ACCEL
+            if self.velocity < 0:
+                self.velocity = 0
 
     def getNode(self):
         return self.node
@@ -233,64 +255,70 @@ class Vehicle:
         return degree
 
     def vehicle_routine(self, node_list):
-        # 1. 충돌 감지
-        # n^2의 위험이 있어 검토 필요
+        # 1. 충돌 방지 명령
+        if self.interrupt == 1:
+            self.brake()
 
         # 2. 작업 - status 업데이트
-        # path 이동
-        print("cmd start!: ", self.cmd)
-        if len(self.path) != 0:
-            if self.turning == -1:
-                self.move(node_list)
-            else:
-                self.turn(node_list)
-        # 이동 완료시 작업 수행
         else:
-            # status와 현재 받은 cmd를 분리
-            # load
-            if self.cmd == 22:
-                if self.status != 30:
-                    self.status = 30
-                    node_list[self.desti_node - 1].status = -1
-                self.count += 1
-                if self.count >= self.LOAD_SPEED:
-                    self.count = 0
+            # path 이동
+            print("cmd start!: ", self.NUM)
+            if len(self.path) != 0:
+                if self.turning == -1:
+                    self.move(node_list)
+                else:
+                    self.turn(node_list)
+            # 이동 완료시 작업 수행
+            else:
+                # status와 현재 받은 cmd를 분리
+                # load
+                if self.cmd == 22:
+                    if self.status != 30:
+                        self.status = 30
+                        node_list[self.desti_node - 1].status = -1
+                    self.count += 1
+                    if self.count >= self.LOAD_SPEED:
+                        self.count = 0
+                        self.cmd = 10
+                        self.status = 10
+                        self.loaded = 1
+                        node_list[self.desti_node - 1].status = 0
+                    print("load! - ", self.count)
+                # unload
+                elif self.cmd == 21:
+                    if self.status != 40:
+                        self.status = 40
+                        node_list[self.desti_node - 1].status = -1
+                    self.count += 1
+                    if self.count >= self.LOAD_SPEED:
+                        self.count += 1
+                        self.cmd = 10
+                        self.status = 10
+                        self.loaded = 0
+                        node_list[self.desti_node - 1].status = 0
+                    print("unload! - ", self.count)
+                # wait
+                elif self.cmd == 20:
                     self.cmd = 10
                     self.status = 10
-                    self.loaded = 1
-                    node_list[self.desti_node - 1].status = 0
-                print("load! - ", self.count)
-            # unload
-            elif self.cmd == 21:
-                if self.status != 40:
-                    self.status = 40
-                    node_list[self.desti_node - 1].status = -1
-                self.count += 1
-                if self.count >= self.LOAD_SPEED:
-                    self.count = 0
+                    node_list[self.node-1].using = self.NUM
+                    print("wait!")
+                # charge
+                elif self.cmd == 23:
                     self.cmd = 10
-                    self.status = 10
-                    self.loaded = 0
-                    node_list[self.desti_node - 1].status = 0
-                print("unload! - ", self.count)
-            # wait
-            elif self.cmd == 20:
-                self.cmd = 10
-                self.status = 10
-                node_list[self.node-1].using = self.NUM
-                print("wait!")
-            # charge
-            elif self.cmd == 23:
-                self.cmd = 10
-                self.status = 80
-                print("charge!")
+                    self.status = 80
+                    print("charge!")
+                # append
+                elif self.cmd == 25:
+                    self.status = 11
+                    print("append!")
 
-        # wait to move 명령이면 5초 카운트
-        if self.cmd == 20:
-            self.count += 1
+            # wait to move 명령이면 5초 카운트
+            if self.cmd == 20:
+                self.count += 1
 
         # 3. 배터리 충/방전
-        if self.status == 10:
+        if self.status == 10 or 11:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
             self.count += 1

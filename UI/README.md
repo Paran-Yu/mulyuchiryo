@@ -58,6 +58,45 @@ AGV가 다니는 동선을 마우스를 이용해서 쉽게 그리고, AGV와 �
 ### 분석
 - 전달 받은 시뮬레이션 결과를 정리하여 표현.
 
+## 메뉴 상세 소개
+### [FILE]
+- **Open Layout**: 공장 등의 도면 이미지를 불러옴. \
+<img src="/uploads/86eb633da43f4e5c05cb2a6cbfbf0976/open_layout.gif" Width="50%">
+
+- **Save, SaveAs**: 현재 작업중인 도면 저장. \
+<img src="/uploads/d3c62569a18beb53e38f5d54650fe9b8/saveAs.gif" Width="50%">
+
+- **Load**: 이전에 작업했던 도면 불러오기 \
+<img src="/uploads/f9af23dae4d5c19354141f30fd96a6a8/loadPjt.gif" Width="50%">
+
+- **Set Scale**: 공장의 실측 길이와 모니터 픽셀 사이의 길이 비 변경. \
+<img src="/uploads/eeb9ad8ee35df59ab0aa934469ae6f7b/Set_Scale.gif" width="49%" height="49%">
+<img src="/uploads/c0c88a05101fa0ed913227f4c61188cb/image.png" width="49%" height="49%">
+
+- **Close**: 프로그램 종료.
+
+### [Draw]
+**Node**: AGV가 목적지로 설정할 수 있는 점. 검은색 표현 \
+**Port**: 물건을 선적하거나 양하할 수 있는 노드. 빨간색 표현 \
+**Wait Point**: 유휴 상태의 AGV가 머무는 노드, 충전이 되는 Wait Point도 존재. 파란색 표현. \
+**Path**: 노드와 노드 사이의 간선. AGV가 이동할 때 기준이 되는 선. 검은색 표현.
+
+- **노드 생성**: 마우스를 클릭한 위치에 메뉴에서 누른 종류의 노드 생성.
+
+- **노드 선택**: 노드 위에서 마우스를 클릭하면 해당 노드 선택.
+
+- **노드 설정**: 노드 선택 후 사이드 바의 내용 변경.
+
+- **노드 삭제**: 노드 선택 후 사이드 바에서 Delete 버튼 클릭.
+
+- **노드 이동**: 노드 위에서 마우스를 누른 채 움직이거나 노드 선택 후 사이드 바의 내용 변경.
+
+- **Unload Port 추가 / 제거**: Port 노드 선택 후 사이드 바의 전체 unload 포트 목록에서 이름 클릭. 선택된 unload 포트 목록에서 이름 클릭 시 제거됨.
+
+- **간선 생성**: Path 메뉴를 누른 뒤 특정 노드에서 클릭하여 다른 노드 위에서 놓으면 연결됨. Shift 버튼 이용 시 일직선 상에 배치됨.
+
+- **간선 삭제**: 노드 선택 후 연결된 Path 목록에서 Path 클릭 시 제거.
+
 ## 사용 기술 스택
 - Python 3.9
 - PyQt5
