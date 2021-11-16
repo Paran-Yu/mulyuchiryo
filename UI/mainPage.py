@@ -277,6 +277,11 @@ class MainPage(QWidget):
         btn_charge_rate.setIcon(QIcon(QPixmap(path + "/resources/image/charge rate.png")))
         btn_charge_rate.setIconSize(QSize(80, 80))
 
+        btn_progress = QPushButton(self.sub_menu_wrapper)
+        btn_progress.clicked.connect(self.showProgress)
+        btn_progress.setIcon(QIcon(QPixmap(path + "/resources/image/progress.png")))
+        btn_progress.setIconSize(QSize(80, 80))
+
         self.subMenus = [
             # file
             [
@@ -308,6 +313,7 @@ class MainPage(QWidget):
             [
                 btn_util_rate,
                 btn_charge_rate,
+                btn_progress,
             ],
         ]
 
@@ -743,6 +749,10 @@ class MainPage(QWidget):
 
     # AGV의 충전률
     def showChargeRate(self):
+        pass
+
+    # 작업 진행 그래프
+    def showProgress(self):
         pass
 
     # 키보드 클릭 이벤트
