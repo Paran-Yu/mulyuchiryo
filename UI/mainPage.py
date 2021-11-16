@@ -257,6 +257,7 @@ class MainPage(QWidget):
         btn_play.setIconSize(QSize(80, 80))
 
         btn_stop = QPushButton("Stop", self.sub_menu_wrapper)
+        btn_stop.clicked.connect(self.stop)
 
         btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
@@ -565,6 +566,7 @@ class MainPage(QWidget):
 
         self.vehicles = editor.vehicles
 
+    # 시뮬레이션 시작
     def play(self):
         # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
@@ -572,6 +574,10 @@ class MainPage(QWidget):
 
         main.read_map()
         main.start_simulate()
+
+    # 시뮬레이션 일시정지
+    def stop(self):
+        pass
 
     # XML 파일 추출
     def XML(self):
