@@ -27,7 +27,7 @@ class DB:
         returns = cur.fetchall()
         if len(returns) == 0:
             cur.execute('CREATE TABLE vehicle(\
-            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            id INTEGER,\
             scene_id INTEGER,\
             time INTEGER,\
             name TEXT,\
@@ -47,7 +47,7 @@ class DB:
         returns = cur.fetchall()
         if len(returns) == 0:
             cur.execute('CREATE TABLE command(\
-            id INTEGER,\
+            id INTEGER PRIMARY KEY AUTOINCREMENT,\
             scene_id INTEGER,\
             vehicle_id INTEGER,\
             start_node INTEGER,\
@@ -92,6 +92,9 @@ class DB:
         cur.execute(query)
         self.conn.commit()
 
+    def add_vehicle_status_all(self, v_list, time):
+        cur = self.conn.cursor()
+
     def set_scene_num(self, num):
         self.scene_num = num
 
@@ -133,3 +136,4 @@ class DB:
 # db.create_new_scene()
 # db.set_scene_num(1)
 # db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
+# db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
