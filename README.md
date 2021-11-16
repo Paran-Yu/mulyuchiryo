@@ -58,7 +58,7 @@ UI / 안드로이드
 
 ### 기술스택
 
-![Untitled presentation (1)](README.assets/Untitled presentation (1).png)
+![기술스택](./docs/TechStacks.png)
 
 ## 설치
 
