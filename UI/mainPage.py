@@ -273,6 +273,7 @@ class MainPage(QWidget):
         btn_util_rate.setIconSize(QSize(80, 80))
 
         btn_charge_rate = QPushButton("Charge\nRate", self.sub_menu_wrapper)
+        btn_charge_rate.clicked.connect(self.showChargeRate)
 
         self.subMenus = [
             # file
@@ -736,6 +737,10 @@ class MainPage(QWidget):
 
     # AGV 전체 가동률 그래프 출력
     def showUtilizationRate(self):
+        pass
+
+    # AGV의 충전률
+    def showChargeRate(self):
         pass
 
     # 키보드 클릭 이벤트
