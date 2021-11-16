@@ -5,7 +5,7 @@ import datetime
 class DB:
     def __init__(self):
         try:
-            self.conn = sqlite3.connect("simul_data.db")
+            self.conn = sqlite3.connect("simul_data.db", check_same_thread=False)
         except:
             print("DB Connection failed")
             exit(1)
@@ -123,7 +123,34 @@ class DB:
         pass
 
     def get_vehicle_charge(self):
-        pass
+        """
+        vehicle의 battery 1초 간격마다 변화를 list로 반환
+
+        :return data: 2차원 리스트
+        [[vehicle_name, battery_list], ...]
+        """
+
+        cur = self.conn.cursor()
+        data = []
+        cnt = 1
+        while True:
+            query = f'SELECT "name" FROM vehicle WHERE id={cnt} LIMIT 1'
+            cur.execute(query)
+            name = cur.fetchall()
+            if len(name) == 0:
+                break
+
+            query = f'SELECT "battery" FROM vehicle WHERE id={cnt}'
+            cur.execute(query)
+            battery = cur.fetchall()
+            battery_list = []
+            for x in battery:
+                battery_list.append(x[0])
+            data.append((name[0][0], battery_list))
+            # print(data)
+            cnt += 1
+        print(data)
+        return data
 
     def get_total_work(self):
         pass
@@ -148,3 +175,4 @@ class DB:
 # db.set_scene_num(1)
 # db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
 # db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
+# db.get_vehicle_charge()

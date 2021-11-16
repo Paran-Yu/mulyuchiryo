@@ -27,19 +27,17 @@ def vehicle_work():
 
 
 def vehicle_charge():
-    charge_list = db.get_vehicle_charge()
-    # v1 = [100, 80, 60, 40, 20]
-    # v2 = [50, 70, 90, 70, 50]
+    data = db.get_vehicle_charge()
 
     dt = 1
-    t = np.arange(0, len(charge_list[0]['battery']), dt)
+    t = np.arange(0, len(data[0][1]), dt)
 
     # TODO
     # 시간 간격 dt 조정 기능 - UI와 협의
 
     fig, ax = plt.subplots()
-    for x in charge_list:
-        ax.plot(t, charge_list[0]['battery'], label=charge_list[0]['name'])
+    for x in data:
+        ax.plot(t, x[1], label=x[0])
 
     ax.set_xlabel('Time[sec]')
     ax.set_ylabel('Battery[%]')
