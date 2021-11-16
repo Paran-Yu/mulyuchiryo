@@ -245,8 +245,10 @@ class MainPage(QWidget):
         btn_path.setIconSize(QSize(80, 80))
 
         # Vehicle
-        btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
+        btn_vehicle_edit = QPushButton(self.sub_menu_wrapper)
         btn_vehicle_edit.clicked.connect(self.editVehicle)
+        btn_vehicle_edit.setIcon(QIcon(QPixmap(path + "/resources/image/edit.png")))
+        btn_vehicle_edit.setIconSize(QSize(80, 80))
 
         # Simulator
         btn_play = QPushButton("Play", self.sub_menu_wrapper)
