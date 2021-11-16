@@ -208,11 +208,13 @@ class MainPage(QWidget):
             QPixmap(path + "/resources/image/nodes.png"),
             QPixmap(path + "/resources/image/port.png"),
             QPixmap(path + "/resources/image/wp.png"),
+            QPixmap(path + "/resources/image/path.png"),
         ]
         self.draw_clicked = [
             QPixmap(path + "/resources/image/nodes selected.png"),
             QPixmap(path + "/resources/image/port selected.png"),
             QPixmap(path + "/resources/image/wp selected.png"),
+            QPixmap(path + "/resources/image/path selected.png"),
         ]
 
         #btn_node = QPushButton("Node", self.sub_menu_wrapper)
@@ -236,9 +238,11 @@ class MainPage(QWidget):
         btn_wait_point.setIcon(QIcon(self.draw_normal[2]))
         btn_wait_point.setIconSize(QSize(80, 80))
 
-        btn_path = QPushButton("Path", self.sub_menu_wrapper)
+        btn_path = QPushButton(self.sub_menu_wrapper)
         btn_path.toggled.connect(lambda: self.changeTools(3))
         btn_path.setCheckable(True)
+        btn_path.setIcon(QIcon(self.draw_normal[3]))
+        btn_path.setIconSize(QSize(80, 80))
 
         # Vehicle
         btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
