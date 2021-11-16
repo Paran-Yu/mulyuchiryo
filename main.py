@@ -70,6 +70,8 @@ def simulate_loop():
 
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
+    # print(a_star(710, 757, path_linked_list, node_list))
+    
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     # send_agv(node_list, wait_list, vehicle_list, path_linked_list)
     # simulate_speed마다 루틴 함수를 새로 수행

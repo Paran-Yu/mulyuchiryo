@@ -2,9 +2,6 @@ import threading
 import time
 from queue import PriorityQueue
 
-# 여기에 들어가있는 노드들은 5초 동안 동선 탐색에서 제외한다.
-exclusion_list = []
-
 # Manhattan distance와 Euclidean distance 중 Manhattan distance을 선택함
 # 방식은 크게 중요하지 않다고 생각했음. 다만 Euclidean distance는 계산하는데 더 시간이 오래 걸릴 것 같아서
 # Manhattan distance를 선택함
@@ -16,8 +13,12 @@ def heuristic(start, goal, node_list):
     x2 = node_list[goal-1].X
     y2 = node_list[goal-1].Y
     
-    # 시간으로 나타내고 싶어서 40으로 나눠주었다.
-    return (abs(x1 - x2) + abs(y1 - y2)) / 40
+    # 맵의 특성을 고려하여 직선 경로가 있다면 직선으로 가도록 유도하기 위해서 heurisitc 값을 크게 낮춰주었다.
+    if x1 == x2 or y1 == y2:
+        return (abs(x1 - x2) + abs(y1 - y2)) / 400
+    else:
+        # 시간으로 나타내고 싶어서 40으로 나눠주었다.
+        return (abs(x1 - x2) + abs(y1 - y2)) / 40
 
 def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 아주 큰 수를 넣어주었다.
     path = [1000000] * len(node_list)
@@ -26,6 +27,9 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
     final_path = []
     Q = PriorityQueue()
     
+    # 여기에 들어가있는 노드들은 동선 탐색에서 제외한다.
+    # exclusion_list = []
+
     # Q.put((우선 순위, 노드))
     # 우선 순위에 cost를 넣겠다. 그러면 cost가 작은 노드부터 나올 것이다.
     Q.put((0, start, None))
@@ -45,8 +49,8 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
             found = True
 
         # AGV 분산하기
-        if current_node in exclusion_list:
-            continue
+        # if current_node in exclusion_list:
+            # continue
 
         # current에서 갈 수 있는 노드마다
         for each_path in path_linked_list[current_node]:
@@ -64,10 +68,8 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
             # 5초라서 일단 5를 더해주었다.
             if previous_node:
                 if node_list[current_node-1].X == node_list[previous_node-1].X and node_list[current_node-1].X != node_list[next_node-1].X:
-                    # print(current_node, "에서 회전")
                     g += 5
                 elif node_list[current_node-1].X != node_list[previous_node-1].X and node_list[current_node-1].X == node_list[next_node-1].X:
-                    # print(current_node, "에서 회전")
                     g += 5
 
             f = g + heuristic(next_node, goal, node_list)
@@ -86,12 +88,14 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
         node = nextNode
 
     final_path = final_path[::-1]
+    final_path = final_path[1:]
 
     # AGV 분산하기
-    for each_node in final_path:
-        if each_node == 9:
-            cost_thread = threading.Thread(target=control_cost, args=[each_node])
-            cost_thread.start()
+    # 분산 리스트를 하나 만들어서 여기에 들어있으면
+    # for each_node in final_path:
+    #     if each_node == 9:
+    #         cost_thread = threading.Thread(target=control_cost, args=[each_node])
+    #         cost_thread.start()
 
     return final_path
 
