@@ -94,6 +94,17 @@ class DB:
 
     def add_vehicle_status_all(self, v_list, time):
         cur = self.conn.cursor()
+        data = []
+        for v in v_list:
+            t = (v.NUM, self.scene_num, time, v.NAME, v.node, v.desti_node, round(v.x,2), round(v.y,2),
+                              v.status, round(v.velocity, 2), v.angle, round(v.battery, 2), v.loaded)
+            data.append(t)
+        query = f'INSERT INTO vehicle ' \
+                f'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
+        print(query)
+        print(data)
+        cur.executemany(query, data)
+        self.conn.commit()
 
     def set_scene_num(self, num):
         self.scene_num = num
