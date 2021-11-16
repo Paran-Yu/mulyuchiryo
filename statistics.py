@@ -61,3 +61,19 @@ def vehicle_cmd():
     ax.legend()
 
     plt.show()
+
+def work_progress():
+    data = db.get_total_work()
+
+    dt = 1
+    t = np.arange(0, len(data[1]), dt)
+
+    fig, ax = plt.subplots()
+    for x in data:
+        ax.plot(t, x[0])
+
+    ax.set_xlabel('Time[sec]')
+    ax.set_ylabel('Progress[num]')
+    ax.grid(True)
+    plt.legend()
+    plt.show()
