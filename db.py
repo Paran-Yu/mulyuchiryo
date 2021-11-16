@@ -164,6 +164,50 @@ class DB:
         # print(stat_list)
         return name_list, stat_list
 
+    def get_vehicle_cmd(self):
+        """
+        vehicle cmd 받은 누적 횟수
+        :return name_list, stat_list: 1차원 리스트, 2차원 리스트
+        ['V01', 'V02', ...],
+        [[wait 누적 횟수 리스트], [charge...], [load...], [unload...], [append,,,]]
+        """
+        cur = self.conn.cursor()
+        name_list = []
+        stat_list = [[], [], [], [], []]
+
+        cnt = 1
+        while True:
+            query = f'SELECT "name" FROM vehicle WHERE id={cnt} LIMIT 1'
+            cur.execute(query)
+            name = cur.fetchall()
+            if len(name) == 0:
+                break
+            name_list.append(name[0][0])
+            cnt += 1
+
+        for i in range(len(name_list)):
+            query = f'SELECT COUNT(*) FROM command WHERE vehicle_id={i+1} and type=20'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[0].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM command WHERE vehicle_id={i+1} and type=23'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[1].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM command WHERE vehicle_id={i+1} and type=21'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[2].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM command WHERE vehicle_id={i+1} and type=22'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[3].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM command WHERE vehicle_id={i+1} and type=25'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[4].append(res[0][0])
+        # print(stat_list)
+        return name_list, stat_list
 
     def get_vehicle_charge(self):
         """

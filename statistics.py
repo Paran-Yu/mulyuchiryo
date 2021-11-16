@@ -44,3 +44,20 @@ def vehicle_charge():
     ax.grid(True)
     plt.legend()
     plt.show()
+
+def vehicle_cmd():
+    # wait charge move load append
+    name_list, work_list = db.get_vehicle_cmd()
+    width = 0.3
+
+    fig, ax = plt.subplots()
+    ax.bar(name_list, work_list[0], width, label="Wait")
+    ax.bar(name_list, work_list[1], width, label="Charge", bottom=np.array(work_list[0]))
+    ax.bar(name_list, work_list[2], width, label="Load", bottom=np.array(work_list[0])+np.array(work_list[1]))
+    ax.bar(name_list, work_list[3], width, label="Unload", bottom=np.array(work_list[0])+np.array(work_list[1])+np.array(work_list[2]))
+    ax.bar(name_list, work_list[4], width, label="Append", bottom=np.array(work_list[0])+np.array(work_list[1])+np.array(work_list[2])+np.array(work_list[3]))
+
+    ax.set_ylabel('Time[sec]')
+    ax.legend()
+
+    plt.show()
