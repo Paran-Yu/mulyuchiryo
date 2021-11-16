@@ -268,7 +268,7 @@ class MainPage(QWidget):
 
         # report
         btn_util_rate = QPushButton("Util\nRate", self.sub_menu_wrapper)
-
+        btn_util_rate.clicked.connect(self.showUtilizationRate)
 
         self.subMenus = [
             # file
@@ -729,6 +729,9 @@ class MainPage(QWidget):
             f.write('</layout>\n')
             f.close()
 
+    # AGV 전체 가동률 그래프 출력
+    def showUtilizationRate(self):
+        pass
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
