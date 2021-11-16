@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 
 class DB:
@@ -66,16 +67,23 @@ class DB:
         cur.execute("DROP table vehicle")
         cur.execute("DROP table command")
 
-    def put_scene_num(self, num):
+    def add_scene_num(self, num):
         cur = self.conn.cursor()
         cur.execute(f'INSERT INTO scene VALUES ({num})')
         print("new scene: ", num)
         self.conn.commit()
 
-    def put_command(self):
-        pass
+    def add_command(self, v_id, start_node, desti_node, path, type, time):
+        cur = self.conn.cursor()
+        path_str = ','.join(str(e) for e in path)
+        query = f'INSERT INTO command (scene_id, vehicle_id, start_node, desti_node, path, type, created_at, is_checked)' \
+                f'VALUES ({self.scene_num}, {v_id}, {start_node}, {desti_node}, "{path_str}",' \
+                f'{type}, {time}, 0)'
+        # print(query)
+        cur.execute(query)
+        self.conn.commit()
 
-    def put_vehicle_status(self):
+    def add_vehicle_status(self):
         pass
 
     def set_scene_num(self, num):
@@ -107,11 +115,13 @@ class DB:
         last_num = self.get_scene_num()
         print(last_num)
         if last_num == -1:
-            self.put_scene_num(1)
+            self.add_scene_num(1)
             self.set_scene_num(1)
         else:
-            self.put_scene_num(last_num[0] + 1)
+            self.add_scene_num(last_num[0] + 1)
             self.set_scene_num(last_num[0] + 1)
 
-#db = DB()
-#db.create_new_scene()
+db = DB()
+# db.create_new_scene()
+db.set_scene_num(1)
+db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
