@@ -77,3 +77,7 @@ def work_progress():
     ax.grid(True)
     plt.legend()
     plt.show()
+
+def node_frequency(node_cnt):
+    data = db.get_node_freq(node_cnt)
+    # map plot 부분 추가

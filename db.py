@@ -242,8 +242,21 @@ class DB:
     def get_total_work(self):
         pass
 
-    def get_node_freq(self):
-        pass
+    def get_node_freq(self, node_cnt):
+        """
+        node 별 방문 누적 횟수
+        :return data: 2차원 리스트
+        """
+        cur = self.conn.cursor()
+        data = [0 for i in range(node_cnt)]
+
+        for i in range(node_cnt):
+            query = f'SELECT COUNT(*) FROM vehicle WHERE node={i+1}'
+            cur.execute(query)
+            res = cur.fetchall()
+            data[i] = res
+        return data
+
 
     def create_new_scene(self):
         last_num = self.get_scene_num()
