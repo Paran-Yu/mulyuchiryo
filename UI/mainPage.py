@@ -267,8 +267,10 @@ class MainPage(QWidget):
         btn_set_oper.setIconSize(QSize(80, 80))
 
         # report
-        btn_util_rate = QPushButton("Util\nRate", self.sub_menu_wrapper)
+        btn_util_rate = QPushButton(self.sub_menu_wrapper)
         btn_util_rate.clicked.connect(self.showUtilizationRate)
+        btn_util_rate.setIcon(QIcon(QPixmap(path + "/resources/image/util rate.png")))
+        btn_util_rate.setIconSize(QSize(80, 80))
 
         self.subMenus = [
             # file
