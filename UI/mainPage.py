@@ -256,8 +256,10 @@ class MainPage(QWidget):
         btn_play.setIcon(QIcon(QPixmap(path + "/resources/image/play.png")))
         btn_play.setIconSize(QSize(80, 80))
 
-        btn_stop = QPushButton("Stop", self.sub_menu_wrapper)
+        btn_stop = QPushButton(self.sub_menu_wrapper)
         btn_stop.clicked.connect(self.stop)
+        btn_stop.setIcon(QIcon(QPixmap(path + "/resources/image/stop.png")))
+        btn_stop.setIconSize(QSize(80, 80))
 
         btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
