@@ -272,6 +272,8 @@ class MainPage(QWidget):
         btn_util_rate.setIcon(QIcon(QPixmap(path + "/resources/image/util rate.png")))
         btn_util_rate.setIconSize(QSize(80, 80))
 
+        btn_charge_rate = QPushButton("Charge\nRate", self.sub_menu_wrapper)
+
         self.subMenus = [
             # file
             [
@@ -302,6 +304,7 @@ class MainPage(QWidget):
             # report
             [
                 btn_util_rate,
+                btn_charge_rate,
             ],
         ]
 
