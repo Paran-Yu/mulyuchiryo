@@ -282,6 +282,11 @@ class MainPage(QWidget):
         btn_progress.setIcon(QIcon(QPixmap(path + "/resources/image/progress.png")))
         btn_progress.setIconSize(QSize(80, 80))
 
+        btn_via = QPushButton(self.sub_menu_wrapper)
+        btn_via.clicked.connect(self.showVia)
+        btn_via.setIcon(QIcon(QPixmap(path + "/resources/image/via.png")))
+        btn_via.setIconSize(QSize(80, 80))
+
         self.subMenus = [
             # file
             [
@@ -314,6 +319,7 @@ class MainPage(QWidget):
                 btn_util_rate,
                 btn_charge_rate,
                 btn_progress,
+                btn_via,
             ],
         ]
 
@@ -753,6 +759,10 @@ class MainPage(QWidget):
 
     # 작업 진행 그래프
     def showProgress(self):
+        pass
+
+    # 경유 횟수 확인
+    def showVia(self):
         pass
 
     # 키보드 클릭 이벤트
