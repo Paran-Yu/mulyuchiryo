@@ -266,6 +266,10 @@ class MainPage(QWidget):
         btn_set_oper.setIcon(QIcon(QPixmap(path + "/resources/image/oper data.png")))
         btn_set_oper.setIconSize(QSize(80, 80))
 
+        # report
+        btn_util_rate = QPushButton("Util\nRate", self.sub_menu_wrapper)
+
+
         self.subMenus = [
             # file
             [
@@ -295,6 +299,7 @@ class MainPage(QWidget):
             ],
             # report
             [
+                btn_util_rate,
             ],
         ]
 
@@ -723,6 +728,7 @@ class MainPage(QWidget):
 
             f.write('</layout>\n')
             f.close()
+
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
