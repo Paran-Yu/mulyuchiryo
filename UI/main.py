@@ -92,7 +92,7 @@ class MainPage(QWidget):
         self.menu_wrapper.resize(self.rect.width(), self.menu_wrapper_height)
         self.menu_wrapper.setObjectName("menu-wrapper")
         self.menu_wrapper.setStyleSheet("#menu-wrapper{"
-                                       "background-color: #FFFFFF;"
+                                       "background-color: #004761;"
                                        "}")
 
         self.menus = []
@@ -109,10 +109,13 @@ class MainPage(QWidget):
             menu.setFont(font)      # font size 적용
             menu.setObjectName("main-menu")
             menu.setStyleSheet("#main-menu{"    # style 적용
-                               "background-color: white;"
+                               "background-color: #004761;"
+                               "color:white;"
+                               "font-size: 17px;"
+                               "border: none;"
                                "}"
                                "#main-menu:hover{"
-                               "background-color: #D7EDFF;"
+                               "background-color: #93A9BB;"
                                "}"
                                "#main-menu:pressed{"
                                "background-color: #C5DCFF;"
@@ -139,43 +142,100 @@ class MainPage(QWidget):
         self.sub_menu_wrapper.resize(self.rect.width(), self.sub_menu_wrapper_height)
         self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
         self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
-                                       "background-color: #CCCCCC;"
-                                       "border: 2px solid #AAAAAA;"
-                                       "}")
-
+                                            #"background-color: #CCCCCC;"
+                                            "background-color: #DDDDDD;"
+                                            #"border: 1px solid #AAAAAA;"
+                                            "}")
+        #"background-image: url('./resources/image/save.png')"
         # 서브 메뉴 항목 추가
         # file
-        btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
-        btn_open_layout.clicked.connect(self.openLayout)
-
-        btn_save = QPushButton("Save", self.sub_menu_wrapper)
+        #btn_save = QPushButton("Save", self.sub_menu_wrapper)
+        btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
+        pq = QPixmap("./resources/image/save2.png")
+        btn_save.setIcon(QIcon(pq))
+        btn_save.setIconSize(QSize(80, 80))
 
-        btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
+        #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
+        btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
+        pq = QPixmap("./resources/image/save as2.png")
+        btn_save_as.setIcon(QIcon(pq))
+        btn_save_as.setIconSize(QSize(80, 80))
 
-        btn_load = QPushButton("Load", self.sub_menu_wrapper)
+        #btn_load = QPushButton("Load", self.sub_menu_wrapper)
+        btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
+        pq = QPixmap("./resources/image/load2.png")
+        btn_load.setIcon(QIcon(pq))
+        btn_load.setIconSize(QSize(80, 80))
 
-        btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        bar1 = QLabel(self.sub_menu_wrapper)
+        bar1.setStyleSheet("background-color: #999999;")
+        bar1.setGeometry(262, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
+        btn_open_layout = QPushButton(self.sub_menu_wrapper)
+        btn_open_layout.clicked.connect(self.openLayout)
+        pq = QPixmap("./resources/image/open layout2.png")
+        btn_open_layout.setIcon(QIcon(pq))
+        btn_open_layout.setIconSize(QSize(80, 80))
+
+        bar2 = QLabel(self.sub_menu_wrapper)
+        bar2.setStyleSheet("background-color: #999999;")
+        bar2.setGeometry(347, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
+        pq = QPixmap("./resources/image/set scale2.png")
+        btn_set_scale.setIcon(QIcon(pq))
+        btn_set_scale.setIconSize(QSize(80, 80))
 
-        btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        bar3 = QLabel(self.sub_menu_wrapper)
+        bar3.setStyleSheet("background-color: #999999;")
+        bar3.setGeometry(432, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
+        pq = QPixmap("./resources/image/close.png")
+        btn_close.setIcon(QIcon(pq))
+        btn_close.setIconSize(QSize(80, 80))
 
         # draw
-        btn_node = QPushButton("Node", self.sub_menu_wrapper)
+        self.draw_normal = [
+            QPixmap("./resources/image/nodes.png"),
+            QPixmap("./resources/image/port.png"),
+            QPixmap("./resources/image/wp.png"),
+        ]
+        self.draw_clicked = [
+            QPixmap("./resources/image/nodes selected.png"),
+            QPixmap("./resources/image/port selected.png"),
+            QPixmap("./resources/image/wp selected.png"),
+        ]
+
+        #btn_node = QPushButton("Node", self.sub_menu_wrapper)
+        btn_node = QPushButton(self.sub_menu_wrapper)
         btn_node.toggled.connect(lambda: self.changeTools(0))
         btn_node.setCheckable(True)
+        btn_node.setIcon(QIcon(self.draw_normal[0]))
+        btn_node.setIconSize(QSize(80, 80))
 
-        btn_port = QPushButton("Port", self.sub_menu_wrapper)
+        #btn_port = QPushButton("Port", self.sub_menu_wrapper)
+        btn_port = QPushButton(self.sub_menu_wrapper)
         btn_port.toggled.connect(lambda: self.changeTools(1))
         btn_port.setCheckable(True)
+        btn_port.setIcon(QIcon(self.draw_normal[1]))
+        btn_port.setIconSize(QSize(80, 80))
 
-        btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
+        #btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
+        btn_wait_point = QPushButton(self.sub_menu_wrapper)
         btn_wait_point.toggled.connect(lambda: self.changeTools(2))
         btn_wait_point.setCheckable(True)
+        btn_wait_point.setIcon(QIcon(self.draw_normal[2]))
+        btn_wait_point.setIconSize(QSize(80, 80))
 
         btn_path = QPushButton("Path", self.sub_menu_wrapper)
         btn_path.toggled.connect(lambda: self.changeTools(3))
@@ -228,20 +288,25 @@ class MainPage(QWidget):
             for menu in mainMenu:
                 menu.setObjectName("sub-menu")
                 menu.setStyleSheet("#sub-menu{"
-                                   "background-color:white;"
+                                   #"background-color:white;"
                                    "font-size: 17px;"
+                                   "border:none;"
                                    "}"
                                    "#sub-menu:hover{"
                                    "background-color: #D7EDFF;"
+                                   #A4BACC
                                    "}"
                                    "#sub-menu:pressed{"
                                    "background-color: #C5DCFF;"
                                    "}")
                 menu.resize(sub_menu_size, sub_menu_size)
-                left += padding
+                left += padding + 5
                 menu.move(left, padding)
                 left += sub_menu_size
                 menu.hide()
+        self.subMenus[0].append(bar1)
+        self.subMenus[0].append(bar2)
+        self.subMenus[0].append(bar3)
 
         self.showSubMenu(self.mainMenu)
 
