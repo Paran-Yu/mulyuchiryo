@@ -389,10 +389,12 @@ class MainPage(QWidget):
         # 버튼을 누른 경우
         if self.subMenus[1][idx].isChecked():
             self.current_tool = idx
+            self.subMenus[1][idx].setIcon(QIcon(self.draw_clicked[idx]))
             # 누른 버튼을 제외한 버튼 모두 해제.
             for i, btn in enumerate(self.subMenus[1]):
                 if i != idx:
                     btn.setChecked(False)
+                    btn.setIcon(QIcon(self.draw_normal[i]))
 
         # 버튼을 해제한 경우
         else:
@@ -401,6 +403,7 @@ class MainPage(QWidget):
                 if btn.isChecked():
                     return
 
+            self.subMenus[1][idx].setIcon(QIcon(self.draw_normal[idx]))
             self.current_tool = 5
 
     # 기존 작업 불러오기
