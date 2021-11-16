@@ -3,11 +3,16 @@
 # UI가 완성되지 않았으므로 테스트를 위해 임시로 main에 정의한다
 ##########################
 
+import sys
+import os.path
+sys.path.append(os.path.abspath(os.path.dirname('UI/')))
+
 import time
 import threading
 import mapreader
 from simulator import simulator
 from Core.call_agv import call_agv
+from UI import mainPage
 
 # simulate attribute
 simulate_speed = 1
@@ -74,5 +79,11 @@ def simulate_loop():
 #######################
 # Test용 main
 if __name__ == "__main__":
-    read_map()
-    start_simulate(plot=False)
+    print(__name__)
+    app = mainPage.QApplication(mainPage.sys.argv)
+    screen = app.desktop()  # 컴퓨터 전체 화면 rect
+    win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
+    win.show()  # 화면 띄우기
+    app.exec_()  # 루프 실행
+    #read_map()
+    #start_simulate(plot=False)

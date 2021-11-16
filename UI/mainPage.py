@@ -1,5 +1,8 @@
 import sys
 import os.path
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import main
+
 import random
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -10,6 +13,8 @@ from classes import *
 from scale import *
 from vehicleEditor import VehicleEditor
 import pickle
+
+path = os.path.abspath(os.path.dirname(__file__))
 
 class Context:
     def __init__(self):
@@ -81,7 +86,7 @@ class MainPage(QWidget):
         self.initSubMenu()      # 서브 메뉴 생성
         self.showFullScreen()   # 전체화면 모드
         self.setWindowTitle("물류 치료")    # 프로그램 제목
-        self.setWindowIcon(QIcon("./resources/image/favicon.png"))  # 프로그램 실행 아이콘
+        self.setWindowIcon(QIcon(path + "/resources/image/favicon.png"))  # 프로그램 실행 아이콘
 
     # 메인 메뉴 생성
     def initMainMenu(self):
@@ -152,21 +157,21 @@ class MainPage(QWidget):
         #btn_save = QPushButton("Save", self.sub_menu_wrapper)
         btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
-        pq = QPixmap("./resources/image/save2.png")
+        pq = QPixmap(path + "/resources/image/save2.png")
         btn_save.setIcon(QIcon(pq))
         btn_save.setIconSize(QSize(80, 80))
 
         #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
         btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
-        pq = QPixmap("./resources/image/save as2.png")
+        pq = QPixmap(path + "/resources/image/save as2.png")
         btn_save_as.setIcon(QIcon(pq))
         btn_save_as.setIconSize(QSize(80, 80))
 
         #btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
-        pq = QPixmap("./resources/image/load2.png")
+        pq = QPixmap(path + "/resources/image/load2.png")
         btn_load.setIcon(QIcon(pq))
         btn_load.setIconSize(QSize(80, 80))
 
@@ -177,7 +182,7 @@ class MainPage(QWidget):
         #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout = QPushButton(self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
-        pq = QPixmap("./resources/image/open layout2.png")
+        pq = QPixmap(path + "/resources/image/open layout2.png")
         btn_open_layout.setIcon(QIcon(pq))
         btn_open_layout.setIconSize(QSize(80, 80))
 
@@ -189,7 +194,7 @@ class MainPage(QWidget):
         btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
-        pq = QPixmap("./resources/image/set scale2.png")
+        pq = QPixmap(path + "/resources/image/set scale2.png")
         btn_set_scale.setIcon(QIcon(pq))
         btn_set_scale.setIconSize(QSize(80, 80))
 
@@ -200,20 +205,20 @@ class MainPage(QWidget):
         #btn_close = QPushButton("Close", self.sub_menu_wrapper)
         btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
-        pq = QPixmap("./resources/image/close.png")
+        pq = QPixmap(path + "/resources/image/close.png")
         btn_close.setIcon(QIcon(pq))
         btn_close.setIconSize(QSize(80, 80))
 
         # draw
         self.draw_normal = [
-            QPixmap("./resources/image/nodes.png"),
-            QPixmap("./resources/image/port.png"),
-            QPixmap("./resources/image/wp.png"),
+            QPixmap(path + "/resources/image/nodes.png"),
+            QPixmap(path + "/resources/image/port.png"),
+            QPixmap(path + "/resources/image/wp.png"),
         ]
         self.draw_clicked = [
-            QPixmap("./resources/image/nodes selected.png"),
-            QPixmap("./resources/image/port selected.png"),
-            QPixmap("./resources/image/wp selected.png"),
+            QPixmap(path + "/resources/image/nodes selected.png"),
+            QPixmap(path + "/resources/image/port selected.png"),
+            QPixmap(path + "/resources/image/wp selected.png"),
         ]
 
         #btn_node = QPushButton("Node", self.sub_menu_wrapper)
@@ -556,8 +561,12 @@ class MainPage(QWidget):
         self.vehicles = editor.vehicles
 
     def play(self):
-        self.XML()
-        # TODO: start Simulation.
+        # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
+        # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
+        # self.XML()
+
+        main.read_map()
+        main.start_simulate()
 
     # XML 파일 추출
     def XML(self):
@@ -984,6 +993,8 @@ class MainPage(QWidget):
 
 # Run App.
 if __name__ == '__main__':
+    # 이 파일로 실행한다면, play 함수 호출 시
+    # 같은 디렉토리 내에 example.png, data.xml이 존재해야함.
     app = QApplication(sys.argv)
     screen = app.desktop()  # 컴퓨터 전체 화면 rect
     win = MainPage(screen.screenGeometry()) # 메인 화면 생성
