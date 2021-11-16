@@ -261,8 +261,10 @@ class MainPage(QWidget):
         btn_stop.setIcon(QIcon(QPixmap(path + "/resources/image/stop.png")))
         btn_stop.setIconSize(QSize(80, 80))
 
-        btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
+        btn_set_oper = QPushButton(self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
+        btn_set_oper.setIcon(QIcon(QPixmap(path + "/resources/image/oper data.png")))
+        btn_set_oper.setIconSize(QSize(80, 80))
 
         self.subMenus = [
             # file
