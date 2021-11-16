@@ -157,22 +157,19 @@ class MainPage(QWidget):
         #btn_save = QPushButton("Save", self.sub_menu_wrapper)
         btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
-        pq = QPixmap(path + "/resources/image/save2.png")
-        btn_save.setIcon(QIcon(pq))
+        btn_save.setIcon(QIcon(QPixmap(path + "/resources/image/save2.png")))
         btn_save.setIconSize(QSize(80, 80))
 
         #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
         btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
-        pq = QPixmap(path + "/resources/image/save as2.png")
-        btn_save_as.setIcon(QIcon(pq))
+        btn_save_as.setIcon(QIcon(QPixmap(path + "/resources/image/save as2.png")))
         btn_save_as.setIconSize(QSize(80, 80))
 
         #btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
-        pq = QPixmap(path + "/resources/image/load2.png")
-        btn_load.setIcon(QIcon(pq))
+        btn_load.setIcon(QIcon(QPixmap(path + "/resources/image/load2.png")))
         btn_load.setIconSize(QSize(80, 80))
 
         bar1 = QLabel(self.sub_menu_wrapper)
@@ -182,8 +179,7 @@ class MainPage(QWidget):
         #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout = QPushButton(self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
-        pq = QPixmap(path + "/resources/image/open layout2.png")
-        btn_open_layout.setIcon(QIcon(pq))
+        btn_open_layout.setIcon(QIcon(QPixmap(path + "/resources/image/open layout2.png")))
         btn_open_layout.setIconSize(QSize(80, 80))
 
         bar2 = QLabel(self.sub_menu_wrapper)
@@ -194,8 +190,7 @@ class MainPage(QWidget):
         btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
-        pq = QPixmap(path + "/resources/image/set scale2.png")
-        btn_set_scale.setIcon(QIcon(pq))
+        btn_set_scale.setIcon(QIcon(QPixmap(path + "/resources/image/set scale2.png")))
         btn_set_scale.setIconSize(QSize(80, 80))
 
         bar3 = QLabel(self.sub_menu_wrapper)
@@ -205,8 +200,7 @@ class MainPage(QWidget):
         #btn_close = QPushButton("Close", self.sub_menu_wrapper)
         btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
-        pq = QPixmap(path + "/resources/image/close.png")
-        btn_close.setIcon(QIcon(pq))
+        btn_close.setIcon(QIcon(QPixmap(path + "/resources/image/close.png")))
         btn_close.setIconSize(QSize(80, 80))
 
         # draw
