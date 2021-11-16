@@ -120,7 +120,50 @@ class DB:
             return result[0]
 
     def get_vehicle_work(self):
-        pass
+        """
+        vehicle status의 누적 시간
+        :return name_list, stat_list: 1차원 리스트, 2차원 리스트
+        ['V01', 'V02', ...],
+        [[wait 누적 시간 리스트], [charge...], [move...], [load...], [unload,,,]]
+        """
+        cur = self.conn.cursor()
+        name_list = []
+        stat_list = [[], [], [], [], []]
+
+        cnt = 1
+        while True:
+            query = f'SELECT "name" FROM vehicle WHERE id={cnt} LIMIT 1'
+            cur.execute(query)
+            name = cur.fetchall()
+            if len(name) == 0:
+                break
+            name_list.append(name[0][0])
+            cnt += 1
+
+        for i in range(len(name_list)):
+            query = f'SELECT COUNT(*) FROM vehicle WHERE id={i+1} and status=10'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[0].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM vehicle WHERE id={i + 1} and status=80 or status=81'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[1].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM vehicle WHERE id={i + 1} and status=20'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[2].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM vehicle WHERE id={i + 1} and status=30'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[3].append(res[0][0])
+            query = f'SELECT COUNT(*) FROM vehicle WHERE id={i + 1} and status=40'
+            cur.execute(query)
+            res = cur.fetchall()
+            stat_list[4].append(res[0][0])
+        # print(stat_list)
+        return name_list, stat_list
+
 
     def get_vehicle_charge(self):
         """
@@ -168,7 +211,7 @@ class DB:
             self.add_scene_num(last_num[0] + 1)
             self.set_scene_num(last_num[0] + 1)
 
-# db = DB()
+db = DB()
 # db.db_clear()
 # db.db_init()
 # db.create_new_scene()
@@ -176,3 +219,4 @@ class DB:
 # db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
 # db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
 # db.get_vehicle_charge()
+db.get_vehicle_work()
