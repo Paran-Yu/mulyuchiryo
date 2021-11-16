@@ -31,9 +31,8 @@ class DB:
             scene_id INTEGER,\
             time INTEGER,\
             name TEXT,\
-            start_node INTEGER,\
-            desti_node INTEGER,\
             cur_node INTEGER,\
+            desti_node INTEGER,\
             x REAL,\
             y REAL,\
             status INTEGER,\
@@ -48,7 +47,7 @@ class DB:
         returns = cur.fetchall()
         if len(returns) == 0:
             cur.execute('CREATE TABLE command(\
-            id INTEGER PRIMARY KEY AUTOINCREMENT,\
+            id INTEGER,\
             scene_id INTEGER,\
             vehicle_id INTEGER,\
             start_node INTEGER,\
@@ -76,15 +75,22 @@ class DB:
     def add_command(self, v_id, start_node, desti_node, path, type, time):
         cur = self.conn.cursor()
         path_str = ','.join(str(e) for e in path)
-        query = f'INSERT INTO command (scene_id, vehicle_id, start_node, desti_node, path, type, created_at, is_checked)' \
+        query = f'INSERT INTO command (scene_id, vehicle_id, start_node, desti_node, path, type, created_at, is_checked) ' \
                 f'VALUES ({self.scene_num}, {v_id}, {start_node}, {desti_node}, "{path_str}",' \
                 f'{type}, {time}, 0)'
-        # print(query)
+        print(query)
         cur.execute(query)
         self.conn.commit()
 
-    def add_vehicle_status(self):
-        pass
+    def add_vehicle_status(self, v, time):
+        cur = self.conn.cursor()
+        query = f'INSERT INTO vehicle ' \
+                f'(id, scene_id, time, name, cur_node, desti_node, x, y, status, velocity, angle, battery, loaded) ' \
+                f'VALUES ({v.NUM}, {self.scene_num}, {time}, "{v.NAME}", {v.node}, {v.desti_node}, ' \
+                f'{round(v.x,2)}, {round(v.y, 2)}, {v.status}, {round(v.velocity, 2)}, {v.angle}, {round(v.battery, 2)}, {v.loaded})'
+        print(query)
+        cur.execute(query)
+        self.conn.commit()
 
     def set_scene_num(self, num):
         self.scene_num = num
@@ -121,7 +127,9 @@ class DB:
             self.add_scene_num(last_num[0] + 1)
             self.set_scene_num(last_num[0] + 1)
 
-db = DB()
+# db = DB()
+# db.db_clear()
+# db.db_init()
 # db.create_new_scene()
-db.set_scene_num(1)
-db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
+# db.set_scene_num(1)
+# db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
