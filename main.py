@@ -8,7 +8,6 @@ import threading
 import mapreader
 from simulator import simulator
 from Core.call_agv import call_agv
-from Core.a_star import a_star
 
 # simulate attribute
 simulate_speed = 1
