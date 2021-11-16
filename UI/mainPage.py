@@ -256,6 +256,8 @@ class MainPage(QWidget):
         btn_play.setIcon(QIcon(QPixmap(path + "/resources/image/play.png")))
         btn_play.setIconSize(QSize(80, 80))
 
+        btn_stop = QPushButton("Stop", self.sub_menu_wrapper)
+
         btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
 
@@ -283,7 +285,7 @@ class MainPage(QWidget):
             # simulate
             [
                 btn_play,
-                QPushButton("Stop", self.sub_menu_wrapper),
+                btn_stop,
                 btn_set_oper,
             ],
             # report
