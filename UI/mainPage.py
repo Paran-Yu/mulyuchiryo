@@ -157,22 +157,19 @@ class MainPage(QWidget):
         #btn_save = QPushButton("Save", self.sub_menu_wrapper)
         btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
-        pq = QPixmap(path + "/resources/image/save2.png")
-        btn_save.setIcon(QIcon(pq))
+        btn_save.setIcon(QIcon(QPixmap(path + "/resources/image/save2.png")))
         btn_save.setIconSize(QSize(80, 80))
 
         #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
         btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
-        pq = QPixmap(path + "/resources/image/save as2.png")
-        btn_save_as.setIcon(QIcon(pq))
+        btn_save_as.setIcon(QIcon(QPixmap(path + "/resources/image/save as2.png")))
         btn_save_as.setIconSize(QSize(80, 80))
 
         #btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
-        pq = QPixmap(path + "/resources/image/load2.png")
-        btn_load.setIcon(QIcon(pq))
+        btn_load.setIcon(QIcon(QPixmap(path + "/resources/image/load2.png")))
         btn_load.setIconSize(QSize(80, 80))
 
         bar1 = QLabel(self.sub_menu_wrapper)
@@ -182,8 +179,7 @@ class MainPage(QWidget):
         #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout = QPushButton(self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
-        pq = QPixmap(path + "/resources/image/open layout2.png")
-        btn_open_layout.setIcon(QIcon(pq))
+        btn_open_layout.setIcon(QIcon(QPixmap(path + "/resources/image/open layout2.png")))
         btn_open_layout.setIconSize(QSize(80, 80))
 
         bar2 = QLabel(self.sub_menu_wrapper)
@@ -194,8 +190,7 @@ class MainPage(QWidget):
         btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
-        pq = QPixmap(path + "/resources/image/set scale2.png")
-        btn_set_scale.setIcon(QIcon(pq))
+        btn_set_scale.setIcon(QIcon(QPixmap(path + "/resources/image/set scale2.png")))
         btn_set_scale.setIconSize(QSize(80, 80))
 
         bar3 = QLabel(self.sub_menu_wrapper)
@@ -205,8 +200,7 @@ class MainPage(QWidget):
         #btn_close = QPushButton("Close", self.sub_menu_wrapper)
         btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
-        pq = QPixmap(path + "/resources/image/close.png")
-        btn_close.setIcon(QIcon(pq))
+        btn_close.setIcon(QIcon(QPixmap(path + "/resources/image/close.png")))
         btn_close.setIconSize(QSize(80, 80))
 
         # draw
@@ -214,11 +208,13 @@ class MainPage(QWidget):
             QPixmap(path + "/resources/image/nodes.png"),
             QPixmap(path + "/resources/image/port.png"),
             QPixmap(path + "/resources/image/wp.png"),
+            QPixmap(path + "/resources/image/path.png"),
         ]
         self.draw_clicked = [
             QPixmap(path + "/resources/image/nodes selected.png"),
             QPixmap(path + "/resources/image/port selected.png"),
             QPixmap(path + "/resources/image/wp selected.png"),
+            QPixmap(path + "/resources/image/path selected.png"),
         ]
 
         #btn_node = QPushButton("Node", self.sub_menu_wrapper)
@@ -242,19 +238,54 @@ class MainPage(QWidget):
         btn_wait_point.setIcon(QIcon(self.draw_normal[2]))
         btn_wait_point.setIconSize(QSize(80, 80))
 
-        btn_path = QPushButton("Path", self.sub_menu_wrapper)
+        btn_path = QPushButton(self.sub_menu_wrapper)
         btn_path.toggled.connect(lambda: self.changeTools(3))
         btn_path.setCheckable(True)
+        btn_path.setIcon(QIcon(self.draw_normal[3]))
+        btn_path.setIconSize(QSize(80, 80))
 
         # Vehicle
-        btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
+        btn_vehicle_edit = QPushButton(self.sub_menu_wrapper)
         btn_vehicle_edit.clicked.connect(self.editVehicle)
+        btn_vehicle_edit.setIcon(QIcon(QPixmap(path + "/resources/image/edit.png")))
+        btn_vehicle_edit.setIconSize(QSize(80, 80))
 
         # Simulator
-        btn_play = QPushButton("Play", self.sub_menu_wrapper)
+        btn_play = QPushButton(self.sub_menu_wrapper)
         btn_play.clicked.connect(self.play)
-        btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
+        btn_play.setIcon(QIcon(QPixmap(path + "/resources/image/play.png")))
+        btn_play.setIconSize(QSize(80, 80))
+
+        btn_stop = QPushButton(self.sub_menu_wrapper)
+        btn_stop.clicked.connect(self.stop)
+        btn_stop.setIcon(QIcon(QPixmap(path + "/resources/image/stop.png")))
+        btn_stop.setIconSize(QSize(80, 80))
+
+        btn_set_oper = QPushButton(self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
+        btn_set_oper.setIcon(QIcon(QPixmap(path + "/resources/image/oper data.png")))
+        btn_set_oper.setIconSize(QSize(80, 80))
+
+        # report
+        btn_util_rate = QPushButton(self.sub_menu_wrapper)
+        btn_util_rate.clicked.connect(self.showUtilizationRate)
+        btn_util_rate.setIcon(QIcon(QPixmap(path + "/resources/image/util rate.png")))
+        btn_util_rate.setIconSize(QSize(80, 80))
+
+        btn_charge_rate = QPushButton(self.sub_menu_wrapper)
+        btn_charge_rate.clicked.connect(self.showChargeRate)
+        btn_charge_rate.setIcon(QIcon(QPixmap(path + "/resources/image/charge rate.png")))
+        btn_charge_rate.setIconSize(QSize(80, 80))
+
+        btn_progress = QPushButton(self.sub_menu_wrapper)
+        btn_progress.clicked.connect(self.showProgress)
+        btn_progress.setIcon(QIcon(QPixmap(path + "/resources/image/progress.png")))
+        btn_progress.setIconSize(QSize(80, 80))
+
+        btn_via = QPushButton(self.sub_menu_wrapper)
+        btn_via.clicked.connect(self.showVia)
+        btn_via.setIcon(QIcon(QPixmap(path + "/resources/image/via.png")))
+        btn_via.setIconSize(QSize(80, 80))
 
         self.subMenus = [
             # file
@@ -280,11 +311,15 @@ class MainPage(QWidget):
             # simulate
             [
                 btn_play,
-                QPushButton("Stop", self.sub_menu_wrapper),
+                btn_stop,
                 btn_set_oper,
             ],
             # report
             [
+                btn_util_rate,
+                btn_charge_rate,
+                btn_progress,
+                btn_via,
             ],
         ]
 
@@ -354,10 +389,12 @@ class MainPage(QWidget):
         # 버튼을 누른 경우
         if self.subMenus[1][idx].isChecked():
             self.current_tool = idx
+            self.subMenus[1][idx].setIcon(QIcon(self.draw_clicked[idx]))
             # 누른 버튼을 제외한 버튼 모두 해제.
             for i, btn in enumerate(self.subMenus[1]):
                 if i != idx:
                     btn.setChecked(False)
+                    btn.setIcon(QIcon(self.draw_normal[i]))
 
         # 버튼을 해제한 경우
         else:
@@ -366,6 +403,7 @@ class MainPage(QWidget):
                 if btn.isChecked():
                     return
 
+            self.subMenus[1][idx].setIcon(QIcon(self.draw_normal[idx]))
             self.current_tool = 5
 
     # 기존 작업 불러오기
@@ -560,6 +598,7 @@ class MainPage(QWidget):
 
         self.vehicles = editor.vehicles
 
+    # 시뮬레이션 시작
     def play(self):
         # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
@@ -567,6 +606,10 @@ class MainPage(QWidget):
 
         main.read_map()
         main.start_simulate()
+
+    # 시뮬레이션 일시정지
+    def stop(self):
+        pass
 
     # XML 파일 추출
     def XML(self):
@@ -708,6 +751,22 @@ class MainPage(QWidget):
 
             f.write('</layout>\n')
             f.close()
+
+    # AGV 전체 가동률 그래프 출력
+    def showUtilizationRate(self):
+        pass
+
+    # AGV의 충전률
+    def showChargeRate(self):
+        pass
+
+    # 작업 진행 그래프
+    def showProgress(self):
+        pass
+
+    # 경유 횟수 확인
+    def showVia(self):
+        pass
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
