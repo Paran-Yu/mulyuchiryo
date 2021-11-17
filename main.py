@@ -93,16 +93,4 @@ def search_routes():
 # Test용 main
 if __name__ == "__main__":
     read_map()
-    #### test
-    for v in vehicle_list:
-        if v.NUM==1:
-            v.desti_node = 388
-        if v.NUM==2:
-            v.desti_node = 390
-        if v.NUM==3:
-            v.desti_node = 316
-    
-    solutions = search_routes()
-    print(solutions)
-    
     start_simulate()

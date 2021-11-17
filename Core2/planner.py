@@ -18,6 +18,8 @@ class State(object):
     def __str__(self):
         return str((self.time, self.location[0], self.location[1]))
 
+# 충돌 제어 
+# 노드, 간선 모두 체크
 class Conflict(object):
     VERTEX = 1
     EDGE = 2
@@ -31,10 +33,6 @@ class Conflict(object):
         self.location_1 = ()
         self.location_2 = ()
 
-    def __str__(self):
-        return '(' + str(self.time) + ', ' + self.agent_1 + ', ' + self.agent_2 + \
-             ', '+ str(self.location_1) + ', ' + str(self.location_2) + ')'
-
 class VertexConstraint(object):
     def __init__(self, time, location):
         self.time = time
@@ -44,8 +42,6 @@ class VertexConstraint(object):
         return self.time == other.time and self.location == other.location
     def __hash__(self):
         return hash(str(self.time)+str(self.location))
-    def __str__(self):
-        return '(' + str(self.time) + ', '+ str(self.location) + ')'
 
 class EdgeConstraint(object):
     def __init__(self, time, location_1, location_2):
@@ -57,9 +53,8 @@ class EdgeConstraint(object):
             and self.location_2 == other.location_2
     def __hash__(self):
         return hash(str(self.time) + str(self.location_1) + str(self.location_2))
-    def __str__(self):
-        return '(' + str(self.time) + ', '+ str(self.location_1) +', '+ str(self.location_2) + ')'
-
+    
+# 간선과 노드 정보 저장
 class Constraints(object):
     def __init__(self):
         self.vertex_constraints = set()
@@ -69,9 +64,6 @@ class Constraints(object):
         self.vertex_constraints |= other.vertex_constraints
         self.edge_constraints |= other.edge_constraints
 
-    def __str__(self):
-        return "VC: " + str([str(vc) for vc in self.vertex_constraints])  + \
-            "EC: " + str([str(ec) for ec in self.edge_constraints])
 
 class Environment(object):
     # path_list(이동), vehicle_list, node_list, path_linked_list
@@ -114,21 +106,28 @@ class Environment(object):
         return neighbors
 
 
+    # 충돌 방지 첫번째 체크 -> 충돌여지가 있는 노드와 간선 부분 파악하기 
     def get_first_conflict(self, solution):
         max_t = max([len(plan) for plan in solution.values()])
-        result = Conflict()
+        result = Conflict() # 충돌하는 정보 저장
         for t in range(max_t):
+
+            # 노드 충돌
+            # 동선에서 지나는 노드를 임의로 2개를 뽑는다
             for agent_1, agent_2 in combinations(solution.keys(), 2):
+                # t시간에 있는 vehicle state상태 확인
                 state_1 = self.get_state(agent_1, solution, t)
                 state_2 = self.get_state(agent_2, solution, t)
+                # 같은 시간에 도착하는 vehicle이 있다면
                 if state_1.is_equal_except_time(state_2):
                     result.time = t
-                    result.type = Conflict.VERTEX
-                    result.location_1 = state_1.location
+                    result.type = Conflict.VERTEX # 겹치는 노드 
+                    result.location_1 = state_1.location 
                     result.agent_1 = agent_1
                     result.agent_2 = agent_2
                     return result
 
+            # 동선 충돌
             for agent_1, agent_2 in combinations(solution.keys(), 2):
                 state_1a = self.get_state(agent_1, solution, t)
                 state_1b = self.get_state(agent_1, solution, t+1)
@@ -136,9 +135,10 @@ class Environment(object):
                 state_2a = self.get_state(agent_2, solution, t)
                 state_2b = self.get_state(agent_2, solution, t+1)
 
+                # 동선이 겹치면
                 if state_1a.is_equal_except_time(state_2b) and state_1b.is_equal_except_time(state_2a):
                     result.time = t
-                    result.type = Conflict.EDGE
+                    result.type = Conflict.EDGE # 겹치는 간선
                     result.agent_1 = agent_1
                     result.agent_2 = agent_2
                     result.location_1 = state_1a.location
@@ -146,6 +146,7 @@ class Environment(object):
                     return result
         return False
 
+    # 충돌방지를 위한 노드와 간선 정보 저장
     def create_constraints_from_conflict(self, conflict):
         constraint_dict = {}
         if conflict.type == Conflict.VERTEX:
@@ -182,13 +183,9 @@ class Environment(object):
     def transition_valid(self, state_1, state_2):
         return EdgeConstraint(state_1.time, state_1.location, state_2.location) not in self.constraints.edge_constraints
 
-    def is_solution(self, agent_name):
-        pass
-
     def admissible_heuristic(self, state, agent_name):
         goal = self.agent_dict[agent_name]["goal"]
         return fabs(state.location[0] - goal.location[0]) + fabs(state.location[1] - goal.location[1])
-
 
     def is_at_goal(self, state, agent_name):
         goal_state = self.agent_dict[agent_name]["goal"]
@@ -215,9 +212,6 @@ class Environment(object):
             solution.update({agent:local_solution})
         return solution
 
-    def compute_solution_cost(self, solution):
-        return sum([len(path) for path in solution.values()])
-
 class HighLevelNode(object):
     def __init__(self):
         self.solution = {}
@@ -225,6 +219,7 @@ class HighLevelNode(object):
         self.cost = 0
 
     def __eq__(self, other):
+        # 데이터값 일치한지 확인하기 isinstance (현재와 비교하고자 하는 노드)
         if not isinstance(other, type(self)): return NotImplemented
         return self.solution == other.solution and self.cost == other.cost
 
@@ -249,10 +244,11 @@ class CBS(object):
         start.solution = self.env.compute_solution()
         if not start.solution:
             return {}
-        start.cost = self.env.compute_solution_cost(start.solution)
+        start.cost = sum([len(path) for path in start.solution.values()])
 
         self.open_set |= {start}
 
+        # 충돌 제어
         while self.open_set:
             P = min(self.open_set)
             self.open_set -= {P}
@@ -260,29 +256,34 @@ class CBS(object):
 
             self.env.constraint_dict = P.constraint_dict
             conflict_dict = self.env.get_first_conflict(P.solution)
+            
+            # 더이상 충돌 요소가 없으면 solution return
             if not conflict_dict:
                 print("solution found")
-
                 return self.generate_plan(P.solution)
 
-            constraint_dict = self.env.create_constraints_from_conflict(conflict_dict)
 
+            # 충돌 제어: 충돌할 요소가 있다면 solution 다시 찾기
+            constraint_dict = self.env.create_constraints_from_conflict(conflict_dict)
             for agent in constraint_dict.keys():
+                # print(agent)
                 new_node = deepcopy(P)
+                # 현재 agent 정보 하나 더 추가
                 new_node.constraint_dict[agent].add_constraint(constraint_dict[agent])
 
+                # solution 다시 찾기
                 self.env.constraint_dict = new_node.constraint_dict
                 new_node.solution = self.env.compute_solution()
                 if not new_node.solution:
                     continue
-                new_node.cost = self.env.compute_solution_cost(new_node.solution)
+                new_node.cost = sum([len(path) for path in new_node.solution.values()])
 
-                # TODO: ending condition
                 if new_node not in self.closed_set:
                     self.open_set |= {new_node}
 
         return {}
 
+    # 최종 결과 
     def generate_plan(self, solution):
         plan = {}
         for agent, path in solution.items():
