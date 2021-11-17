@@ -11781,7 +11781,7 @@
             <charge_speed>0.83</charge_speed>
             <discharge_work>1</discharge_work>
             <discharge_wait>0.2</discharge_wait>
-            <start_node>290</start_node>
+            <start_node>498</start_node>
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
@@ -11801,7 +11801,7 @@
             <charge_speed>0.83</charge_speed>
             <discharge_work>1</discharge_work>
             <discharge_wait>0.2</discharge_wait>
-            <start_node>291</start_node>
+            <start_node>499</start_node>
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
@@ -11821,10 +11821,10 @@
             <charge_speed>0.83</charge_speed>
             <discharge_work>1</discharge_work>
             <discharge_wait>0.2</discharge_wait>
-            <start_node>390</start_node>
+            <start_node>500</start_node>
             <start_angle>90</start_angle>
         </vehicle>
-        <!-- <vehicle>
+        <vehicle>
             <num>4</num>
             <name>V04</name>
             <type>LowHeight</type>
@@ -12063,9 +12063,6 @@
             <discharge_wait>0.2</discharge_wait>
             <start_node>531</start_node>
             <start_angle>90</start_angle>
-<<<<<<< HEAD
-        </vehicle> -->
-=======
         </vehicle>
         <vehicle>
             <num>16</num>
@@ -12187,6 +12184,5 @@
             <start_node>507</start_node>
             <start_angle>180</start_angle>
         </vehicle>
->>>>>>> d02a249ac5be1abf277270129db8853287e698ec
     </vehicles>
 </layout>
