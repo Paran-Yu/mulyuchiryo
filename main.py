@@ -73,7 +73,7 @@ def start_simulate(plot=True):
     simulate_loop()
 
     while plot:
-        simulator.plot_update(simulate_speed, node_list, vehicle_list)
+        simulator.plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate_cnt)
 
 
 # simulate_speed마다 루틴 실행

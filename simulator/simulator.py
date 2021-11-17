@@ -175,8 +175,9 @@ def plot_init(node_list, path_list, vehicle_list):
     plt.pause(1)
 
 
-def plot_update(simulate_speed, node_list, vehicle_list):
-
+def plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate_cnt):
+    # 제목칸에 시간, 횟수 업데이트
+    plt.title(f'Time: {simulate_time}sec; Work: {simulate_cnt};')
     #  전에 있던 것 업데이트 해주기
     # Vehicle
     for i in range(len(vehicle_list)):
