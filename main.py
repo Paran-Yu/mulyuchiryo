@@ -16,10 +16,14 @@ import Core2.astar as astar, Core2.planner as planner
 from Core.call_agv import call_agv
 from Core.send_agv import send_agv
 from Core.back_agv import back_agv
+from Core.check_collision import check_collision
 from UI import mainPage
+import db
 
 # simulate attribute
-simulate_speed = 1
+simulate_speed = 1      # 0.5: 2배속, 0.1: 10배속
+simulate_time = 0       # 시간 경과[sec]
+simulate_cnt = 0        # 반송 완료 건수
 
 # layout component
 img = {}
@@ -46,6 +50,8 @@ VEHICLE_STATUS = {
     99: "ERROR"
 }
 
+# DB connection
+simul_db = db.DB()
 
 #########################
 # UI용 함수 정의
@@ -60,8 +66,13 @@ def read_map():
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate(plot=True):
+    global simulate_time, simulate_cnt
     # simulation 초기화
     simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
+    simulate_time = 0
+    simulate_cnt = 0
+    # 새로운 scene 생성
+    simul_db.create_new_scene()
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
@@ -76,13 +87,18 @@ def start_simulate(plot=True):
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
+    global simulate_time, simulate_cnt
     global loadable_port_list, unloadable_port_list
 
-    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
+    simulate_time += 1
+
+    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list,
+                               simulate_cnt)
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
+    check_collision(node_list, vehicle_list, path_linked_list)
     
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
@@ -108,5 +124,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    read_map()
-    start_simulate()
+    # read_map()
+    # start_simulate()
