@@ -62,7 +62,7 @@ class Vehicle:
         self.desti_node = self.path[-1]
         self.status = 20
         self.count = 0
-        
+
         # if cmd == 21 or cmd == 22:
         #     desti_node_instance = node_list[self.desti_node -1]
         #     if desti_node_instance in loadable_port_list:
@@ -253,7 +253,7 @@ class Vehicle:
             degree += 360
         return degree
 
-    def vehicle_routine(self, node_list):
+    def vehicle_routine(self, node_list, simulate_cnt):
         # 1. 충돌 방지 명령
         if self.interrupt == 1:
             self.brake()
@@ -295,6 +295,7 @@ class Vehicle:
                         self.status = 10
                         self.loaded = 0
                         node_list[self.desti_node - 1].status = 0
+                        simulate_cnt += 1
                     print("unload! - ", self.count)
                 # wait
                 elif self.cmd == 20:

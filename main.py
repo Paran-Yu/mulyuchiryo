@@ -78,12 +78,13 @@ def start_simulate(plot=True):
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    global simulate_time
+    global simulate_time, simulate_cnt
     global loadable_port_list, unloadable_port_list
 
     simulate_time += 1
 
-    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list, simulate_time, simulate_time)
+    simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list,
+                               simulate_cnt)
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
