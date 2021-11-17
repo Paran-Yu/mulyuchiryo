@@ -147,26 +147,21 @@ class MainPage(QWidget):
         self.sub_menu_wrapper.resize(self.rect.width(), self.sub_menu_wrapper_height)
         self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
         self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
-                                            #"background-color: #CCCCCC;"
                                             "background-color: #DDDDDD;"
-                                            #"border: 1px solid #AAAAAA;"
                                             "}")
-        #"background-image: url('./resources/image/save.png')"
+
         # 서브 메뉴 항목 추가
         # file
-        #btn_save = QPushButton("Save", self.sub_menu_wrapper)
         btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
         btn_save.setIcon(QIcon(QPixmap(path + "/resources/image/save2.png")))
         btn_save.setIconSize(QSize(80, 80))
 
-        #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
         btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
         btn_save_as.setIcon(QIcon(QPixmap(path + "/resources/image/save as2.png")))
         btn_save_as.setIconSize(QSize(80, 80))
 
-        #btn_load = QPushButton("Load", self.sub_menu_wrapper)
         btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
         btn_load.setIcon(QIcon(QPixmap(path + "/resources/image/load2.png")))
@@ -176,7 +171,6 @@ class MainPage(QWidget):
         bar1.setStyleSheet("background-color: #999999;")
         bar1.setGeometry(262, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
 
-        #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
         btn_open_layout = QPushButton(self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
         btn_open_layout.setIcon(QIcon(QPixmap(path + "/resources/image/open layout2.png")))
@@ -186,7 +180,6 @@ class MainPage(QWidget):
         bar2.setStyleSheet("background-color: #999999;")
         bar2.setGeometry(347, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
 
-        #btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
         btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
@@ -197,7 +190,11 @@ class MainPage(QWidget):
         bar3.setStyleSheet("background-color: #999999;")
         bar3.setGeometry(432, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
 
-        #btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        btn_export = QPushButton(self.sub_menu_wrapper)
+        btn_export.clicked.connect(self.export)
+        btn_export.setIcon(QIcon(QPixmap(path + "/resources/image/export.png")))
+        btn_export.setIconSize(QSize(80, 80))
+
         btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
         btn_close.setIcon(QIcon(QPixmap(path + "/resources/image/close.png")))
@@ -217,21 +214,18 @@ class MainPage(QWidget):
             QPixmap(path + "/resources/image/path selected.png"),
         ]
 
-        #btn_node = QPushButton("Node", self.sub_menu_wrapper)
         btn_node = QPushButton(self.sub_menu_wrapper)
         btn_node.toggled.connect(lambda: self.changeTools(0))
         btn_node.setCheckable(True)
         btn_node.setIcon(QIcon(self.draw_normal[0]))
         btn_node.setIconSize(QSize(80, 80))
 
-        #btn_port = QPushButton("Port", self.sub_menu_wrapper)
         btn_port = QPushButton(self.sub_menu_wrapper)
         btn_port.toggled.connect(lambda: self.changeTools(1))
         btn_port.setCheckable(True)
         btn_port.setIcon(QIcon(self.draw_normal[1]))
         btn_port.setIconSize(QSize(80, 80))
 
-        #btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
         btn_wait_point = QPushButton(self.sub_menu_wrapper)
         btn_wait_point.toggled.connect(lambda: self.changeTools(2))
         btn_wait_point.setCheckable(True)
@@ -295,6 +289,7 @@ class MainPage(QWidget):
                 btn_load,
                 btn_open_layout,
                 btn_set_scale,
+                btn_export,
                 btn_close,
             ],
             # draw
@@ -572,6 +567,10 @@ class MainPage(QWidget):
                     self.actual_length = int(qd.edit_length.text())
             else:
                 self.subMenus[0][4].setChecked(False)
+
+    # DB 파일 Excel 추출
+    def export(self):
+        pass
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
