@@ -583,6 +583,8 @@ class MainPage(QWidget):
             result = qd.exec_()
 
             if result:
+                QMessageBox.question(self, 'How To...', '마우스로 시작점을 누르고, 끝 점을 누르면 Scale이 완료됩니다.',
+                                     QMessageBox.Ok, QMessageBox.Ok)
                 if qd.edit_length.text():
                     self.actual_length = int(qd.edit_length.text())
             else:
