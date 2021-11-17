@@ -124,6 +124,8 @@ class Detail():
         self.context.main.drawCanvas()
 
     def setDetail(self, obj):
+        self.x.setText(str(obj.X))
+        self.y.setText(str(obj.Y))
         self.label_id.setText(str(obj.NUM))
         self.updatePath()
 
@@ -338,6 +340,134 @@ class DetailWaitPoint(Detail):
         super().setDetail(obj)
         self.charge.setChecked(self.context.main.selected_node.CHARGE)
 
+class DetailVehicle():
+    def __init__(self, context, parent):
+        super(DetailVehicle, self).__init__()
+        self.widget = QWidget(parent)
+        self.context = context
+
+        QLabel("ID: ", self.widget).move(parent.width() * 0.05, parent.height() * 0.01)
+        self.label_id = QLabel(self.widget)
+        self.label_id.setGeometry(parent.width() * 0.1, parent.height() * 0.01, 100, 15)
+        QLabel("Position", self.widget).move(parent.width() * 0.05, parent.height() * 0.05)
+        QLabel("------------------------------------------", self.widget).move(parent.width() * 0.05, parent.height() * 0.06)
+        QLabel("node", self.widget).move(parent.width() * 0.05-5, parent.height() * 0.1 + 5)
+        QLabel("angle", self.widget).move(parent.width() * 0.55 - 5, parent.height() * 0.1 + 5)
+        QLabel("x", self.widget).move(parent.width() * 0.05, parent.height() * 0.15 + 5)
+        QLabel("y", self.widget).move(parent.width() * 0.55, parent.height() * 0.15 + 5)
+
+        self.node = QLineEdit(self.widget)
+        self.node.setGeometry(parent.width() * 0.15, parent.height() * 0.10,
+                              parent.width() * 0.3, self.node.height())
+
+        self.angle = QLineEdit(self.widget)
+        self.angle.setGeometry(parent.width() * 0.65, parent.height() * 0.10,
+                              parent.width() * 0.3, self.node.height())
+        self.angle.textChanged.connect(self.changedAngle)
+
+        self.x = QLineEdit(self.widget)
+        self.x.setEnabled(False)
+        self.x.setGeometry(parent.width() * 0.15, parent.height() * 0.15,
+                           parent.width() * 0.3, self.x.height())
+
+        self.y = QLineEdit(self.widget)
+        self.y.setEnabled(False)
+        self.y.setGeometry(parent.width() * 0.65, parent.height() * 0.15,
+                           parent.width() * 0.3, self.y.height())
+
+        self.btn_delete = QPushButton("Delete", self.widget)
+        self.btn_delete.setObjectName("btn-delete")
+        self.btn_delete.clicked.connect(self.deleteNode)
+        self.btn_delete.setStyleSheet("#btn-delete{"
+                                       "background-color:white;"
+                                       "}"
+                                       "#btn-delete:hover{"
+                                       "background-color: #D7EDFF;"
+                                       "}"
+                                       "#btn-delete:pressed{"
+                                       "background-color: #C5DCFF;"
+                                       "}")
+        self.btn_delete.setGeometry(parent.width() * 0.65, parent.height() * 0.9,
+                                    parent.width() * 0.3, self.y.height())
+
+        QLabel("Detail", self.widget).move(parent.width() * 0.05, parent.height() * 0.33)
+        QLabel("------------------------------------------", self.widget) \
+            .move(parent.width() * 0.05, parent.height() * 0.34)
+
+        QLabel("name", self.widget).move(parent.width() * 0.04, parent.height() * 0.38 + 5)
+        QLabel("type", self.widget).move(parent.width() * 0.54, parent.height() * 0.38 + 5)
+
+        self.name = QLineEdit("port", self.widget)
+        self.name.setGeometry(parent.width() * 0.15, parent.height() * 0.38,
+                              parent.width() * 0.3, self.y.height())
+        self.name.textChanged.connect(self.changedName)
+
+        self.type = QComboBox(self.widget)
+        self.type.setGeometry(parent.width() * 0.65, parent.height() * 0.38,
+                              parent.width() * 0.3, self.y.height())
+        self.type.setStyleSheet("background-color: white;")
+        self.type.addItem("저상형")
+        self.type.addItem("Reel Direct")
+        self.type.currentIndexChanged.connect(self.changedType)
+
+    def hide(self):
+        self.widget.hide()
+
+    def show(self):
+        self.widget.show()
+
+    def changedName(self):
+        if self.context.main.selected_vehicle:
+            self.context.main.selected_vehicle.NAME = self.name.text()
+
+    def changedAngle(self):
+        str = self.angle.text()
+
+        for char in str:
+            if not char.isdigit():
+                str = str.replace(char, "")
+
+        if self.context.main.selected_vehicle:
+            self.context.main.selected_vehicle.angle = int(str)
+
+        self.angle.setText(str)
+
+    def changedType(self):
+        if self.context.main.selected_vehicle:
+            self.context.main.selected_vehicle.TYPE = self.type.currentText()
+
+    def deleteNode(self):
+        if not self.context.main.selected_vehicle:
+            return
+
+        for v in self.context.main.vehicles:
+            if v == self.context.main.selected_vehicle:
+                self.context.main.vehicles.remove(v)
+                del v
+                self.context.main.selected_vehicle = None
+
+        self.redraw()
+
+    def redraw(self):
+        self.context.main.eraseCanvas()
+        self.context.main.drawCanvas()
+
+    def setDetail(self, obj):
+        self.node.setText(str(obj.node))
+        self.x.setText(str(obj.x))
+        self.y.setText(str(obj.y))
+        self.label_id.setText(str(obj.NUM))
+        self.name.setText(obj.NAME)
+        self.angle.setText(str(obj.angle))
+
+        if obj.TYPE:
+            self.type.setCurrentIndex(self.type.findText(obj.TYPE))
+        else:
+            self.type.setCurrentIndex(-1)
+
+        self.redraw()
+
+
 class SideBar(QWidget):
     def __init__(self, context, parent):
         super(SideBar, self).__init__()
@@ -353,10 +483,12 @@ class SideBar(QWidget):
         self.path = DetailPath(context, self.widget)
         self.port = DetailPort(context, self.widget)
         self.wait_point = DetailWaitPoint(context, self.widget)
+        self.vehicle = DetailVehicle(context, self.widget)
         self.details = [
             self.path,
             self.port,
             self.wait_point,
+            self.vehicle,
         ]
 
         for idx, detail in enumerate(self.details):
@@ -366,6 +498,8 @@ class SideBar(QWidget):
         self.widget.hide()
 
     def getDetail(self, idx):
+        if idx == 4:
+            idx -= 1
         self.hide(self.current)
         self.current = idx
         self.show(self.current)
@@ -377,6 +511,4 @@ class SideBar(QWidget):
         self.details[idx].show()
 
     def setDetail(self, obj):
-        self.details[self.current].x.setText(str(obj.X))
-        self.details[self.current].y.setText(str(obj.Y))
         self.details[self.current].setDetail(obj)

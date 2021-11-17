@@ -481,7 +481,7 @@ class MainPage(QWidget):
     # 현재 작업 내용 저장
     def save(self):
         # TODO: Change Image src to real Image by use numpy.
-        if self.layout_name is None:
+        if not self.layout_name:
             if self.saveAs():
                 return True
             return False
@@ -858,7 +858,12 @@ class MainPage(QWidget):
 
                     self.side_bar.widget.show()
 
-                    self.side_bar.setDetail(self.selected_node)
+                    if not self.selected_vehicle:
+                        self.side_bar.setDetail(self.selected_node)
+                    else:
+                        self.selected_vehicle.x = self.selected_node.X
+                        self.selected_vehicle.y = self.selected_node.Y
+                        self.side_bar.setDetail(self.selected_vehicle)
 
     # 모든 객체들을 화면에 그림.
     def drawCanvas(self):
@@ -899,7 +904,7 @@ class MainPage(QWidget):
         for vehicle in self.vehicles:
             qp = QPainter(self.canvas)
 
-            qp.setPen(QPen(QColor(0, 255, 255), 15))
+            qp.setPen(QPen(QColor(255, 255, 0), 15))
             qp.drawPoint(vehicle.x, vehicle.y)
 
             qp.end()
@@ -921,6 +926,7 @@ class MainPage(QWidget):
                 # 메뉴바 이상을 눌렀을 때 무반응.
                 if e.y() < self.menu_wrapper_height + self.sub_menu_wrapper_height:
                     return
+                self.selected_vehicle = None
 
                 nx = (e.x() - self.canvas_label.x()) * self.canvas.width() / self.canvas_label.width()
                 ny = (e.y() - self.canvas_label.y() - self.sub_menu_wrapper_height - self.menu_wrapper_height) \
@@ -936,36 +942,57 @@ class MainPage(QWidget):
                         self.sp = QPoint(self.selected_node.X, self.selected_node.Y)
 
                         self.side_bar.widget.show()
-                        self.side_bar.getDetail(type)
-                        self.side_bar.setDetail(self.selected_node)
 
                         if self.tools[self.current_tool] == "path":
                             self.draw_path = True
 
+                        for v in self.vehicles:
+                            if v.node == self.selected_node.NUM:
+                                self.selected_vehicle = v
+                                self.side_bar.getDetail(4)
+                                self.side_bar.setDetail(self.selected_vehicle)
+                                self.drawCanvas()
+                                return
+
+                        if self.current_tool == 4 and not self.selected_vehicle:  # Vehicle
+                            self.context.v_count += 1
+                            self.selected_vehicle = AddVehicle(self.context.v_count, int(self.sp.x()), int(self.sp.y()))
+                            self.selected_vehicle.node = self.selected_node.NUM
+
+                            self.positions[self.current_tool].append(self.selected_vehicle)
+                            self.side_bar.getDetail(4)
+                            self.side_bar.setDetail(self.selected_vehicle)
+
+                            self.drawCanvas()
+                        else:
+                            self.side_bar.getDetail(type)
+                            self.side_bar.setDetail(self.selected_node)
+
+                        self.side_bar.widget.show()
+
                 # 그리기 도구일 때 좌표를 찾아서 저장.
                 elif self.tools[self.current_tool] not in ["mouse", "path"]:
                     '''self.mouse_left and '''
+                    # 빈 곳에 Vehicle 클릭 시 취소.
+                    if self.current_tool == 4:
+                        return
                     self.node_selected = True
 
-                    if self.current_tool == 4:  # Vehicle
-                        self.context.v_count += 1
-                        self.selected_vehicle = self.context.class_list[self.current_tool](self.context.v_count, int(nx), int(ny))
-                        self.positions[self.current_tool].append(self.selected_vehicle)
-                    else:
-                        # Count increment per every node creation
-                        self.count += 1
+                    # Count increment per every node creation
+                    self.count += 1
 
-                        self.selected_node = self.context.class_list[self.current_tool](self.count, int(nx), int(ny))
-                        self.selected_node.count = 0    # 연결된 node 수를 알기 위한 변수.
-                        self.positions[self.current_tool].append(self.selected_node)
+                    self.selected_node = self.context.class_list[self.current_tool](self.count, int(nx), int(ny))
+                    self.selected_node.count = 0    # 연결된 node 수를 알기 위한 변수.
+
+                    self.positions[self.current_tool].append(self.selected_node)
+                    self.side_bar.getDetail(self.current_tool)
+                    self.side_bar.setDetail(self.selected_node)
 
                     self.drawCanvas()
 
                     self.sp = QPoint(nx, ny)
 
                     self.side_bar.widget.show()
-                    self.side_bar.getDetail(self.current_tool)
-                    self.side_bar.setDetail(self.selected_node)
 
                 elif self.tools[self.current_tool] == "mouse":
                     self.side_bar.widget.hide()
@@ -1039,6 +1066,11 @@ class MainPage(QWidget):
                     # 노드의 위치가 변경될 수 있으므로, 화면을 지워줌.
                     self.eraseCanvas()
 
+                    for v in self.vehicles:
+                        if v.node == end.NUM:
+                            v.x = end.X
+                            v.y = end.Y
+
                 path = Path(start, end)
 
                 # 두 노드사이 중복되는 path 제외
@@ -1057,7 +1089,8 @@ class MainPage(QWidget):
 
                 self.paths.append(path)
 
-                self.side_bar.setDetail(self.selected_node)
+                if not self.selected_vehicle:
+                    self.side_bar.setDetail(self.selected_node)
 
                 self.drawCanvas()
 

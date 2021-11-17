@@ -19,6 +19,7 @@ def AddVehicle(num, x, y):
 
     v.x = x
     v.y = y
+    v.angle = 0
     '''
     if type == "저상형":
         v.NUM = num
