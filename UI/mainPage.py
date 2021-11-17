@@ -1,18 +1,22 @@
 import sys
 import os.path
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-import main
 
 import random
+import pickle
+
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+
 from sidebar import SideBar
 from selector import Selector
 from classes import *
 from scale import *
 from vehicleEditor import VehicleEditor
-import pickle
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import main
+
 
 currentDir = os.path.abspath(os.path.dirname(__file__))
 rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
