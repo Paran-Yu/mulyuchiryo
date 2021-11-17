@@ -4,6 +4,7 @@ import os.path
 import random
 import pickle
 import sqlite3
+import pandas as pd
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -592,7 +593,74 @@ class MainPage(QWidget):
 
     # DB 파일 Excel 추출
     def export(self):
-        pass
+        conn = sqlite3.connect(rootDir + "/simul_data.db")
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+        # TODO: 원하는 씬의 데이터만 뽑기
+        # command
+        col = [
+            "id",
+            "scean_id",
+            "vehicle_id",
+            "start_node",
+            "desti_node",
+            "path",
+            "type",
+            "created_at",
+            "is_checked",
+        ]
+
+        raw_data = {}
+        for i in range(len(col)):
+            raw_data[col[i]] = list()
+
+        cur.execute("SELECT * FROM 'command'")
+        rows = cur.fetchall()
+
+        for row in rows:
+            for i in range(len(row)):
+                raw_data[col[i]].append(row[i])
+
+        # vehicle
+        col = [
+            "id",
+            "scean_id",
+            "time",
+            "name",
+            "cur_node",
+            "desti_node",
+            "x",
+            "y",
+            "status",
+            "velocity",
+            "angle",
+            "battery",
+            "loaded",
+        ]
+
+        raw_data2 = {}
+        for i in range(len(col)):
+            raw_data2[col[i]] = list()
+
+        cur.execute("SELECT * FROM 'vehicle'")
+        rows = cur.fetchall()
+
+        for row in rows:
+            for i in range(len(row)):
+                raw_data2[col[i]].append(row[i])
+
+        print(raw_data2)
+        raw_data = pd.DataFrame(raw_data)  # 데이터 프레임으로 전환
+        raw_data2 = pd.DataFrame(raw_data2)
+
+
+        xlxs_dir = 'sample.xlsx'  # 경로 및 파일명 설정
+        with pd.ExcelWriter(xlxs_dir) as writer:
+            raw_data.to_excel(writer, sheet_name='command')  # raw_data1 시트에 저장
+            raw_data2.to_excel(writer, sheet_name='vehicle')  # raw_data2 시트에 저장
+
+        conn.close()
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
