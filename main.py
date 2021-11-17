@@ -17,7 +17,8 @@ from Core.back_agv import back_agv
 from UI import mainPage
 
 # simulate attribute
-simulate_speed = 1
+simulate_speed = 0.01
+stop_flag = False
 
 # layout component
 img = {}
@@ -61,7 +62,7 @@ def start_simulate(plot=True):
     # 시뮬레이션 무한 루프 실행
     simulate_loop()
 
-    while plot:
+    while plot and not stop_flag:
         simulator.plot_update(simulate_speed, node_list, vehicle_list)
 
 
@@ -75,12 +76,19 @@ def simulate_loop():
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
-    
+    # 종료
+    if stop_flag:
+        return
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
+def simulate_stop():
+    global stop_flag
+    stop_flag = True
+    simulator.plot_close()
+    # print('stop_flag:',stop_flag)
 
-#######################
+####################
 # Test용 main
 if __name__ == "__main__":
     print(__name__)
@@ -89,5 +97,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    read_map()
-    start_simulate()
+    # read_map()
+    # start_simulate()

@@ -224,3 +224,6 @@ def plot_update(simulate_speed, node_list, vehicle_list):
             node_texts[i].set_text(f'{node_list[i].NUM} {node_list[i].using}')
 
     plt.pause(simulate_speed)
+
+def plot_close():
+    plt.close()

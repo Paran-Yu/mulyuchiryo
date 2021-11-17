@@ -619,7 +619,7 @@ class MainPage(QWidget):
 
     # 시뮬레이션 일시정지
     def stop(self):
-        pass
+        main.simulate_stop()
 
     # XML 파일 추출
     def XML(self):
