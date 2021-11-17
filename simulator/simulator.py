@@ -97,24 +97,7 @@ def vehicle_update(node_list, vehicle_list, simulate_cnt):
 
 # PLOT
 def plot_init(node_list, path_list, vehicle_list):
-    img = plt.imread('./example.png')
-    imgplot = plt.imshow(img)
-    # 노드
-    # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
-    x_min, y_min = 999999999999, 9999999999999
-    # x_max, y_max = -1, -1
     for node in node_list:
-        # 가장 극단 점 찾기
-        # if node.X < x_min:
-        #     x_min = node.X
-        # if x_max < node.X:
-        #     x_max = node.X
-        if node.Y < y_min:
-            y_min = node.Y
-        # if y_max < node.Y:
-        #     y_max = node.Y
-        
-
         # port
         if hasattr(node, 'PORT_NAME'):
             if node.TYPE == 'load':
@@ -150,9 +133,8 @@ def plot_init(node_list, path_list, vehicle_list):
             plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
     ax = plt.gca()
+    ax.invert_yaxis()
     plt.pause(1)
-    # cur_ylim_bottom, cur_ylim_top = ax.get_ylim()
-    ax.set_ylim(top=y_min)
 
     for vehicle in vehicle_list:
         # print(vehicle.x, vehicle.y)
