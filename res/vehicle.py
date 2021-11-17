@@ -63,12 +63,12 @@ class Vehicle:
         self.status = 20
         self.count = 0
         
-        if cmd == 21 or cmd == 22:
-            desti_node_instance = node_list[self.desti_node -1]
-            if desti_node_instance in loadable_port_list:
-                loadable_port_list.remove(desti_node_instance)
-            elif desti_node_instance in unloadable_port_list:
-                unloadable_port_list.remove(desti_node_instance)
+        # if cmd == 21 or cmd == 22:
+        #     desti_node_instance = node_list[self.desti_node -1]
+        #     if desti_node_instance in loadable_port_list:
+        #         loadable_port_list.remove(desti_node_instance)
+        #     elif desti_node_instance in unloadable_port_list:
+        #         unloadable_port_list.remove(desti_node_instance)
 
 
     def move(self, node_list):
