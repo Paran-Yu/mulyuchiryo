@@ -17,7 +17,7 @@ from Core.back_agv import back_agv
 from UI import mainPage
 
 # simulate attribute
-simulate_speed = 0.01
+simulate_speed = 1
 stop_flag = False
 
 # layout component
@@ -89,7 +89,7 @@ def stop_simulate():
     stop_flag = True
     simulator.plot_close()
 
-####################
+#######################
 # Test용 main
 if __name__ == "__main__":
     print(__name__)
@@ -98,5 +98,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    # read_map()
-    # start_simulate()
+    read_map()
+    start_simulate()
