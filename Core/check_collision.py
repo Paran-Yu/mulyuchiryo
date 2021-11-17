@@ -53,24 +53,23 @@ def check_line_collision(agv1, agv2, stop_record):
                 return
 
 # 교차로에서 충돌하는지 체크
-def check_crossing_collision(agv1, agv2, node_list, path_linked_list, stop_record):
-    agv1_path_length = 5 if len(agv1.path) >= 5 else len(agv1.path)
-    agv2_path_length = 5 if len(agv2.path) >= 5 else len(agv2.path)
+def check_crossing_collision(agv1, agv2, node_list, path_linked_list, port_list, stop_record):
+    # agv1_path_length = 5 if len(agv1.path) >= 5 else len(agv1.path)
     stop_list = []
     
     if agv1.path:
-        # 일반적인 교차로  // 생각해보니 세 갈래 길에서 충돌하는 경우는 어떻게 할 것인가?
-        if len(path_linked_list[agv1.path[0]]) == 4:
-            # path[0]과 양 옆만
-            # (node와 cost)
-            for node, _ in path_linked_list[agv1.path[0]]:
+        # 다음 노드가 교차로? 교차로의 주변 노드 확인  
+        if node_list[agv1.path[0]-1].isCross: 
+            for node, _ in path_linked_list[agv1.path[0]-1]: # 교차로 노드가 갈 수 있는 길
                 if node_list[node-1].X != agv1.x and node_list[node-1].Y != agv2.y:
-                    print(node)
+                    print("현재 노드와 교차로 사이의 주변 노드:",node)
                     stop_list.append(node)
             stop_list.append(agv1.path[0])
             
-            # 두 AGV가 동시에 교차로에 진입해서 둘 다 멈추는 걸 방지
-            if agv1 not in stop_record:
+                # 두 AGV가 동시에 교차로에 진입해서 둘 다 멈추는 걸 방지
+                # AGV1이 먼저 이동
+                # 이 코드의 수정이 필요해 보임
+            if agv1.NUM not in stop_record:
                 for stop_node in stop_list:
                     if agv2.path and stop_node == agv2.path[0]:
                         agv2.emergency(1)
@@ -78,23 +77,21 @@ def check_crossing_collision(agv1, agv2, node_list, path_linked_list, stop_recor
                         print("멈춰3-1", agv2.NUM)
 
         # 포트에서 후진해서 나오는 경우
-        if agv1.path[0] < 0:
-            for idx in range(agv2_path_length):
-                if abs(agv1.path[0]) == agv2.path[idx]:
-                    # 안 나오도록 (이유: 포트 근처 노드가 촘촘해서 지금 멈추면 아예 나오는 길을 막을 것 같다.)
-                    # 아예 먼저 지나가도록 하면 어떨까 싶었다.
-                    if 0 <= idx <= 2:
+        # 현재 agv1의 노드가 port일 때
+        if agv1.node in port_list:
+            for idx in range(5):
+                if abs(agv1.node == agv2.path[idx]):
+                    if idx > 2:
                         agv1.emergency(1)
                         stop_record.append(agv1.NUM)
                         print("멈춰3-2", agv1.NUM)
-                    # 나오도록
                     else:
                         agv2.emergency(1)
                         stop_record.append(agv2.NUM)
                         print("멈춰3-2 너가 멈춰", agv2.NUM)
 
 
-def check_collision(node_list, vehicle_list, path_linked_list):
+def check_collision(node_list, vehicle_list, path_linked_list, port_list):
     stop_record = []
 
     check_list = []
@@ -109,7 +106,7 @@ def check_collision(node_list, vehicle_list, path_linked_list):
                 # 교차로 제어
                 if check_list[idx1].x != check_list[idx2].x and check_list[idx1].y != check_list[idx2].y:
                     if vehicle.status  == 20:
-                        check_crossing_collision(check_list[idx1], check_list[idx2], node_list, path_linked_list, stop_record)
+                        check_crossing_collision(check_list[idx1], check_list[idx2], node_list, path_linked_list, port_list, stop_record)
                         pass
                 # 직선 제어
                 else:
