@@ -43,7 +43,7 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
             elif 444 <= vehicle.node <= 467:
                 for idx in range(519, 511, -1):
                     if not node_list[idx-1].using:
-                        a_star_path += a_star(vehicle.node, node_list[idx-1].NUM ,path_linked_list, node_list)
+                        a_star_path = a_star(vehicle.node, node_list[idx-1].NUM ,path_linked_list, node_list)
                         break
                 a_star_path[0] = a_star_path[0] * -1
                 if vehicle.battery >= 70:
