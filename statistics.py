@@ -78,6 +78,18 @@ def work_progress():
     plt.legend()
     plt.show()
 
+
 def node_frequency(node_cnt):
     data = db.get_node_freq(node_cnt)
+    # 노드 갯수만큼 [방문횟수, 방문횟수, ...]
     # map plot 부분 추가
+
+    fig, ax = plt.subplots()
+    ax.invert_yaxis()
+    for i in range(node_cnt):
+        plt.plot(node_list[i].X, node_list[i].Y, 'o', markersize=data[i])
+    plt.show()
+
+from mapreader import node_list
+print(node_list)
+node_frequency(len(node_list))
