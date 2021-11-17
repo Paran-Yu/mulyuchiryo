@@ -960,6 +960,9 @@ class MainPage(QWidget):
                     self.subMenus[0][4].setChecked(False)
 
                     self.scale_pressed = None
+
+                    QMessageBox.question(self, 'Success', 'Scale: ' + str(self.context.scale),
+                                         QMessageBox.Ok)
                 else:
                     self.scale_pressed = e.x()
 
