@@ -17,6 +17,8 @@ def check_line_collision(agv1, agv2, stop_record):
             # 아래 있는 2가 멈춰있든 아래를 향하든 회전을 하든 1을 멈춘다.
             # 아래 있는 2가 1에게 직진하는 건 사전에 경로 선택할 때 막아야 한다.
             if agv1.angle == 180 and agv1.status == 20:
+                if agv2.status == 11:
+                    return
                 print("멈춰1-1", agv1.NUM)
                 stop_record.append(agv1.NUM)
                 agv1.emergency(1)
@@ -43,6 +45,8 @@ def check_line_collision(agv1, agv2, stop_record):
                 print("멈춰2-1", agv1.NUM)
                 return
             if agv2.angle == 270 and agv2.status == 20:
+                if agv1.status == 11:
+                    return
                 agv2.emergency(1)
                 stop_record.append(agv2.NUM)
                 print("멈춰2-2", agv2.NUM)
