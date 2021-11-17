@@ -14,7 +14,8 @@ from scale import *
 from vehicleEditor import VehicleEditor
 import pickle
 
-path = os.path.abspath(os.path.dirname(__file__))
+currentDir = os.path.abspath(os.path.dirname(__file__))
+rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 class Context:
     def __init__(self):
@@ -86,7 +87,7 @@ class MainPage(QWidget):
         self.initSubMenu()      # 서브 메뉴 생성
         self.showFullScreen()   # 전체화면 모드
         self.setWindowTitle("물류 치료")    # 프로그램 제목
-        self.setWindowIcon(QIcon(path + "/resources/image/favicon.png"))  # 프로그램 실행 아이콘
+        self.setWindowIcon(QIcon(currentDir + "/resources/image/favicon.png"))  # 프로그램 실행 아이콘
 
     # 메인 메뉴 생성
     def initMainMenu(self):
@@ -154,17 +155,17 @@ class MainPage(QWidget):
         # file
         btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
-        btn_save.setIcon(QIcon(QPixmap(path + "/resources/image/save2.png")))
+        btn_save.setIcon(QIcon(QPixmap(currentDir + "/resources/image/save2.png")))
         btn_save.setIconSize(QSize(80, 80))
 
         btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
-        btn_save_as.setIcon(QIcon(QPixmap(path + "/resources/image/save as2.png")))
+        btn_save_as.setIcon(QIcon(QPixmap(currentDir + "/resources/image/save as2.png")))
         btn_save_as.setIconSize(QSize(80, 80))
 
         btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
-        btn_load.setIcon(QIcon(QPixmap(path + "/resources/image/load2.png")))
+        btn_load.setIcon(QIcon(QPixmap(currentDir + "/resources/image/load2.png")))
         btn_load.setIconSize(QSize(80, 80))
 
         bar1 = QLabel(self.sub_menu_wrapper)
@@ -173,7 +174,7 @@ class MainPage(QWidget):
 
         btn_open_layout = QPushButton(self.sub_menu_wrapper)
         btn_open_layout.clicked.connect(self.openLayout)
-        btn_open_layout.setIcon(QIcon(QPixmap(path + "/resources/image/open layout2.png")))
+        btn_open_layout.setIcon(QIcon(QPixmap(currentDir + "/resources/image/open layout2.png")))
         btn_open_layout.setIconSize(QSize(80, 80))
 
         bar2 = QLabel(self.sub_menu_wrapper)
@@ -183,7 +184,7 @@ class MainPage(QWidget):
         btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
         btn_set_scale.setCheckable(True)
-        btn_set_scale.setIcon(QIcon(QPixmap(path + "/resources/image/set scale2.png")))
+        btn_set_scale.setIcon(QIcon(QPixmap(currentDir + "/resources/image/set scale2.png")))
         btn_set_scale.setIconSize(QSize(80, 80))
 
         bar3 = QLabel(self.sub_menu_wrapper)
@@ -192,26 +193,26 @@ class MainPage(QWidget):
 
         btn_export = QPushButton(self.sub_menu_wrapper)
         btn_export.clicked.connect(self.export)
-        btn_export.setIcon(QIcon(QPixmap(path + "/resources/image/export.png")))
+        btn_export.setIcon(QIcon(QPixmap(currentDir + "/resources/image/export.png")))
         btn_export.setIconSize(QSize(80, 80))
 
         btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
-        btn_close.setIcon(QIcon(QPixmap(path + "/resources/image/close.png")))
+        btn_close.setIcon(QIcon(QPixmap(currentDir + "/resources/image/close.png")))
         btn_close.setIconSize(QSize(80, 80))
 
         # draw
         self.draw_normal = [
-            QPixmap(path + "/resources/image/nodes.png"),
-            QPixmap(path + "/resources/image/port.png"),
-            QPixmap(path + "/resources/image/wp.png"),
-            QPixmap(path + "/resources/image/path.png"),
+            QPixmap(currentDir + "/resources/image/nodes.png"),
+            QPixmap(currentDir + "/resources/image/port.png"),
+            QPixmap(currentDir + "/resources/image/wp.png"),
+            QPixmap(currentDir + "/resources/image/path.png"),
         ]
         self.draw_clicked = [
-            QPixmap(path + "/resources/image/nodes selected.png"),
-            QPixmap(path + "/resources/image/port selected.png"),
-            QPixmap(path + "/resources/image/wp selected.png"),
-            QPixmap(path + "/resources/image/path selected.png"),
+            QPixmap(currentDir + "/resources/image/nodes selected.png"),
+            QPixmap(currentDir + "/resources/image/port selected.png"),
+            QPixmap(currentDir + "/resources/image/wp selected.png"),
+            QPixmap(currentDir + "/resources/image/path selected.png"),
         ]
 
         btn_node = QPushButton(self.sub_menu_wrapper)
@@ -241,44 +242,44 @@ class MainPage(QWidget):
         # Vehicle
         btn_vehicle_edit = QPushButton(self.sub_menu_wrapper)
         btn_vehicle_edit.clicked.connect(self.editVehicle)
-        btn_vehicle_edit.setIcon(QIcon(QPixmap(path + "/resources/image/edit.png")))
+        btn_vehicle_edit.setIcon(QIcon(QPixmap(currentDir + "/resources/image/edit.png")))
         btn_vehicle_edit.setIconSize(QSize(80, 80))
 
         # Simulator
         btn_play = QPushButton(self.sub_menu_wrapper)
         btn_play.clicked.connect(self.play)
-        btn_play.setIcon(QIcon(QPixmap(path + "/resources/image/play.png")))
+        btn_play.setIcon(QIcon(QPixmap(currentDir + "/resources/image/play.png")))
         btn_play.setIconSize(QSize(80, 80))
 
         btn_stop = QPushButton(self.sub_menu_wrapper)
         btn_stop.clicked.connect(self.stop)
-        btn_stop.setIcon(QIcon(QPixmap(path + "/resources/image/stop.png")))
+        btn_stop.setIcon(QIcon(QPixmap(currentDir + "/resources/image/stop.png")))
         btn_stop.setIconSize(QSize(80, 80))
 
         btn_set_oper = QPushButton(self.sub_menu_wrapper)
         btn_set_oper.clicked.connect(self.setOperationData)
-        btn_set_oper.setIcon(QIcon(QPixmap(path + "/resources/image/oper data.png")))
+        btn_set_oper.setIcon(QIcon(QPixmap(currentDir + "/resources/image/oper data.png")))
         btn_set_oper.setIconSize(QSize(80, 80))
 
         # report
         btn_util_rate = QPushButton(self.sub_menu_wrapper)
         btn_util_rate.clicked.connect(self.showUtilizationRate)
-        btn_util_rate.setIcon(QIcon(QPixmap(path + "/resources/image/util rate.png")))
+        btn_util_rate.setIcon(QIcon(QPixmap(currentDir + "/resources/image/util rate.png")))
         btn_util_rate.setIconSize(QSize(80, 80))
 
         btn_charge_rate = QPushButton(self.sub_menu_wrapper)
         btn_charge_rate.clicked.connect(self.showChargeRate)
-        btn_charge_rate.setIcon(QIcon(QPixmap(path + "/resources/image/charge rate.png")))
+        btn_charge_rate.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
         btn_charge_rate.setIconSize(QSize(80, 80))
 
         btn_progress = QPushButton(self.sub_menu_wrapper)
         btn_progress.clicked.connect(self.showProgress)
-        btn_progress.setIcon(QIcon(QPixmap(path + "/resources/image/progress.png")))
+        btn_progress.setIcon(QIcon(QPixmap(currentDir + "/resources/image/progress.png")))
         btn_progress.setIconSize(QSize(80, 80))
 
         btn_via = QPushButton(self.sub_menu_wrapper)
         btn_via.clicked.connect(self.showVia)
-        btn_via.setIcon(QIcon(QPixmap(path + "/resources/image/via.png")))
+        btn_via.setIcon(QIcon(QPixmap(currentDir + "/resources/image/via.png")))
         btn_via.setIconSize(QSize(80, 80))
 
         self.subMenus = [
@@ -323,15 +324,16 @@ class MainPage(QWidget):
             for menu in mainMenu:
                 menu.setObjectName("sub-menu")
                 menu.setStyleSheet("#sub-menu{"
-                                   #"background-color:white;"
                                    "font-size: 17px;"
                                    "border:none;"
                                    "}"
                                    "#sub-menu:hover{"
                                    "background-color: #D7EDFF;"
-                                   #A4BACC
                                    "}"
                                    "#sub-menu:pressed{"
+                                   "background-color: #A3BADD;"
+                                   "}"
+                                   "#sub-menu:checked{"
                                    "background-color: #C5DCFF;"
                                    "}")
                 menu.resize(sub_menu_size, sub_menu_size)
