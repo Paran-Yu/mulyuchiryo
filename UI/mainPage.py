@@ -153,7 +153,7 @@ class MainPage(QWidget):
         self.sub_menu_wrapper.resize(self.rect.width(), self.sub_menu_wrapper_height)
         self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
         self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
-                                            "background-color: #DDDDDD;"
+                                            "background-color: #EEEEEE;"
                                             "}")
 
         # 서브 메뉴 항목 추가
@@ -373,6 +373,10 @@ class MainPage(QWidget):
         height = self.menu_wrapper_height + self.sub_menu_wrapper_height
         self.centralWidget = QWidget(self)
         self.centralWidget.setGeometry(0, height, self.rect.width(), self.rect.height() - height)
+
+        background = QLabel(self.centralWidget)
+        background.setGeometry(0, 0, self.centralWidget.width(), self.centralWidget.height())
+        background.setStyleSheet("background-color: #666666;")
 
         # 이미지를 넣을 label 생성.
         self.img_label = QLabel(self.centralWidget)
