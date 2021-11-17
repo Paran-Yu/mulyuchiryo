@@ -20,14 +20,14 @@ def send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                 continue
 
         elif vehicle.status == 11 and vehicle.node == 17 and not vehicle.interrupt:
-            if node_list[289].status == 1:
-                node_list[289].status = -2
-                a_star_path = a_star(17, 290, path_linked_list, node_list)
-                vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
-                continue
-            elif node_list[290].status == 1:
+            if node_list[290].status == 1:
                 node_list[290].status = -2
                 a_star_path = a_star(17, 291, path_linked_list, node_list)
+                vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
+                continue
+            elif node_list[289].status == 1:
+                node_list[289].status = -2
+                a_star_path = a_star(17, 290, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
 
