@@ -109,7 +109,8 @@ class MainPage(QWidget):
         self.menus = []
         self.menus.append(QPushButton("File", self.menu_wrapper))
         self.menus.append(QPushButton("Draw", self.menu_wrapper))
-        self.menus.append(QPushButton("Vehicle", self.menu_wrapper))
+        # self.menus.append(QPushButton("Vehicle", self.menu_wrapper))
+        # Vehicle 탭 삭제, Draw에 통합
         self.menus.append(QPushButton("Simulate", self.menu_wrapper))
         self.menus.append(QPushButton("Report", self.menu_wrapper))
 
@@ -140,7 +141,7 @@ class MainPage(QWidget):
         self.menus[1].clicked.connect(lambda: self.getSubMenu(1))
         self.menus[2].clicked.connect(lambda: self.getSubMenu(2))
         self.menus[3].clicked.connect(lambda: self.getSubMenu(3))
-        self.menus[4].clicked.connect(lambda: self.getSubMenu(4))
+        #self.menus[4].clicked.connect(lambda: self.getSubMenu(4))
 
     # 서브 메뉴 생성
     def initSubMenu(self):
@@ -212,12 +213,14 @@ class MainPage(QWidget):
             QPixmap(currentDir + "/resources/image/port.png"),
             QPixmap(currentDir + "/resources/image/wp.png"),
             QPixmap(currentDir + "/resources/image/path.png"),
+            QPixmap(currentDir + "/resources/image/edit.png"),
         ]
         self.draw_clicked = [
             QPixmap(currentDir + "/resources/image/nodes selected.png"),
             QPixmap(currentDir + "/resources/image/port selected.png"),
             QPixmap(currentDir + "/resources/image/wp selected.png"),
             QPixmap(currentDir + "/resources/image/path selected.png"),
+            QPixmap(currentDir + "/resources/image/edit.png"),
         ]
 
         btn_node = QPushButton(self.sub_menu_wrapper)
@@ -246,8 +249,10 @@ class MainPage(QWidget):
 
         # Vehicle
         btn_vehicle_edit = QPushButton(self.sub_menu_wrapper)
-        btn_vehicle_edit.clicked.connect(self.editVehicle)
-        btn_vehicle_edit.setIcon(QIcon(QPixmap(currentDir + "/resources/image/edit.png")))
+        # btn_vehicle_edit.clicked.connect(self.editVehicle) # 랜덤 배치 시 사용했던 함수.
+        btn_vehicle_edit.clicked.connect(lambda: self.changeTools(4))
+        btn_vehicle_edit.setCheckable(True)
+        btn_vehicle_edit.setIcon(QIcon(self.draw_normal[4]))
         btn_vehicle_edit.setIconSize(QSize(80, 80))
 
         # Simulator
@@ -304,11 +309,12 @@ class MainPage(QWidget):
                 btn_port,
                 btn_wait_point,
                 btn_path,
-            ],
-            # vehicle
-            [
                 btn_vehicle_edit,
             ],
+            # vehicle
+            #[
+                #btn_vehicle_edit,
+            #],
             # simulate
             [
                 btn_play,
