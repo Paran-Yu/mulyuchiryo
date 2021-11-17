@@ -15,9 +15,11 @@ from Core.call_agv import call_agv
 from Core.send_agv import send_agv
 from Core.back_agv import back_agv
 from UI import mainPage
+import db
 
 # simulate attribute
 simulate_speed = 1
+simulate_cnt = 0
 
 # layout component
 img = {}
@@ -42,6 +44,8 @@ VEHICLE_STATUS = {
     99: "ERROR"
 }
 
+# DB connection
+db = db.DB()
 
 #########################
 # UI용 함수 정의
@@ -68,13 +72,19 @@ def start_simulate(plot=True):
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
+    global simulate_cnt
     global loadable_port_list, unloadable_port_list
+
+    simulate_cnt += 1
 
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
+
+    # DB update
+
     
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
@@ -89,5 +99,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    read_map()
-    start_simulate()
+    # read_map()
+    # start_simulate()
