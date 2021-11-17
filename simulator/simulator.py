@@ -46,10 +46,11 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot
 
 
 # simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list):
+def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list,
+                     simulate_cnt):
     print("routine start")
     port_update(port_list, loadable_port_list, unloadable_port_list)
-    vehicle_update(node_list, vehicle_list)
+    vehicle_update(node_list, vehicle_list, simulate_cnt)
 
 
 # PORT
@@ -88,9 +89,9 @@ def wait_init(wait_list, vehicle_list):
 
 
 # VEHICLE
-def vehicle_update(node_list, vehicle_list):
+def vehicle_update(node_list, vehicle_list, simulate_cnt):
     for vehicle in vehicle_list:
-        vehicle.vehicle_routine(node_list)
+        vehicle.vehicle_routine(node_list, simulate_cnt)
         # TODO: DB에 기록
 
 
