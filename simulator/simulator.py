@@ -131,7 +131,7 @@ def plot_init(node_list, path_list, vehicle_list):
         # node
         else:
             plt.plot(node.X, node.Y, 'r.')
-        node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', 
+        node_texts.append(plt.text(node.X, node.Y, f'', 
             horizontalalignment='right',
             verticalalignment='top',
             fontsize=8,
