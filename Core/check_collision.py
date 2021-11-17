@@ -51,6 +51,7 @@ def check_line_collision(agv1, agv2, stop_record):
 # 교차로에서 충돌하는지 체크
 def check_crossing_collision(agv1, agv2, node_list, path_linked_list, stop_record):
     agv1_path_length = 5 if len(agv1.path) >= 5 else len(agv1.path)
+    agv2_path_length = 5 if len(agv2.path) >= 5 else len(agv2.path)
     stop_list = []
     
     if agv1.path:
@@ -104,7 +105,7 @@ def check_collision(node_list, vehicle_list, path_linked_list):
                 # 교차로 제어
                 if check_list[idx1].x != check_list[idx2].x and check_list[idx1].y != check_list[idx2].y:
                     if vehicle.status  == 20:
-                        # check_crossing_collision(check_list[idx1], check_list[idx2], node_list, path_linked_list, stop_record)
+                        check_crossing_collision(check_list[idx1], check_list[idx2], node_list, path_linked_list, stop_record)
                         pass
                 # 직선 제어
                 else:

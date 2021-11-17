@@ -1262,7 +1262,7 @@
             <y>813</y>
             <name>L025</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>55</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -1275,7 +1275,7 @@
             <y>813</y>
             <name>L026</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>55</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -1288,7 +1288,7 @@
             <y>813</y>
             <name>L027</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>55</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -1301,7 +1301,7 @@
             <y>813</y>
             <name>L028</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>55</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -2122,7 +2122,7 @@
             <y>920</y>
             <name>L077</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>68</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -2135,7 +2135,7 @@
             <y>920</y>
             <name>L078</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>68</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -2148,7 +2148,7 @@
             <y>920</y>
             <name>L079</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>68</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -2161,7 +2161,7 @@
             <y>920</y>
             <name>L080</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>68</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>
@@ -2174,7 +2174,7 @@
             <y>920</y>
             <name>L081</name>
             <type>load</type>
-            <freq>9888</freq>
+            <freq>68</freq>
             <v_type></v_type>
             <unload>
                 <item>290</item>

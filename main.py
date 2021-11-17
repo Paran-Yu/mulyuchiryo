@@ -21,7 +21,7 @@ from UI import mainPage
 import db
 
 # simulate attribute
-simulate_speed = 1      # 0.5: 2배속, 0.1: 10배속
+simulate_speed = 0.1      # 0.5: 2배속, 0.1: 10배속
 simulate_time = 0       # 시간 경과[sec]
 simulate_cnt = 0        # 반송 완료 건수
 
@@ -124,5 +124,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    # read_map()
-    # start_simulate()
+    read_map()
+    start_simulate()
