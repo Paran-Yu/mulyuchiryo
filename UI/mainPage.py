@@ -25,6 +25,7 @@ if rootDir not in sys.path:
     sys.path.append(rootDir)
 
 import main
+from statistics import *
 
 class Context:
     def __init__(self):
@@ -286,6 +287,11 @@ class MainPage(QWidget):
         btn_charge_rate.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
         btn_charge_rate.setIconSize(QSize(80, 80))
 
+        btn_cmd = QPushButton("CMD Rate", self.sub_menu_wrapper)
+        btn_cmd.clicked.connect(self.showCmdRate)
+        #btn_cmd.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
+        #btn_cmd.setIconSize(QSize(80, 80))
+
         btn_progress = QPushButton(self.sub_menu_wrapper)
         btn_progress.clicked.connect(self.showProgress)
         btn_progress.setIcon(QIcon(QPixmap(currentDir + "/resources/image/progress.png")))
@@ -329,6 +335,7 @@ class MainPage(QWidget):
             [
                 btn_util_rate,
                 btn_charge_rate,
+                btn_cmd,
                 btn_progress,
                 btn_via,
             ],
@@ -843,19 +850,23 @@ class MainPage(QWidget):
 
     # AGV 전체 가동률 그래프 출력
     def showUtilizationRate(self):
-        pass
+        vehicle_work()
 
     # AGV의 충전률
     def showChargeRate(self):
-        pass
+        vehicle_charge()
+
+    # 명령 전달 비율
+    def showCmdRate(self):
+        vehicle_cmd()
 
     # 작업 진행 그래프
     def showProgress(self):
-        pass
+        pass # work_progress() 에러 발생.
 
     # 경유 횟수 확인
     def showVia(self):
-        pass
+        pass # node_frequency(node_list, path_list)
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
