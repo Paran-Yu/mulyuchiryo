@@ -586,8 +586,8 @@ class MainPage(QWidget):
     def close(self):
         # 작업 내용 없으면 그냥 종료
         if not self.image_original:
-            super().close()
             main.stop_simulate()
+            super().close()
             return
 
         reply = QMessageBox.question(self, 'Message', 'Are you sure to save and quit?',
@@ -595,10 +595,11 @@ class MainPage(QWidget):
 
         if reply == QMessageBox.Yes:
             if self.save():
+                main.stop_simulate()
                 super().close()
         elif reply == QMessageBox.No:
+            main.stop_simulate()
             super().close()
-        main.stop_simulate()
 
     def editVehicle(self):
         editor = VehicleEditor(self.context, self.vehicles)
