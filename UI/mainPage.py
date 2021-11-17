@@ -213,14 +213,14 @@ class MainPage(QWidget):
             QPixmap(currentDir + "/resources/image/port.png"),
             QPixmap(currentDir + "/resources/image/wp.png"),
             QPixmap(currentDir + "/resources/image/path.png"),
-            QPixmap(currentDir + "/resources/image/edit.png"),
+            QPixmap(currentDir + "/resources/image/vehicle.png"),
         ]
         self.draw_clicked = [
             QPixmap(currentDir + "/resources/image/nodes selected.png"),
             QPixmap(currentDir + "/resources/image/port selected.png"),
             QPixmap(currentDir + "/resources/image/wp selected.png"),
             QPixmap(currentDir + "/resources/image/path selected.png"),
-            QPixmap(currentDir + "/resources/image/edit.png"),
+            QPixmap(currentDir + "/resources/image/vehicle selected.png"),
         ]
 
         btn_node = QPushButton(self.sub_menu_wrapper)
@@ -342,7 +342,7 @@ class MainPage(QWidget):
                                    "background-color: #D7EDFF;"
                                    "}"
                                    "#sub-menu:pressed{"
-                                   "background-color: #A3BADD;"
+                                   "background-color: #B4CBDD;"
                                    "}"
                                    "#sub-menu:checked{"
                                    "background-color: #C5DCFF;"
