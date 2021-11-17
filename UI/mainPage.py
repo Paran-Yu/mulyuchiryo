@@ -1,20 +1,28 @@
 import sys
 import os.path
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import main
+
+import random
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from sidebar import SideBar
 from selector import Selector
 from classes import *
-from scale import Scale
+from scale import *
 from vehicleEditor import VehicleEditor
 import pickle
+
+path = os.path.abspath(os.path.dirname(__file__))
 
 class Context:
     def __init__(self):
         self.main = None
         self.class_list = [Node, Port, WaitPoint, Path]
         self.scale = 1
+        self.capa = 1
+        self.simulation_speed = 1
         self.v_count = 0
 
 class MainPage(QWidget):
@@ -66,6 +74,8 @@ class MainPage(QWidget):
         self.selector = Selector(self)
         self.context.selector = self.selector
 
+        self.actual_length = None
+        self.scale_pressed = None
         self.layout_name = None
 
         self.initUI()
@@ -76,7 +86,7 @@ class MainPage(QWidget):
         self.initSubMenu()      # 서브 메뉴 생성
         self.showFullScreen()   # 전체화면 모드
         self.setWindowTitle("물류 치료")    # 프로그램 제목
-        self.setWindowIcon(QIcon("./resources/image/favicon.png"))  # 프로그램 실행 아이콘
+        self.setWindowIcon(QIcon(path + "/resources/image/favicon.png"))  # 프로그램 실행 아이콘
 
     # 메인 메뉴 생성
     def initMainMenu(self):
@@ -87,7 +97,7 @@ class MainPage(QWidget):
         self.menu_wrapper.resize(self.rect.width(), self.menu_wrapper_height)
         self.menu_wrapper.setObjectName("menu-wrapper")
         self.menu_wrapper.setStyleSheet("#menu-wrapper{"
-                                       "background-color: #FFFFFF;"
+                                       "background-color: #004761;"
                                        "}")
 
         self.menus = []
@@ -104,10 +114,13 @@ class MainPage(QWidget):
             menu.setFont(font)      # font size 적용
             menu.setObjectName("main-menu")
             menu.setStyleSheet("#main-menu{"    # style 적용
-                               "background-color: white;"
+                               "background-color: #004761;"
+                               "color:white;"
+                               "font-size: 17px;"
+                               "border: none;"
                                "}"
                                "#main-menu:hover{"
-                               "background-color: #D7EDFF;"
+                               "background-color: #93A9BB;"
                                "}"
                                "#main-menu:pressed{"
                                "background-color: #C5DCFF;"
@@ -134,42 +147,100 @@ class MainPage(QWidget):
         self.sub_menu_wrapper.resize(self.rect.width(), self.sub_menu_wrapper_height)
         self.sub_menu_wrapper.setObjectName("sub-menu-wrapper")
         self.sub_menu_wrapper.setStyleSheet("#sub-menu-wrapper{"
-                                       "background-color: #CCCCCC;"
-                                       "border: 2px solid #AAAAAA;"
-                                       "}")
-
+                                            #"background-color: #CCCCCC;"
+                                            "background-color: #DDDDDD;"
+                                            #"border: 1px solid #AAAAAA;"
+                                            "}")
+        #"background-image: url('./resources/image/save.png')"
         # 서브 메뉴 항목 추가
         # file
-        btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
-        btn_open_layout.clicked.connect(self.openLayout)
-
-        btn_save = QPushButton("Save", self.sub_menu_wrapper)
+        #btn_save = QPushButton("Save", self.sub_menu_wrapper)
+        btn_save = QPushButton(self.sub_menu_wrapper)
         btn_save.clicked.connect(self.save)
+        pq = QPixmap(path + "/resources/image/save2.png")
+        btn_save.setIcon(QIcon(pq))
+        btn_save.setIconSize(QSize(80, 80))
 
-        btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
+        #btn_save_as = QPushButton("Save\nAs", self.sub_menu_wrapper)
+        btn_save_as = QPushButton(self.sub_menu_wrapper)
         btn_save_as.clicked.connect(self.saveAs)
+        pq = QPixmap(path + "/resources/image/save as2.png")
+        btn_save_as.setIcon(QIcon(pq))
+        btn_save_as.setIconSize(QSize(80, 80))
 
-        btn_load = QPushButton("Load", self.sub_menu_wrapper)
+        #btn_load = QPushButton("Load", self.sub_menu_wrapper)
+        btn_load = QPushButton(self.sub_menu_wrapper)
         btn_load.clicked.connect(self.load)
+        pq = QPixmap(path + "/resources/image/load2.png")
+        btn_load.setIcon(QIcon(pq))
+        btn_load.setIconSize(QSize(80, 80))
 
-        btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        bar1 = QLabel(self.sub_menu_wrapper)
+        bar1.setStyleSheet("background-color: #999999;")
+        bar1.setGeometry(262, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_open_layout = QPushButton("Open\nLayout", self.sub_menu_wrapper)
+        btn_open_layout = QPushButton(self.sub_menu_wrapper)
+        btn_open_layout.clicked.connect(self.openLayout)
+        pq = QPixmap(path + "/resources/image/open layout2.png")
+        btn_open_layout.setIcon(QIcon(pq))
+        btn_open_layout.setIconSize(QSize(80, 80))
+
+        bar2 = QLabel(self.sub_menu_wrapper)
+        bar2.setStyleSheet("background-color: #999999;")
+        bar2.setGeometry(347, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_set_scale = QPushButton("Set\nScale", self.sub_menu_wrapper)
+        btn_set_scale = QPushButton(self.sub_menu_wrapper)
         btn_set_scale.clicked.connect(self.setScale)
+        btn_set_scale.setCheckable(True)
+        pq = QPixmap(path + "/resources/image/set scale2.png")
+        btn_set_scale.setIcon(QIcon(pq))
+        btn_set_scale.setIconSize(QSize(80, 80))
 
-        btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        bar3 = QLabel(self.sub_menu_wrapper)
+        bar3.setStyleSheet("background-color: #999999;")
+        bar3.setGeometry(432, padding, 1, self.sub_menu_wrapper.height() - (2 * padding))
+
+        #btn_close = QPushButton("Close", self.sub_menu_wrapper)
+        btn_close = QPushButton(self.sub_menu_wrapper)
         btn_close.clicked.connect(self.close)
+        pq = QPixmap(path + "/resources/image/close.png")
+        btn_close.setIcon(QIcon(pq))
+        btn_close.setIconSize(QSize(80, 80))
 
         # draw
-        btn_node = QPushButton("Node", self.sub_menu_wrapper)
+        self.draw_normal = [
+            QPixmap(path + "/resources/image/nodes.png"),
+            QPixmap(path + "/resources/image/port.png"),
+            QPixmap(path + "/resources/image/wp.png"),
+        ]
+        self.draw_clicked = [
+            QPixmap(path + "/resources/image/nodes selected.png"),
+            QPixmap(path + "/resources/image/port selected.png"),
+            QPixmap(path + "/resources/image/wp selected.png"),
+        ]
+
+        #btn_node = QPushButton("Node", self.sub_menu_wrapper)
+        btn_node = QPushButton(self.sub_menu_wrapper)
         btn_node.toggled.connect(lambda: self.changeTools(0))
         btn_node.setCheckable(True)
+        btn_node.setIcon(QIcon(self.draw_normal[0]))
+        btn_node.setIconSize(QSize(80, 80))
 
-        btn_port = QPushButton("Port", self.sub_menu_wrapper)
+        #btn_port = QPushButton("Port", self.sub_menu_wrapper)
+        btn_port = QPushButton(self.sub_menu_wrapper)
         btn_port.toggled.connect(lambda: self.changeTools(1))
         btn_port.setCheckable(True)
+        btn_port.setIcon(QIcon(self.draw_normal[1]))
+        btn_port.setIconSize(QSize(80, 80))
 
-        btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
+        #btn_wait_point = QPushButton("Wait\nPoint", self.sub_menu_wrapper)
+        btn_wait_point = QPushButton(self.sub_menu_wrapper)
         btn_wait_point.toggled.connect(lambda: self.changeTools(2))
         btn_wait_point.setCheckable(True)
+        btn_wait_point.setIcon(QIcon(self.draw_normal[2]))
+        btn_wait_point.setIconSize(QSize(80, 80))
 
         btn_path = QPushButton("Path", self.sub_menu_wrapper)
         btn_path.toggled.connect(lambda: self.changeTools(3))
@@ -178,6 +249,12 @@ class MainPage(QWidget):
         # Vehicle
         btn_vehicle_edit = QPushButton("Edit", self.sub_menu_wrapper)
         btn_vehicle_edit.clicked.connect(self.editVehicle)
+
+        # Simulator
+        btn_play = QPushButton("Play", self.sub_menu_wrapper)
+        btn_play.clicked.connect(self.play)
+        btn_set_oper = QPushButton("Oper\ndata", self.sub_menu_wrapper)
+        btn_set_oper.clicked.connect(self.setOperationData)
 
         self.subMenus = [
             # file
@@ -202,9 +279,9 @@ class MainPage(QWidget):
             ],
             # simulate
             [
-                QPushButton("Play", self.sub_menu_wrapper),
+                btn_play,
                 QPushButton("Stop", self.sub_menu_wrapper),
-                QPushButton("Speed", self.sub_menu_wrapper),
+                btn_set_oper,
             ],
             # report
             [
@@ -216,20 +293,25 @@ class MainPage(QWidget):
             for menu in mainMenu:
                 menu.setObjectName("sub-menu")
                 menu.setStyleSheet("#sub-menu{"
-                                   "background-color:white;"
+                                   #"background-color:white;"
                                    "font-size: 17px;"
+                                   "border:none;"
                                    "}"
                                    "#sub-menu:hover{"
                                    "background-color: #D7EDFF;"
+                                   #A4BACC
                                    "}"
                                    "#sub-menu:pressed{"
                                    "background-color: #C5DCFF;"
                                    "}")
                 menu.resize(sub_menu_size, sub_menu_size)
-                left += padding
+                left += padding + 5
                 menu.move(left, padding)
                 left += sub_menu_size
                 menu.hide()
+        self.subMenus[0].append(bar1)
+        self.subMenus[0].append(bar2)
+        self.subMenus[0].append(bar3)
 
         self.showSubMenu(self.mainMenu)
 
@@ -261,6 +343,7 @@ class MainPage(QWidget):
 
         self.canvas_label = QLabel(self.centralWidget)
         self.canvas_label.resize(self.rect.width(), self.rect.height() - height)
+
         self.image_original = None
         self.canvas_prev = None
 
@@ -303,6 +386,10 @@ class MainPage(QWidget):
                     self.wait_points = pickle.load(f)
                     self.paths = pickle.load(f)
                     self.vehicles = pickle.load(f)
+                    self.context.scale = pickle.load(f)
+                    self.context.capa = pickle.load(f)
+                    self.context.simulation_speed = pickle.load(f)
+                    self.context.v_count = pickle.load(f)
 
                 # 경로에 이미지가 더 이상 존재하지 않는다면 경고 메시지 출력
                 else:
@@ -355,6 +442,10 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
+                pickle.dump(self.context.scale, f)
+                pickle.dump(self.context.capa, f)
+                pickle.dump(self.context.simulation_speed, f)
+                pickle.dump(self.context.v_count, f)
             return True
 
     # 다른 이름으로 저장
@@ -375,7 +466,10 @@ class MainPage(QWidget):
                 pickle.dump(self.wait_points, f)
                 pickle.dump(self.paths, f)
                 pickle.dump(self.vehicles, f)
-
+                pickle.dump(self.context.scale, f)
+                pickle.dump(self.context.capa, f)
+                pickle.dump(self.context.simulation_speed, f)
+                pickle.dump(self.context.v_count, f)
             return True
         return False
 
@@ -399,29 +493,47 @@ class MainPage(QWidget):
             self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
             self.canvas_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
-            # 가로크기에 맞추기
-            #self.img_label.setPixmap(pm_scaled)
-
             self.image_original.load(fname[0])
             # 불러온 이미지와 같은 크기의 투명 도화지. 이 위에 그림을 그림.
             self.canvas = QImage(self.image_original.width(), self.image_original.height(),
                                  QImage.Format_ARGB32_Premultiplied)
             self.canvas.fill(0x00ffffff)
 
-    def setScale(self):
+            self.canvas_height_scale = (self.rect.height() - self.canvas_label.y()) \
+                                       * self.canvas.height() / self.canvas_label.height()
+
+    def setOperationData(self):
         if self.image_original:
-            qd = Scale()
+            qd = OperationData()
+            qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                           self.rect.width() * 0.2, self.rect.height() * 0.2)
+            qd.initUI(self.context.capa, self.context.simulation_speed)
+            if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
+                capa = int(qd.edit_capa.text())
+                simulation_speed = int(qd.edit_speed.text())
+
+                self.context.capa = capa
+                self.context.simulation_speed = simulation_speed
+
+    def setScale(self):
+        # 다시 누른 경우 창이 뜨지 않음
+        if self.image_original and self.subMenus[0][4].isChecked():
+            length = 0
+            if self.actual_length:
+                length = self.actual_length
+
+            qd = Scale(length)
             qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
                            self.rect.width() * 0.2, self.rect.height() * 0.1)
-            qd.initUI()
-            if qd.exec_():
-                mm = qd.edit_mm.text()
-                if mm.isdigit():
-                    mm = int(mm)
-                    pixel = self.rect.width()
 
-                    scale = round(mm / pixel, 1)
-                    self.context.scale = scale
+            qd.initUI()
+            result = qd.exec_()
+
+            if result:
+                if qd.edit_length.text():
+                    self.actual_length = int(qd.edit_length.text())
+            else:
+                self.subMenus[0][4].setChecked(False)
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
@@ -447,6 +559,155 @@ class MainPage(QWidget):
         editor.exec_()
 
         self.vehicles = editor.vehicles
+
+    def play(self):
+        # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
+        # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
+        # self.XML()
+
+        main.read_map()
+        main.start_simulate()
+
+    # XML 파일 추출
+    def XML(self):
+        # 전체 노드 수
+        count_node = len(self.nodes)
+        count_ports = len(self.ports)
+        count_wp = len(self.wait_points)
+
+        count = count_node + count_ports + count_wp
+
+        # 방문중인 노드 제외
+        visited = []
+        for i in range(count):
+            visited.append(False)
+
+        # AGV의 각도
+        angle = ["0", "90", "180", "270"]
+
+        with open("data.xml", 'w', encoding="UTF-8") as f:
+            # 인코딩 지정
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+
+            # 레이아웃 저장
+            f.write('<layout>\n')
+
+            # 이미지 파일 저장
+            f.write('\t<img>\n')
+            # 경로
+            f.write('\t\t<img_path>' + self.layout_name[0] + '</img_path>\n')
+            # 이름
+            f.write('\t\t<name>layout.jpg</name>\n')
+            f.write('\t</img>\n')
+
+            # 운영 데이터
+            f.write('\t<map>\n')
+            f.write("\t\t<width>" + str(self.rect.width()) + "</width>\n")    # 가로 길이
+            f.write("\t\t<scale>" + str(self.context.scale) + "</scale>\n")   # 스케일 정보
+            f.write("\t\t<capa>" + str(self.context.capa) + "</capa>\n")      # 일일 반송량
+            f.write('\t</map>\n')
+
+            # 포트
+            f.write('\t<ports>\n')
+            for port in self.ports:
+                f.write('\t\t<port>\n')
+                f.write("\t\t\t<num>" + str(port.NUM) + "</num>\n")
+                x, y = self.convertCanvasToMonitor(port.X, port.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
+                f.write("\t\t\t<name>" + str(port.PORT_NAME) + "</name>\n")
+                f.write("\t\t\t<type>" + str(port.TYPE) + "</type>\n")
+                f.write("\t\t\t<freq>" + str(port.FREQ) + "</freq>\n")
+                f.write("\t\t\t<v_type>" + str(port.V_TYPE) + "</v_type>\n")
+                # 연결된 unload 포트 목록
+                f.write("\t\t\t<unload>")
+                for connected_port in port.UNLOAD_LIST:
+                    f.write(str(connected_port))    # Unload port NUM
+                f.write("</unload>\n")
+                f.write('\t\t</port>\n')
+            f.write('\t</ports>\n')
+
+            # 대기 장소
+            f.write('\t<waits>\n')
+            for wait_point in self.wait_points:
+                f.write('\t\t<wait>\n')
+                f.write("\t\t\t<num>" + str(wait_point.NUM) + "</num>\n")
+                x, y = self.convertCanvasToMonitor(wait_point.X, wait_point.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
+                f.write("\t\t\t<name>" + str(wait_point.WAIT_NAME) + "</name>\n")
+                f.write("\t\t\t<charge>" + ("Y" if wait_point.CHARGE else "N") + "</charge>\n")
+                f.write('\t\t</wait>\n')
+            f.write('\t</waits>\n')
+
+            # 노드
+            f.write('\t<nodes>\n')
+            for node in self.nodes:
+                f.write('\t\t<node>\n')
+                f.write("\t\t\t<num>" + str(node.NUM) + "</num>\n")
+                x, y = self.convertCanvasToMonitor(node.X, node.Y)
+                f.write("\t\t\t<x>" + str(x) + "</x>\n")
+                f.write("\t\t\t<y>" + str(y) + "</y>\n")
+                f.write("\t\t\t<isCross>" + ("Y" if node.isCross else "N") + "</isCross>\n")
+                f.write('\t\t</node>\n')
+            f.write('\t</nodes>\n')
+
+            # 경로
+            f.write('\t<paths>\n')
+            for path in self.paths:
+                f.write('\t\t<path>\n')
+                f.write("\t\t\t<start>" + str(path.start.NUM) + "</start>\n")   # start NUM
+                f.write("\t\t\t<end>" + str(path.end.NUM) + "</end>\n")         # end NUM
+                f.write('\t\t</path>\n')
+            f.write('\t</paths>\n')
+
+            # AGV
+            f.write('\t<vehicles>\n')
+            for vtype in self.vehicles:
+                for vehicle in vtype:
+                    f.write('\t\t<vehicle>\n')
+                    f.write("\t\t\t<num>" + str(vehicle.NUM) + "</num>\n")
+                    f.write("\t\t\t<name>" + str(vehicle.NAME) + "</name>\n")
+                    f.write("\t\t\t<type>" + str(vehicle.TYPE) + "</type>\n")
+
+                    # AGV 랜덤 배치
+                    idx = random.randrange(0, count)
+                    while visited[idx]:
+                        # 이미 배치된 노드 패스
+                        idx = random.randrange(0, count)
+
+                    visited[idx] = True
+                    type = 0
+                    if idx < count_node:    # Node. position[0][idx]
+                        type = 0
+                    elif idx < count_node + count_ports:  # Port. position[1][idx]
+                        type = 1
+                        idx -= (count_node)
+                    else:
+                        type = 2
+                        idx -= (count_node + count_ports)
+
+                    f.write("\t\t\t<node>" + str(self.positions[type][idx].NUM) + "</node>\n")
+                    f.write("\t\t\t<angle>" + angle[random.randrange(0, 4)] + "</angle>\n")
+                    f.write("\t\t\t<width>" + str(vehicle.WIDTH) + "</width>\n")
+                    f.write("\t\t\t<height>" + str(vehicle.HEIGHT) + "</height>\n")
+                    f.write("\t\t\t<diagonal>" + str(vehicle.DIAGONAL) + "</diagonal>\n")
+                    f.write("\t\t\t<rotate_speed>" + str(vehicle.ROTATE_SPEED) + "</rotate_speed>\n")
+                    f.write("\t\t\t<accel>" + str(vehicle.ACCEL) + "</accel>\n")
+                    f.write("\t\t\t<max_speed>" + str(vehicle.MAX_SPEED) + "</max_speed>\n")
+                    f.write("\t\t\t<lu_type>" + str(vehicle.LU_TYPE) + "</lu_type>\n")
+                    f.write("\t\t\t<load_speed>" + str(vehicle.LOAD_SPEED) + "</load_speed>\n")
+                    f.write("\t\t\t<charge_speed>" + str(vehicle.CHARGE_SPEED) + "</charge_speed>\n")
+                    f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
+                    f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
+                    # TODO: Erase and Refactoring Simulator. Dupleicated with `node`, `angle`.
+                    f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
+                    f.write("\t\t\t<start_angle>" + angle[random.randrange(0, 4)] + "</start_angle>\n")
+                    f.write('\t\t</vehicle>\n')
+            f.write('\t</vehicles>\n')
+
+            f.write('</layout>\n')
+            f.close()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
@@ -496,7 +757,7 @@ class MainPage(QWidget):
                     self.canvas_prev = QImage(self.canvas)
                     qp = QPainter(self.canvas_prev)
 
-                    qp.setPen(QPen(QColor(0, 0, 0), 10))
+                    qp.setPen(QPen(QColor(0, 0, 0), 5))
                     qp.drawLine(self.selected_node.X, self.selected_node.Y, nx, ny)
 
                     qp.end()
@@ -552,7 +813,7 @@ class MainPage(QWidget):
         for path in self.paths:
             qp = QPainter(self.canvas)
 
-            qp.setPen(QPen(QColor(0, 0, 0), 10))
+            qp.setPen(QPen(QColor(0, 0, 0), 5))
             qp.drawLine(path.start.X, path.start.Y, path.end.X, path.end.Y)
 
             qp.end()
@@ -617,6 +878,22 @@ class MainPage(QWidget):
                 elif self.tools[self.current_tool] == "mouse":
                     self.side_bar.widget.hide()
 
+            ## Scale 범위 지정
+            #  실제 길이를 입력했고, 버튼이 눌려있는 상태라면
+            if self.actual_length and self.subMenus[0][4].isChecked():
+                if self.scale_pressed:
+                    start = self.scale_pressed
+                    end = e.x()
+
+                    diff = abs(end-start)
+                    self.context.scale = round(self.actual_length / diff, 1)
+
+                    self.subMenus[0][4].setChecked(False)
+
+                    self.scale_pressed = None
+                else:
+                    self.scale_pressed = e.x()
+
         if e.buttons() & Qt.MidButton:
             pass
         if e.buttons() & Qt.RightButton:
@@ -640,6 +917,9 @@ class MainPage(QWidget):
 
             if self.canvas.pixel(nx, ny) != 0x00ffffff:
                 type, idx = self.selector.selectNode(nx, ny)
+
+                if type == -1:
+                    return
 
                 start = self.selected_node
                 end = self.positions[type][idx]
@@ -705,8 +985,16 @@ class MainPage(QWidget):
                 pixmap = QPixmap(self.canvas_prev.scaled(self.canvas_label.width(), self.canvas_label.height()))
                 self.canvas_label.setPixmap(pixmap)
 
+    def convertCanvasToMonitor(self, x, y):
+        nx = x / self.canvas.width() * self.canvas_label.width()
+        ny = y / self.canvas_height_scale * self.rect.height()
+
+        return int(nx), int(ny)
+
 # Run App.
 if __name__ == '__main__':
+    # 이 파일로 실행한다면, play 함수 호출 시
+    # 같은 디렉토리 내에 example.png, data.xml이 존재해야함.
     app = QApplication(sys.argv)
     screen = app.desktop()  # 컴퓨터 전체 화면 rect
     win = MainPage(screen.screenGeometry()) # 메인 화면 생성

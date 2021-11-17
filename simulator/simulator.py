@@ -38,10 +38,11 @@ class RotatingRectangle(patches.Rectangle):
 
 
 # simulate 초기화
-def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list):
+def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot):
     port_init(port_list)
     wait_init(wait_list, vehicle_list)
-    plot_init(node_list, path_list, vehicle_list)
+    if plot:
+        plot_init(node_list, path_list, vehicle_list)
 
 
 # simulate_speed초 마다 한번씩 호출된다.
@@ -59,7 +60,7 @@ def port_init(port_list):
             cnt = random.randrange(0, x.FREQ+1)
             x.count = cnt
         elif x.TYPE == 'unload':
-            x.count = x.FREQ
+            x.count = x.FREQ - 1
 
 
 def port_update(port_list, loadable_port_list, unloadable_port_list):
@@ -99,7 +100,20 @@ def plot_init(node_list, path_list, vehicle_list):
     imgplot = plt.imshow(img)
     # 노드
     # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
+    x_min, y_min = 999999999999, 9999999999999
+    # x_max, y_max = -1, -1
     for node in node_list:
+        # 가장 극단 점 찾기
+        # if node.X < x_min:
+        #     x_min = node.X
+        # if x_max < node.X:
+        #     x_max = node.X
+        if node.Y < y_min:
+            y_min = node.Y
+        # if y_max < node.Y:
+        #     y_max = node.Y
+        
+
         # port
         if hasattr(node, 'PORT_NAME'):
             if node.TYPE == 'load':
@@ -135,6 +149,8 @@ def plot_init(node_list, path_list, vehicle_list):
 
     ax = plt.gca()
     plt.pause(1)
+    # cur_ylim_bottom, cur_ylim_top = ax.get_ylim()
+    ax.set_ylim(top=y_min)
 
     for vehicle in vehicle_list:
         # print(vehicle.x, vehicle.y)
@@ -164,7 +180,7 @@ def plot_init(node_list, path_list, vehicle_list):
         ax.add_patch(vehicle_arrow)
         ax.add_patch(vehicle_desti_arrow)
         vehicle_rects.append(vehicle_rect)
-        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, (vehicle.NAME, round(vehicle.velocity,2), vehicle.angle, vehicle.loaded)))
+        vehicle_texts.append(plt.text(vehicle.x, vehicle.y, f'{vehicle.NAME} {round(vehicle.velocity/100*6,2)}m/min {vehicle.angle}° {vehicle.loaded}'))
         vehicle_arrows.append(vehicle_arrow)
         vehicle_desti_arrows.append(vehicle_desti_arrow)
 
@@ -176,11 +192,11 @@ def plot_update(simulate_speed, node_list, vehicle_list):
     #  전에 있던 것 업데이트 해주기
     # Vehicle
     for i in range(len(vehicle_rects)):
-        print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
+        #print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text((vehicle_list[i].NAME, round(vehicle_list[i].velocity,2), vehicle_list[i].angle, vehicle_list[i].loaded))
+        vehicle_texts[i].set_text(f'{vehicle_list[i].NAME} {round(vehicle_list[i].velocity/100*6,2)}m/min {vehicle_list[i].angle}° {vehicle_list[i].loaded}')
         vehicle_arrows[i].xy = (vehicle_list[i].x, vehicle_list[i].y)
         vehicle_arrows[i].orientation = np.radians((vehicle_list[i].angle+180)%360)
         if len(vehicle_list[i].path) == 0:

@@ -20,7 +20,6 @@ class Vehicle:
         self.DISCHARGE_WORK = -1
         self.BREAK_PARAM = 2
         self.NODE_TH = 200
-        self.ROTATE_TH = -1
 
         self.x = -1
         self.y = -1
@@ -43,6 +42,7 @@ class Vehicle:
         self.dCharge = 0
         self.interrupt = 0
 
+
     def __lt__(self, other):
         return self.NUM < other.NUM
 
@@ -53,18 +53,22 @@ class Vehicle:
             self.interrupt = 1
 
     def command(self, path, cmd, node_list, loadable_port_list, unloadable_port_list):
-        self.path = path
+        if self.cmd == 25:
+            self.path += path
+        else:
+            self.path = path
+
         self.cmd = cmd
         self.desti_node = self.path[-1]
         self.status = 20
         self.count = 0
         
-        if cmd == 21 or cmd == 22:
-            desti_node_instance = node_list[self.desti_node -1]
-            if desti_node_instance in loadable_port_list:
-                loadable_port_list.remove(desti_node_instance)
-            elif desti_node_instance in unloadable_port_list:
-                unloadable_port_list.remove(desti_node_instance)
+        # if cmd == 21 or cmd == 22:
+        #     desti_node_instance = node_list[self.desti_node -1]
+        #     if desti_node_instance in loadable_port_list:
+        #         loadable_port_list.remove(desti_node_instance)
+        #     elif desti_node_instance in unloadable_port_list:
+        #         unloadable_port_list.remove(desti_node_instance)
 
 
     def move(self, node_list):
@@ -192,7 +196,7 @@ class Vehicle:
                 self.angle += 360
 
         # 3. turn 완료 근사 및  관련 값 reset
-        if abs(self.angle - self.desti_angle) < 18:
+        if abs(self.angle - self.desti_angle) < self.ROTATE_SPEED:
             self.angle = self.desti_angle
             self.turn_flag = 0
             self.turning = -1
@@ -227,7 +231,7 @@ class Vehicle:
 
     def checkCrash(self, car):
         distance = sqrt((self.x - car.x)**2 + (self.y - car.y)**2)
-        if distance <= self.diagonal/2 + car.diagonal/2:
+        if distance <= self.DIAGONAL/2 + car.DIAGONAL/2:
             return True
         else:
             return False
@@ -286,7 +290,7 @@ class Vehicle:
                         node_list[self.desti_node - 1].status = -1
                     self.count += 1
                     if self.count >= self.LOAD_SPEED:
-                        self.count += 1
+                        self.count = 0
                         self.cmd = 10
                         self.status = 10
                         self.loaded = 0
@@ -303,13 +307,17 @@ class Vehicle:
                     self.cmd = 10
                     self.status = 80
                     print("charge!")
+                # append
+                elif self.cmd == 25:
+                    self.status = 11
+                    print("append!")
 
             # wait to move 명령이면 5초 카운트
             if self.cmd == 20:
                 self.count += 1
 
         # 3. 배터리 충/방전
-        if self.status == 10:
+        if self.status == 10 or 11:
             self.battery -= self.DISCHARGE_WAIT
         elif self.status == 80:     # 명령을 받을 수 없는 충전 상태
             self.count += 1

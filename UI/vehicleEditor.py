@@ -1,5 +1,30 @@
 from PyQt5.QtWidgets import *
-from classes import *
+from classes import Vehicle
+
+def AddVehicle(num, type):
+    v_name = "V"
+    if num<10:
+        v_name += "0" + str(num)
+    else:
+        v_name += str(num)
+
+    v = Vehicle(v_name)
+
+    if type == "저상형":
+        v.NUM = num
+        v.TYPE = "저상형"
+        v.WIDTH = 900
+        v.HEIGHT = 700
+        v.DIAGONAL = 1140
+
+    elif type == "Reel Direct":
+        v.NUM = num
+        v.TYPE = "Reel Direct"
+        v.WIDTH = 1700
+        v.HEIGHT = 1400
+        v.DIAGONAL = 2200
+
+    return v
 
 class VehicleEditor(QDialog):
     def __init__(self, context, vehicles):
