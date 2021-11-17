@@ -12,6 +12,8 @@ import threading
 import mapreader
 from simulator import simulator
 from Core.call_agv import call_agv
+from Core.send_agv import send_agv
+from Core.back_agv import back_agv
 from UI import mainPage
 
 # simulate attribute
@@ -70,10 +72,10 @@ def simulate_loop():
 
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
-    # print(a_star(710, 757, path_linked_list, node_list))
-    
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
-    # send_agv(node_list, wait_list, vehicle_list, path_linked_list)
+    send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
+    back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
+    
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
@@ -87,5 +89,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    #read_map()
-    #start_simulate(plot=False)
+    read_map()
+    start_simulate()
