@@ -134,7 +134,8 @@ def plot_init(node_list, path_list, vehicle_list):
         node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', 
             horizontalalignment='right',
             verticalalignment='top',
-            fontsize=8)
+            fontsize=8,
+            zorder=2.1)
         )
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
@@ -162,6 +163,7 @@ def plot_init(node_list, path_list, vehicle_list):
             fill=True,
             # edgecolor='blue',
             # facecolor='purple',
+            zorder = 4,
             rel_point_of_rot=[vehicle.HEIGHT / 2, vehicle.WIDTH / 2]
         )
         vehicle_arrow = patches.RegularPolygon(
@@ -170,11 +172,14 @@ def plot_init(node_list, path_list, vehicle_list):
             vehicle.DIAGONAL/4,
             np.radians((vehicle.angle+180)%360),  # 0v 90< 180^ 270> => 0^90>180v270<
             edgecolor='blue',
+            # facecolor='blue',
+            zorder = 4.1,
         )
         vehicle_desti_arrow = patches.FancyArrowPatch(
             (vehicle.x, vehicle.y),
             (vehicle.x, vehicle.y),
-            mutation_scale=5
+            mutation_scale=5,
+            zorder = 4
         )
         ax.add_patch(vehicle_rect)
         ax.add_patch(vehicle_arrow)
@@ -191,14 +196,20 @@ def plot_update(simulate_speed, node_list, vehicle_list):
 
     #  전에 있던 것 업데이트 해주기
     # Vehicle
-    for i in range(len(vehicle_rects)):
+    for i in range(len(vehicle_list)):
         #print(vehicle_list, vehicle_rects, vehicle_texts, vehicle_arrows, vehicle_desti_arrows)
         vehicle_rects[i].set_xy_center((vehicle_list[i].x, vehicle_list[i].y))
         vehicle_rects[i].set_angle(vehicle_list[i].angle)
         vehicle_texts[i].set_position((vehicle_list[i].x, vehicle_list[i].y))
-        vehicle_texts[i].set_text(f'{vehicle_list[i].NAME} {round(vehicle_list[i].velocity/100*6,2)}m/min {vehicle_list[i].angle}° {vehicle_list[i].loaded}')
+        vehicle_texts[i].set_text(f'{vehicle_list[i].NAME} {round(vehicle_list[i].velocity/100*6,2)}m/min {round(vehicle_list[i].angle)}° {round(vehicle_list[i].battery)}%')
         vehicle_arrows[i].xy = (vehicle_list[i].x, vehicle_list[i].y)
         vehicle_arrows[i].orientation = np.radians((vehicle_list[i].angle+180)%360)
+        # 반송물 있고 없고 유무
+        if vehicle_list[i].loaded == 1:
+            vehicle_arrows[i].set(facecolor='red')
+        else:
+            vehicle_arrows[i].set(facecolor=None)
+        # 목적지 표시 유무
         if len(vehicle_list[i].path) == 0:
             vehicle_desti_arrows[i].set_positions((vehicle_list[i].x, vehicle_list[i].y), (vehicle_list[i].x, vehicle_list[i].y))
         else:
