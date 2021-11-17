@@ -587,6 +587,7 @@ class MainPage(QWidget):
         # 작업 내용 없으면 그냥 종료
         if not self.image_original:
             super().close()
+            main.stop_simulate()
             return
 
         reply = QMessageBox.question(self, 'Message', 'Are you sure to save and quit?',
@@ -597,6 +598,7 @@ class MainPage(QWidget):
                 super().close()
         elif reply == QMessageBox.No:
             super().close()
+        main.stop_simulate()
 
     def editVehicle(self):
         editor = VehicleEditor(self.context, self.vehicles)
@@ -619,7 +621,7 @@ class MainPage(QWidget):
 
     # 시뮬레이션 일시정지
     def stop(self):
-        main.simulate_stop()
+        main.stop_simulate()
 
     # XML 파일 추출
     def XML(self):

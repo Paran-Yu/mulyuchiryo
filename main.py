@@ -57,6 +57,8 @@ def read_map():
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate(plot=True):
+    global stop_flag
+    stop_flag = False
     # simulation 초기화
     simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
     # 시뮬레이션 무한 루프 실행
@@ -69,7 +71,7 @@ def start_simulate(plot=True):
 # simulate_speed마다 루틴 실행
 # TODO: 도중에 simulate_speed가 바뀌면 대응하는 법...
 def simulate_loop():
-    global loadable_port_list, unloadable_port_list
+    global loadable_port_list, unloadable_port_list, stop_flag
 
     simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
 
@@ -82,11 +84,10 @@ def simulate_loop():
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
-def simulate_stop():
+def stop_simulate():
     global stop_flag
     stop_flag = True
     simulator.plot_close()
-    # print('stop_flag:',stop_flag)
 
 ####################
 # Test용 main

@@ -227,3 +227,8 @@ def plot_update(simulate_speed, node_list, vehicle_list):
 
 def plot_close():
     plt.close()
+    node_texts.clear()
+    vehicle_rects.clear()
+    vehicle_texts.clear()
+    vehicle_arrows.clear()
+    vehicle_desti_arrows.clear()
