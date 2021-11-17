@@ -13,19 +13,22 @@ from sidebar import SideBar
 from selector import Selector
 from classes import *
 from scale import *
-from vehicleEditor import VehicleEditor
-
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-import main
-
+from vehicleEditor import *
 
 currentDir = os.path.abspath(os.path.dirname(__file__))
 rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
+if currentDir not in sys.path:
+    sys.path.append(currentDir)
+if rootDir not in sys.path:
+    sys.path.append(rootDir)
+
+import main
+
 class Context:
     def __init__(self):
         self.main = None
-        self.class_list = [Node, Port, WaitPoint, Path]
+        self.class_list = [Node, Port, WaitPoint, Path, AddVehicle]
         self.scale = 1
         self.capa = 1
         self.simulation_speed = 1
@@ -892,7 +895,14 @@ class MainPage(QWidget):
             qp.drawLine(path.start.X, path.start.Y, path.end.X, path.end.Y)
 
             qp.end()
-        # TODO: Add Ports, Wait Points and Vehicles
+
+        for vehicle in self.vehicles:
+            qp = QPainter(self.canvas)
+
+            qp.setPen(QPen(QColor(0, 255, 255), 15))
+            qp.drawPoint(vehicle.x, vehicle.y)
+
+            qp.end()
 
     # 화면에 그려진 객체들을 지움.
     def eraseCanvas(self):
@@ -937,11 +947,18 @@ class MainPage(QWidget):
                     '''self.mouse_left and '''
                     self.node_selected = True
 
-                    # Count increment per every node creation
-                    self.count += 1
-                    self.selected_node = self.context.class_list[self.current_tool](self.count, int(nx), int(ny))
-                    self.selected_node.count = 0    # 연결된 node 수를 알기 위한 변수.
-                    self.positions[self.current_tool].append(self.selected_node)
+                    if self.current_tool == 4:  # Vehicle
+                        self.context.v_count += 1
+                        self.selected_vehicle = self.context.class_list[self.current_tool](self.context.v_count, int(nx), int(ny))
+                        self.positions[self.current_tool].append(self.selected_vehicle)
+                    else:
+                        # Count increment per every node creation
+                        self.count += 1
+
+                        self.selected_node = self.context.class_list[self.current_tool](self.count, int(nx), int(ny))
+                        self.selected_node.count = 0    # 연결된 node 수를 알기 위한 변수.
+                        self.positions[self.current_tool].append(self.selected_node)
+
                     self.drawCanvas()
 
                     self.sp = QPoint(nx, ny)
