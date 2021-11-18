@@ -38,18 +38,19 @@ class RotatingRectangle(patches.Rectangle):
 
 
 # simulate 초기화
-def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot):
+def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot, simul_db):
     port_init(port_list)
     wait_init(wait_list, vehicle_list)
+    vehicle_init(vehicle_list, simul_db)
     if plot:
         plot_init(node_list, path_list, vehicle_list)
 
 
 # simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list):
+def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list, simulate_time):
     print("routine start")
     port_update(port_list, loadable_port_list, unloadable_port_list)
-    cnt = vehicle_update(node_list, vehicle_list)
+    cnt = vehicle_update(node_list, vehicle_list, simulate_time)
     return cnt
 
 
@@ -89,10 +90,14 @@ def wait_init(wait_list, vehicle_list):
 
 
 # VEHICLE
-def vehicle_update(node_list, vehicle_list):
+def vehicle_init(vehicle_list, simul_db):
+    for vehicle in vehicle_list:
+        vehicle.db = simul_db
+
+def vehicle_update(node_list, vehicle_list, simulate_time):
     cnt = 0
     for vehicle in vehicle_list:
-        result = vehicle.vehicle_routine(node_list)
+        result = vehicle.vehicle_routine(node_list, simulate_time)
         if result == 1:
             cnt += 1
         # TODO: DB에 기록
