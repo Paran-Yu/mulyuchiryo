@@ -101,15 +101,15 @@ def plot_init(node_list, path_list, vehicle_list):
         # port
         if hasattr(node, 'PORT_NAME'):
             if node.TYPE == 'load':
-                plt.plot(node.X, node.Y, 'y^')
+                plt.plot(node.X, node.Y, 'y^', label='Load' if node.PORT_NAME == 'L001' else "")
             elif node.TYPE == 'unload':
-                plt.plot(node.X, node.Y, 'bv')
+                plt.plot(node.X, node.Y, 'bv', label='Unload' if node.PORT_NAME == 'U001' else "")
             elif node.TYPE == 'lu':
                 plt.plot(node.X, node.Y, 'cD')
         # wait point
         elif hasattr(node, 'WAIT_NAME'):
             if node.CHARGE:
-                plt.plot(node.X, node.Y, 'gP')
+                plt.plot(node.X, node.Y, 'gP', label='Waiting Point' if node.WAIT_NAME == 'W01' else "")
             else:
                 plt.plot(node.X, node.Y, 'rP')
         # node
@@ -121,6 +121,8 @@ def plot_init(node_list, path_list, vehicle_list):
             fontsize=8,
             zorder=2.1)
         )
+    # 범례 추가
+    plt.legend(loc='lower left', mode='expand', bbox_to_anchor=(0,1.02,1,0.2), ncol=3)
     # 도로
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
