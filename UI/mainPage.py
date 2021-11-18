@@ -33,7 +33,7 @@ class Context:
         self.main = None
         self.class_list = [Node, Port, WaitPoint, Path, AddVehicle]
         self.scale = 1
-        self.capa = 1
+        self.capa = 834
         self.simulation_speed = 1
         self.v_count = 0
 
