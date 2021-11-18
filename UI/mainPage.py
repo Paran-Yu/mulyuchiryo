@@ -287,10 +287,10 @@ class MainPage(QWidget):
         btn_charge_rate.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
         btn_charge_rate.setIconSize(QSize(80, 80))
 
-        btn_cmd = QPushButton("CMD Rate", self.sub_menu_wrapper)
+        btn_cmd = QPushButton(self.sub_menu_wrapper)
         btn_cmd.clicked.connect(self.showCmdRate)
-        #btn_cmd.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
-        #btn_cmd.setIconSize(QSize(80, 80))
+        btn_cmd.setIcon(QIcon(QPixmap(currentDir + "/resources/image/cmd.png")))
+        btn_cmd.setIconSize(QSize(80, 80))
 
         btn_progress = QPushButton(self.sub_menu_wrapper)
         btn_progress.clicked.connect(self.showProgress)
@@ -862,7 +862,7 @@ class MainPage(QWidget):
 
     # 작업 진행 그래프
     def showProgress(self):
-        pass # work_progress() 에러 발생.
+        work_progress()
 
     # 경유 횟수 확인
     def showVia(self):
