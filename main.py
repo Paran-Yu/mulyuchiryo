@@ -63,7 +63,7 @@ def read_map():
 
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
-def start_simulate(plot=True, ui_speed=0):
+def start_simulate(plot=True, ui_speed=1):
     global simulate_time, simulate_cnt, stop_flag
     stop_flag = False
     if ui_speed:

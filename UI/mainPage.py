@@ -680,7 +680,7 @@ class MainPage(QWidget):
     def close(self):
         # 작업 내용 없으면 그냥 종료
         if not self.image_original:
-            main.stop_simulate()
+            stop_simulate()
             super().close()
             return
 
@@ -689,10 +689,10 @@ class MainPage(QWidget):
 
         if reply == QMessageBox.Yes:
             if self.save():
-                main.stop_simulate()
+                stop_simulate()
                 super().close()
         elif reply == QMessageBox.No:
-            main.stop_simulate()
+            stop_simulate()
             super().close()
 
     def editVehicle(self):
@@ -718,11 +718,11 @@ class MainPage(QWidget):
 
     # 시뮬레이션 일시정지
     def pause(self):
-        pass
+        pause_simulate()
 
     # 시뮬레이션 일시정지
     def stop(self):
-        main.stop_simulate()
+        stop_simulate()
 
     # XML 파일 추출
     def XML(self):

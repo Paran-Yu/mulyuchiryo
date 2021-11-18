@@ -34,6 +34,11 @@ map_data = {'width': map_width, 'scale': map_scale, 'capacity': map_capa}
 
 def mapread_init():
     global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
+    port_list.clear()
+    wait_list.clear()
+    node_list.clear()
+    path_list.clear()
+    vehicle_list.clear()
     # read_ports
     xml_port_list = ports.findall("port")
     for x in xml_port_list:
