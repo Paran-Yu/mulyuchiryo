@@ -23,6 +23,16 @@ class DB:
             cur.execute('CREATE TABLE scene(\
             id INTEGER PRIMARY KEY AUTOINCREMENT)')
 
+        cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='progress'")
+        returns = cur.fetchall()
+        if len(returns) == 0:
+            cur.execute('CREATE TABLE progress(\
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,\
+                        scene_id INTEGER,\
+                        time INTEGER,\
+                        progress INTEGER,\
+                        FOREIGN KEY(scene_id) REFERENCES scene(id))')
+
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='vehicle'")
         returns = cur.fetchall()
         if len(returns) == 0:
@@ -105,6 +115,15 @@ class DB:
         print(data)
         cur.executemany(query, data)
         self.conn.commit()
+
+    def add_progress(self, time, progress):
+        cur = self.conn.cursor()
+        query = f'INSERT INTO progress (scene_id, time, progress)' \
+                f'VALUES ({self.scene_num}, {time}, {progress})'
+        print(query)
+        cur.execute(query)
+        self.conn.commit()
+
 
     def set_scene_num(self, num):
         self.scene_num = num
@@ -258,6 +277,22 @@ class DB:
         # print(data)
         return data
 
+    def get_progress(self):
+        """
+        simulate 시간 별 진행 상황
+
+        :return data: 2차원 리스트
+        """
+        cur = self.conn.cursor()
+        query = f'SELECT progress FROM progress WHERE scene_id=-1'
+        cur.execute(query)
+        res = cur.fetchall()
+        data = []
+        for x in res:
+            data.append(x[0])
+        # print(data)
+        return data
+
 
     def create_new_scene(self):
         last_num = self.get_scene_num()
@@ -271,10 +306,13 @@ class DB:
 
 db = DB()
 # db.db_clear()
-# db.db_init()
+db.db_init()
 # db.create_new_scene()
 # db.set_scene_num(1)
 # db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
 # db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
 # db.get_vehicle_charge()
-db.get_vehicle_work()
+# db.get_vehicle_work()
+# db.add_progress(1,1)
+# db.add_progress(2,2)
+db.get_progress()
