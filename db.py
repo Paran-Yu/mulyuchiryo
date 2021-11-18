@@ -304,6 +304,19 @@ class DB:
             self.add_scene_num(last_num[0] + 1)
             self.set_scene_num(last_num[0] + 1)
 
+    def get_scene(self):
+        """
+        scene 목록
+        :return data: 1차원 리스트
+        """
+        cur = self.conn.cursor()
+
+        query = 'SELECT * FROM scene'
+        cur.execute(query)
+        res = cur.fetchall()
+        scenes = [scene[0] for scene in res]
+
+        return scenes
 db = DB()
 # db.db_clear()
 db.db_init()
