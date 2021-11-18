@@ -91,8 +91,6 @@ class MainPage(QWidget):
         self.layout_name = None
         self.show_graph = True
 
-        read_map()
-
         self.initUI()
 
     def initUI(self):
@@ -717,6 +715,7 @@ class MainPage(QWidget):
 
         global simulate_speed
 
+        read_map()
         start_simulate(plot=self.show_graph, ui_speed=simulate_speed)
 
     # 시뮬레이션 일시정지
