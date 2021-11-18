@@ -266,6 +266,11 @@ class MainPage(QWidget):
         btn_play.setIcon(QIcon(QPixmap(currentDir + "/resources/image/play.png")))
         btn_play.setIconSize(QSize(80, 80))
 
+        btn_pause = QPushButton(self.sub_menu_wrapper)
+        btn_pause.clicked.connect(self.pause)
+        btn_pause.setIcon(QIcon(QPixmap(currentDir + "/resources/image/pause.png")))
+        btn_pause.setIconSize(QSize(80, 80))
+
         btn_stop = QPushButton(self.sub_menu_wrapper)
         btn_stop.clicked.connect(self.stop)
         btn_stop.setIcon(QIcon(QPixmap(currentDir + "/resources/image/stop.png")))
@@ -328,6 +333,7 @@ class MainPage(QWidget):
             # simulate
             [
                 btn_play,
+                btn_pause,
                 btn_stop,
                 btn_set_oper,
             ],
@@ -704,6 +710,10 @@ class MainPage(QWidget):
 
         main.read_map()
         main.start_simulate()
+
+    # 시뮬레이션 일시정지
+    def pause(self):
+        pass
 
     # 시뮬레이션 일시정지
     def stop(self):
