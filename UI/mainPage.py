@@ -91,6 +91,7 @@ class MainPage(QWidget):
         self.layout_name = None
         self.show_graph = True
 
+        read_map()
         self.initUI()
 
     def initUI(self):
