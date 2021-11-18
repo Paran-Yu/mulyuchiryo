@@ -24,7 +24,7 @@ if currentDir not in sys.path:
 if rootDir not in sys.path:
     sys.path.append(rootDir)
 
-import main
+from main import *
 from statistics import *
 
 class Context:
@@ -266,6 +266,11 @@ class MainPage(QWidget):
         btn_play.setIcon(QIcon(QPixmap(currentDir + "/resources/image/play.png")))
         btn_play.setIconSize(QSize(80, 80))
 
+        btn_pause = QPushButton(self.sub_menu_wrapper)
+        btn_pause.clicked.connect(self.pause)
+        btn_pause.setIcon(QIcon(QPixmap(currentDir + "/resources/image/pause.png")))
+        btn_pause.setIconSize(QSize(80, 80))
+
         btn_stop = QPushButton(self.sub_menu_wrapper)
         btn_stop.clicked.connect(self.stop)
         btn_stop.setIcon(QIcon(QPixmap(currentDir + "/resources/image/stop.png")))
@@ -287,10 +292,10 @@ class MainPage(QWidget):
         btn_charge_rate.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
         btn_charge_rate.setIconSize(QSize(80, 80))
 
-        btn_cmd = QPushButton("CMD Rate", self.sub_menu_wrapper)
+        btn_cmd = QPushButton(self.sub_menu_wrapper)
         btn_cmd.clicked.connect(self.showCmdRate)
-        #btn_cmd.setIcon(QIcon(QPixmap(currentDir + "/resources/image/charge rate.png")))
-        #btn_cmd.setIconSize(QSize(80, 80))
+        btn_cmd.setIcon(QIcon(QPixmap(currentDir + "/resources/image/cmd.png")))
+        btn_cmd.setIconSize(QSize(80, 80))
 
         btn_progress = QPushButton(self.sub_menu_wrapper)
         btn_progress.clicked.connect(self.showProgress)
@@ -328,6 +333,7 @@ class MainPage(QWidget):
             # simulate
             [
                 btn_play,
+                btn_pause,
                 btn_stop,
                 btn_set_oper,
             ],
@@ -564,17 +570,19 @@ class MainPage(QWidget):
                                        * self.canvas.height() / self.canvas_label.height()
 
     def setOperationData(self):
-        if self.image_original:
-            qd = OperationData()
-            qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
-                           self.rect.width() * 0.2, self.rect.height() * 0.2)
-            qd.initUI(self.context.capa, self.context.simulation_speed)
-            if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
-                capa = int(qd.edit_capa.text())
-                simulation_speed = int(qd.edit_speed.text())
+        #if self.image_original:
+        qd = OperationData()
+        qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                       self.rect.width() * 0.2, self.rect.height() * 0.2)
+        qd.initUI(self.context.capa, self.context.simulation_speed)
+        if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
+            capa = int(qd.edit_capa.text())
+            simulation_speed = int(qd.edit_speed.text())
 
-                self.context.capa = capa
-                self.context.simulation_speed = simulation_speed
+            self.context.capa = capa
+            self.context.simulation_speed = simulation_speed
+            global simulate_speed
+            simulate_speed = 1 / self.context.simulation_speed
 
     def setScale(self):
         # 다시 누른 경우 창이 뜨지 않음
@@ -700,8 +708,14 @@ class MainPage(QWidget):
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
         # self.XML()
 
-        main.read_map()
-        main.start_simulate()
+        global simulate_speed
+
+        read_map()
+        start_simulate(ui_speed=simulate_speed)
+
+    # 시뮬레이션 일시정지
+    def pause(self):
+        pass
 
     # 시뮬레이션 일시정지
     def stop(self):
@@ -862,7 +876,7 @@ class MainPage(QWidget):
 
     # 작업 진행 그래프
     def showProgress(self):
-        pass # work_progress() 에러 발생.
+        work_progress()
 
     # 경유 횟수 확인
     def showVia(self):
