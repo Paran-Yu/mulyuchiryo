@@ -564,17 +564,17 @@ class MainPage(QWidget):
                                        * self.canvas.height() / self.canvas_label.height()
 
     def setOperationData(self):
-        if self.image_original:
-            qd = OperationData()
-            qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
-                           self.rect.width() * 0.2, self.rect.height() * 0.2)
-            qd.initUI(self.context.capa, self.context.simulation_speed)
-            if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
-                capa = int(qd.edit_capa.text())
-                simulation_speed = int(qd.edit_speed.text())
+        #if self.image_original:
+        qd = OperationData()
+        qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                       self.rect.width() * 0.2, self.rect.height() * 0.2)
+        qd.initUI(self.context.capa, self.context.simulation_speed)
+        if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
+            capa = int(qd.edit_capa.text())
+            simulation_speed = int(qd.edit_speed.text())
 
-                self.context.capa = capa
-                self.context.simulation_speed = simulation_speed
+            self.context.capa = capa
+            self.context.simulation_speed = simulation_speed
 
     def setScale(self):
         # 다시 누른 경우 창이 뜨지 않음
