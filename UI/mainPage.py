@@ -24,7 +24,7 @@ if currentDir not in sys.path:
 if rootDir not in sys.path:
     sys.path.append(rootDir)
 
-import main
+from main import *
 from statistics import *
 
 class Context:
@@ -575,6 +575,8 @@ class MainPage(QWidget):
 
             self.context.capa = capa
             self.context.simulation_speed = simulation_speed
+            global simulate_speed
+            simulate_speed = 1 / self.context.simulation_speed
 
     def setScale(self):
         # 다시 누른 경우 창이 뜨지 않음
