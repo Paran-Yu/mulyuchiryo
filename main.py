@@ -64,7 +64,7 @@ def read_map():
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate(plot=True, ui_speed=0):
-    global simulate_time, simulate_cnt, stop_flag, simulate_speed
+    global simulate_time, simulate_cnt, stop_flag, simulate_speed, map_data
     stop_flag = False
     if ui_speed:
         simulate_speed = ui_speed
@@ -76,7 +76,7 @@ def start_simulate(plot=True, ui_speed=0):
     simulate_loop()
 
     while plot and not stop_flag:
-        simulator.plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate_cnt)
+        simulator.plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate_cnt, map_data)
 
 
 # simulate_speed마다 루틴 실행
