@@ -272,7 +272,7 @@ class Vehicle:
             else:
                 # status와 현재 받은 cmd를 분리
                 # load
-                if self.cmd == 22:
+                if self.cmd == 21:
                     if self.status != 30:
                         self.status = 30
                         node_list[self.desti_node - 1].status = -1
@@ -285,7 +285,7 @@ class Vehicle:
                         node_list[self.desti_node - 1].status = 0
                     print("load! - ", self.count)
                 # unload
-                elif self.cmd == 21:
+                elif self.cmd == 22:
                     if self.status != 40:
                         self.status = 40
                         node_list[self.desti_node - 1].status = -1
