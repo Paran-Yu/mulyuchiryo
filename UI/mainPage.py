@@ -911,23 +911,28 @@ class MainPage(QWidget):
 
     # AGV 전체 가동률 그래프 출력
     def showUtilizationRate(self):
-        vehicle_work()
+        if self.setScene():
+            vehicle_work()
 
     # AGV의 충전률
     def showChargeRate(self):
-        vehicle_charge()
+        if self.setScene():
+            vehicle_charge()
 
     # 명령 전달 비율
     def showCmdRate(self):
-        vehicle_cmd()
+        if self.setScene():
+            vehicle_cmd()
 
     # 작업 진행 그래프
     def showProgress(self):
-        work_progress()
+        if self.setScene():
+            work_progress()
 
     # 경유 횟수 확인
     def showVia(self):
-        show_node_frequency()
+        if self.setScene():
+            show_node_frequency()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
