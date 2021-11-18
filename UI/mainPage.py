@@ -906,7 +906,14 @@ class MainPage(QWidget):
 
     # 경유 횟수 확인
     def showVia(self):
-        show_node_frequency()
+        ss = SceneSelector()
+        ss.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                       self.rect.width() * 0.2, self.rect.height() * 0.2)
+        ss.initUI()
+
+        # 확인 버튼 클릭 시 차트 출력.
+        if ss.exec_():
+            show_node_frequency()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
