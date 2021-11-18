@@ -49,8 +49,8 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot
 def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list):
     print("routine start")
     port_update(port_list, loadable_port_list, unloadable_port_list)
-    result = vehicle_update(node_list, vehicle_list)
-    return result
+    cnt = vehicle_update(node_list, vehicle_list)
+    return cnt
 
 
 # PORT
@@ -90,10 +90,13 @@ def wait_init(wait_list, vehicle_list):
 
 # VEHICLE
 def vehicle_update(node_list, vehicle_list):
+    cnt = 0
     for vehicle in vehicle_list:
         result = vehicle.vehicle_routine(node_list)
+        if result == 1:
+            cnt += 1
         # TODO: DB에 기록
-        return result
+    return cnt
 
 
 # PLOT
