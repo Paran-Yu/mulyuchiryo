@@ -679,7 +679,7 @@ class MainPage(QWidget):
 
         conn.close()
         #저장 성공
-        QMessageBox.about(self, "Export Data", "Success: Data Extraction")
+        QMessageBox.information(self, "Export Data", "Success: Data Extraction")
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
