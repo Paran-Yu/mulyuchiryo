@@ -84,6 +84,9 @@ def check_crossing_collision(agv1, agv2, node_list, port_list, wait_list, path_l
         # 일반적인 교차로에서
         # agv1이 오른쪽 주행, agv2가 세로 주행
         if agv1.angle in [90, 270] and agv2.angle in [0, 180]:
+            # 앞에서 제어했기 때문에 제외
+            if node_list[agv2.node-1] in port_list or node_list[agv2.node-1] in wait_list:
+                return
             # path[0]만 비교
             # 다음 목적지 노드가 같음
             if agv1.path[0] == agv2.path[0]:
