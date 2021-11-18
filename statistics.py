@@ -78,7 +78,8 @@ def work_progress():
     plt.legend()
     plt.show()
 
-def node_frequency(node_cnt, node_list):
+
+def node_frequency(node_list, path_list):
     data = db.get_node_freq(len(node_list))
     # 노드 갯수만큼 [방문횟수, 방문횟수, ...]
     # map plot 부분 추가
@@ -87,11 +88,11 @@ def node_frequency(node_cnt, node_list):
     ax.invert_yaxis()
     for i in range(len(node_list)):
         plt.plot(node_list[i].X, node_list[i].Y, 'o', markersize=data[i])
-        plt.text(node_list[i].X, node_list[i].Y, f'{node_list[i].NUM}',
-                 horizontalalignment='right',
-                 verticalalignment='top',
-                 fontsize=8,
-                 )
+        plt.text(node_list[i].X, node_list[i].Y, f'{node_list[i].NUM}', 
+            horizontalalignment='right',
+            verticalalignment='top',
+            fontsize=8,
+        )
     # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
     for path in path_list:
         start = node_list[path[0] - 1]
