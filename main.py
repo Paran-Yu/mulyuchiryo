@@ -63,15 +63,13 @@ def read_map():
 
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
-def start_simulate(plot=True, ui_speed=1):
-    global simulate_time, simulate_cnt, stop_flag
+def start_simulate(plot=True, ui_speed=0):
+    global simulate_time, simulate_cnt, stop_flag, simulate_speed
     stop_flag = False
     if ui_speed:
         simulate_speed = ui_speed
     # simulation 초기화
     simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
-    simulate_time = 0
-    simulate_cnt = 0
     # 새로운 scene 생성
     simul_db.create_new_scene()
     # 시뮬레이션 무한 루프 실행
@@ -109,11 +107,13 @@ def pause_simulate():
     simulator.plot_close()
 
 def stop_simulate():
-    global stop_flag
+    global stop_flag, simulate_time, simulate_cnt
     global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
     stop_flag = True
+    simulate_time = 0
+    simulate_cnt = 0
     simulator.plot_close()
-    mapreader.mapread_init()
+    mapreader.mapread_reset()
     port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
 
 #######################

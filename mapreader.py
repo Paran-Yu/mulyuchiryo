@@ -32,13 +32,18 @@ map_scale = float(mapdata.find("scale").text)
 map_capa = int(mapdata.find("capa").text)
 map_data = {'width': map_width, 'scale': map_scale, 'capacity': map_capa}
 
-def mapread_init():
-    global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
+def mapread_reset():
     port_list.clear()
     wait_list.clear()
     node_list.clear()
     path_list.clear()
     vehicle_list.clear()
+
+def mapread_init():
+    global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
+    # 이미 한 번 지도가 그려졌으면: pause 하는 경우
+    if port_list:
+        return
     # read_ports
     xml_port_list = ports.findall("port")
     for x in xml_port_list:
