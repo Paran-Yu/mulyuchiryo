@@ -12265,7 +12265,7 @@
             <start_node>538</start_node>
             <start_angle>180</start_angle>
         </vehicle>
-        <vehicle>
+        <!-- <vehicle>
             <num>26</num>
             <name>V26</name>
             <type>LowHeight</type>
@@ -12284,7 +12284,7 @@
             <discharge_wait>0.2</discharge_wait>
             <start_node>539</start_node>
             <start_angle>180</start_angle>
-        </vehicle>
+        </vehicle> -->
         <!-- <vehicle>
             <num>27</num>
             <name>V27</name>
