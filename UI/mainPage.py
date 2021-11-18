@@ -15,6 +15,7 @@ from selector import Selector
 from classes import *
 from scale import *
 from vehicleEditor import *
+from operationData import *
 
 currentDir = os.path.abspath(os.path.dirname(__file__))
 rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
@@ -88,6 +89,7 @@ class MainPage(QWidget):
         self.actual_length = None
         self.scale_pressed = None
         self.layout_name = None
+        self.show_graph = True
 
         self.initUI()
 
@@ -570,19 +572,20 @@ class MainPage(QWidget):
                                        * self.canvas.height() / self.canvas_label.height()
 
     def setOperationData(self):
-        #if self.image_original:
         qd = OperationData()
         qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
                        self.rect.width() * 0.2, self.rect.height() * 0.2)
         qd.initUI(self.context.capa, self.context.simulation_speed)
-        if qd.exec_() and qd.edit_capa.text() and qd.edit_speed.text():
+        if qd.exec_() and qd.edit_capa.text():
             capa = int(qd.edit_capa.text())
-            simulation_speed = int(qd.edit_speed.text())
+            simulation_speed = int(qd.edit_speed.currentText())
 
             self.context.capa = capa
             self.context.simulation_speed = simulation_speed
             global simulate_speed
             simulate_speed = 1 / self.context.simulation_speed
+
+            self.show_graph = qd.chbx.isChecked()
 
     def setScale(self):
         # 다시 누른 경우 창이 뜨지 않음
@@ -665,7 +668,6 @@ class MainPage(QWidget):
             for i in range(len(row)):
                 raw_data2[col[i]].append(row[i])
 
-        print(raw_data2)
         raw_data = pd.DataFrame(raw_data)  # 데이터 프레임으로 전환
         raw_data2 = pd.DataFrame(raw_data2)
 
@@ -716,7 +718,7 @@ class MainPage(QWidget):
         global simulate_speed
 
         read_map()
-        start_simulate(ui_speed=simulate_speed)
+        start_simulate(plot=self.show_graph, ui_speed=simulate_speed)
 
     # 시뮬레이션 일시정지
     def pause(self):
@@ -885,7 +887,7 @@ class MainPage(QWidget):
 
     # 경유 횟수 확인
     def showVia(self):
-        pass # node_frequency(node_list, path_list)
+        show_node_frequency()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):

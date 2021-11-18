@@ -16,6 +16,7 @@ from Core.send_agv import send_agv
 from Core.back_agv import back_agv
 from Core.check_collision import check_collision
 from UI import mainPage
+from statistics import *
 import db
 
 # simulate attribute
@@ -60,7 +61,6 @@ def read_map():
     mapreader.mapread_init()
     img, map_data = mapreader.read_layout()
     port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
-
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
 def start_simulate(plot=True, ui_speed=0):
@@ -115,6 +115,9 @@ def stop_simulate():
     simulator.plot_close()
     mapreader.mapread_reset()
     port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
+
+def show_node_frequency():
+    node_frequency(node_list, path_list)
 
 #######################
 # Test용 main
