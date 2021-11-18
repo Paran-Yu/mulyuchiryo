@@ -1,20 +1,14 @@
-로고(logo)
+![frontImage](docs/frontImage.png)
 
-# 물류치료
-
-> 통합 물류 자동화 시뮬레이션 분석 시스템
-
-~귀사의 공장을 더 스마트하게~
-
-`물류 치료는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
+`물류치료는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
 
 
 
-삼성청년소프트웨어아카데미 5기 자율프로젝트 기업연계트랙으로 진행된 프로젝트로 삼성SDI와 연계하여 물류 자동화 과정에서 기존에 AGV들의 동선을 수작업으로 작성하여 발생했던 휴먼 에러 및 보틀넥을 줄이고, 효율 최대화를 위하여 AGV들의 동선을 최적화하는 알고리즘을 도출하여 시뮬레이션으로 시연하는 것을 목표로 합니다. 프로그래밍 언어는 Python이며 PyQt를 통해 UI를 보여줍니다.
+삼성청년소프트웨어아카데미 5기 자율프로젝트 기업연계트랙으로 진행된 프로젝트로 삼성SDI와 연계하여 물류 자동화 과정에서 기존에 AGV들의 동선을 수작업으로 작성하여 발생했던 휴먼 에러 및 보틀넥을 줄이고, 효율 최대화를 위하여 AGV들의 동선을 최적화하는 알고리즘을 도출하여 시뮬레이션으로 시연하는 것을 목표로 합니다.
 
 ## 팀원 소개
 
-팀 단체 사진
+
 
 ### 강리정
 IoT IoT IoT
@@ -124,7 +118,7 @@ Python 3.9.7
 
 ## 추가정보
 
-
+프로젝트 기간: 2021-10-11 ~ 2021-11-19 (6주)
 
 ## 기여
 
@@ -142,7 +136,13 @@ Python 3.9.7
 
 [노션(Notion) 페이지](https://spice-session-a8a.notion.site/SDI-bf364b0fe61f457a8687d531096a47e9)
 
+![notion](docs/notion.png)
+
+![engineeringWiki](docs/engineeringWiki.png)
+
 [WBS 스프레드 시트](https://docs.google.com/spreadsheets/d/1HMPFKf2UmTKbTjrtqk0U_vcNYzQtznxR-eZYdHO8HKE/edit?usp=sharing)
+
+![WBS](docs/WBS.jpg)
 
 [UI 메뉴 계획](https://docs.google.com/spreadsheets/d/1PMcZ8eTfPwLhpXxE9VDXUx82L5bSitthVZU2a6iTxLI/edit?usp=sharing)
 
