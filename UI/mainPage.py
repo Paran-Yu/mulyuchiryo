@@ -678,6 +678,8 @@ class MainPage(QWidget):
             raw_data2.to_excel(writer, sheet_name='vehicle')  # raw_data2 시트에 저장
 
         conn.close()
+        #저장 성공
+        QMessageBox.information(self, "Export Data", "Success: Data Extraction")
 
     def close(self):
         # 작업 내용 없으면 그냥 종료
