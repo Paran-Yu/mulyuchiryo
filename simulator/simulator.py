@@ -208,3 +208,11 @@ def plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate
             node_texts[i].set_text(f'{node_list[i].NUM} {node_list[i].using}')
 
     plt.pause(simulate_speed)
+
+def plot_close():
+    plt.close()
+    node_texts.clear()
+    vehicle_rects.clear()
+    vehicle_texts.clear()
+    vehicle_arrows.clear()
+    vehicle_desti_arrows.clear()
