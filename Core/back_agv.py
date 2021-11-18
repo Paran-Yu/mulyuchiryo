@@ -22,11 +22,11 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                 # 나올 때 후진
                 a_star_path[0] = a_star_path[0] * -1
                 # 대기하기
-                if vehicle.battery >= 70:
-                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
+                if vehicle.battery < 80:
+                    vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
                 # 충전하기
                 else:
-                    vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
+                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
             # 좌측 상단 2번 포트
             elif 292 <= vehicle.node <= 315:
                 a_star_path = a_star(vehicle.node, 19, path_linked_list, node_list)
@@ -35,11 +35,18 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                         a_star_path += a_star(19, node_list[idx-1].NUM ,path_linked_list, node_list)
                         node_list[idx-1].using = vehicle.NUM
                         break
-                a_star_path[0] = a_star_path[0] * -1
-                if vehicle.battery >= 70:
-                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
                 else:
+                    for idx in range(519, 511, -1):
+                        if not node_list[idx-1].using:
+                            a_star_path += a_star(19, node_list[idx-1].NUM ,path_linked_list, node_list)
+                            node_list[idx-1].using = vehicle.NUM
+                            break
+                a_star_path[0] = a_star_path[0] * -1
+
+                if vehicle.battery < 80:
                     vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
+                else:
+                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
             # 좌측 하단 2번 포트
             elif 444 <= vehicle.node <= 467:
                 a_star_path = a_star(vehicle.node, 767, path_linked_list, node_list)
@@ -48,11 +55,17 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                         a_star_path += a_star(767, node_list[idx-1].NUM ,path_linked_list, node_list)
                         node_list[idx-1].using = vehicle.NUM
                         break
-                a_star_path[0] = a_star_path[0] * -1
-                if vehicle.battery >= 70:
-                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
                 else:
+                    for idx in range(499, 491, -1):
+                        if not node_list[idx-1].using:
+                            a_star_path += a_star(767, node_list[idx-1].NUM ,path_linked_list, node_list)
+                            node_list[idx-1].using = vehicle.NUM
+                            break
+                a_star_path[0] = a_star_path[0] * -1
+                if vehicle.battery < 80:
                     vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
+                else:
+                    vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
             # 우측 상단 2번 포트
             elif 316 <= vehicle.node <= 339:
                 a_star_path = a_star(vehicle.node, 915, path_linked_list, node_list)
@@ -64,7 +77,7 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                     # 차있거나 찜해져있다면                
                     if node_list[idx-1].using:
                         cnt += 1
-                if cnt <= 3 and vehicle.battery >= 70:
+                if cnt <= 3 and vehicle.battery >= 80:
                     for idx in range(534, 542):
                         # 비었다면                
                         if not node_list[idx-1].using:
@@ -82,10 +95,10 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                             node_list[idx-1].using = vehicle.NUM
                             break
                     a_star_path[0] = a_star_path[0] * -1
-                    if vehicle.battery >= 70:
-                        vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
-                    else:
+                    if vehicle.battery < 80:
                         vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
+                    else:
+                        vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
             # 우측 하단 2번 포트
             elif 468 <= vehicle.node <= 491:
                 a_star_path = a_star(vehicle.node, 144, path_linked_list, node_list)
@@ -98,7 +111,7 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                     if node_list[idx-1].using:
                         cnt += 1
                 
-                if cnt <= 3 and vehicle.battery >= 70:
+                if cnt <= 3 and vehicle.battery >= 80:
                     for idx in range(534, 542):
                         # 비었다면                
                         if not node_list[idx-1].using:
@@ -116,7 +129,7 @@ def back_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                             node_list[idx-1].using = vehicle.NUM
                             break
                     a_star_path[0] = a_star_path[0] * -1
-                    if vehicle.battery >= 70:
-                        vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
-                    else:
+                    if vehicle.battery < 80:
                         vehicle.command(a_star_path, 23, node_list, loadable_port_list, unloadable_port_list)
+                    else:
+                        vehicle.command(a_star_path, 20, node_list, loadable_port_list, unloadable_port_list)
