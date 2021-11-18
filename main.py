@@ -61,8 +61,10 @@ def read_map():
 
 
 # UI에서 simulate 버튼을 누르면 simulate 시작
-def start_simulate(plot=True):
+def start_simulate(plot=True, ui_speed=0):
     global simulate_time, simulate_cnt
+    if ui_speed:
+        simulate_speed = ui_speed
     # simulation 초기화
     simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
     simulate_time = 0
