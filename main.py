@@ -69,7 +69,7 @@ def start_simulate(plot=True, ui_speed=0):
     if ui_speed:
         simulate_speed = ui_speed
     # simulation 초기화
-    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot)
+    simulator.simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot, simul_db)
     # 새로운 scene 생성
     simul_db.create_new_scene()
     # 시뮬레이션 무한 루프 실행
@@ -90,7 +90,8 @@ def simulate_loop():
         return
     simulate_time += 1
 
-    cnt = simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
+    cnt = simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list,
+                                     unloadable_port_list, simulate_time)
     simulate_cnt += cnt
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)

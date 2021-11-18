@@ -21,6 +21,8 @@ class Vehicle:
         self.BREAK_PARAM = 2
         self.NODE_TH = 200
 
+        self.db = None
+        self.simulate_time = 0
         self.x = -1
         self.y = -1
         self.back = False
@@ -62,6 +64,8 @@ class Vehicle:
         self.desti_node = self.path[-1]
         self.status = 20
         self.count = 0
+
+        self.db.add_command(self.NUM, self.node, self.desti_node, self.path, self.cmd, self.simulate_time)
 
         # if cmd == 21 or cmd == 22:
         #     desti_node_instance = node_list[self.desti_node -1]
@@ -253,8 +257,9 @@ class Vehicle:
             degree += 360
         return degree
 
-    def vehicle_routine(self, node_list):
+    def vehicle_routine(self, node_list, simulate_time):
         result = 0
+        self.simulate_time = simulate_time
         # 1. 충돌 방지 명령
         if self.interrupt == 1:
             self.brake()
