@@ -90,6 +90,7 @@ class MainPage(QWidget):
         self.layout_name = None
 
         read_map()
+
         self.initUI()
 
     def initUI(self):
@@ -667,7 +668,6 @@ class MainPage(QWidget):
             for i in range(len(row)):
                 raw_data2[col[i]].append(row[i])
 
-        print(raw_data2)
         raw_data = pd.DataFrame(raw_data)  # 데이터 프레임으로 전환
         raw_data2 = pd.DataFrame(raw_data2)
 
@@ -884,9 +884,7 @@ class MainPage(QWidget):
 
     # 경유 횟수 확인
     def showVia(self):
-        global node_list, path_list
-        print(node_list)
-        node_frequency(node_list, path_list)
+        show_node_frequency()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
