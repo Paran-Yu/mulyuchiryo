@@ -284,7 +284,7 @@ class DB:
         :return data: 2차원 리스트
         """
         cur = self.conn.cursor()
-        query = f'SELECT progress FROM progress WHERE scene_id=-1'
+        query = f'SELECT progress FROM progress WHERE scene_id={self.scene_num}'
         cur.execute(query)
         res = cur.fetchall()
         data = []
@@ -317,15 +317,16 @@ class DB:
         scenes = [scene[0] for scene in res]
 
         return scenes
-db = DB()
-# db.db_clear()
-db.db_init()
-# db.create_new_scene()
-# db.set_scene_num(1)
-# db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
-# db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
-# db.get_vehicle_charge()
-# db.get_vehicle_work()
-# db.add_progress(1,1)
-# db.add_progress(2,2)
-db.get_progress()
+
+# db = DB()
+# # db.db_clear()
+# db.db_init()
+# # db.create_new_scene()
+# # db.set_scene_num(1)
+# # db.add_command(1, 1, 5, [2,3,4,5], 25, 1)
+# # db.add_command(2, 11, 15, [12,13,14,15], 25, 1)
+# # db.get_vehicle_charge()
+# # db.get_vehicle_work()
+# # db.add_progress(1,1)
+# # db.add_progress(2,2)
+# db.get_progress()
