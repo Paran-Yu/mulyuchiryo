@@ -27,6 +27,7 @@ if rootDir not in sys.path:
     sys.path.append(rootDir)
 
 from main import *
+from db import *
 from statistics import *
 
 class Context:
@@ -888,25 +889,50 @@ class MainPage(QWidget):
             f.write('</layout>\n')
             f.close()
 
+    # 씬 선택 함수
+    def setScene(self):
+        """
+        Scene을 선택할 수 있는 창 생성. 성공적으로 선택 시 True 반환.
+        :return: bool
+        """
+        scenes = db.get_scene()
+
+        ss = SceneSelector()
+        ss.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
+                       self.rect.width() * 0.2, self.rect.height() * 0.2)
+        ss.initUI(scenes)
+
+        # 확인 버튼 클릭 시 차트 출력.
+        if ss.exec_():
+            db.set_scene_num(int(ss.cmbx.currentText()))
+            return True
+        # 닫기 버튼 클릭 시 False 반환
+        return False
+
     # AGV 전체 가동률 그래프 출력
     def showUtilizationRate(self):
-        vehicle_work()
+        if self.setScene():
+            vehicle_work()
 
     # AGV의 충전률
     def showChargeRate(self):
-        vehicle_charge()
+        if self.setScene():
+            vehicle_charge()
 
     # 명령 전달 비율
     def showCmdRate(self):
-        vehicle_cmd()
+        if self.setScene():
+            vehicle_cmd()
 
     # 작업 진행 그래프
     def showProgress(self):
-        work_progress()
+        if self.setScene():
+            work_progress()
 
     # 경유 횟수 확인
     def showVia(self):
-        show_node_frequency()
+        if self.setScene():
+            show_node_frequency()
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
