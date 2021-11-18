@@ -16,6 +16,7 @@ from classes import *
 from scale import *
 from vehicleEditor import *
 from operationData import *
+from sceneSelector import *
 
 currentDir = os.path.abspath(os.path.dirname(__file__))
 rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
@@ -449,7 +450,7 @@ class MainPage(QWidget):
                 self.fname = pickle.load(f)
 
                 # 이미지 파일 존재 확인 후 나머지 정보도 불러옴
-                if os.path.exists(self.fname[0]):
+                if os.path.exists(self.fname):
                     self.count = pickle.load(f)
                     self.nodes = pickle.load(f)
                     self.ports = pickle.load(f)
@@ -524,6 +525,23 @@ class MainPage(QWidget):
         if not self.image_original:
             return
 
+        # 파일 열기
+        f = QFile(self.fname)
+
+        # 파일 이름만 파싱
+        while True:
+            idx = self.fname.find("/")
+            if idx == -1:
+                break
+            self.fname = self.fname[idx + 1:]
+
+        # 파일 이름에 상대경로를 붙임.
+        self.fname = f"./res/img/{self.fname}"
+
+        # 파일 res/img/ 아래에 복사.
+        f.copy(self.fname)
+        f.close()
+
         name = QFileDialog.getSaveFileName(self, 'Save file', './', "Layout 파일 (*.layout)")
         if name[0]:
             self.layout_name = name
@@ -547,23 +565,23 @@ class MainPage(QWidget):
     def openLayout(self):
         # 파일 오픈
         self.fname = QFileDialog.getOpenFileName(self, 'Open file', './', "Image Files (*.jpg *.jpeg *.bmp *.png)")
-
+        self.fname = self.fname[0]
         self.openImage(self.fname)
 
     def openImage(self, fname):
-        if fname[0]:
+        if fname:
             # 원본 이미지를 저장할 객체
             self.image_original = QImage()
 
             self.img_label.show()
-            self.pm = QPixmap(fname[0])
+            self.pm = QPixmap(fname)
 
             # 라벨 사이즈 조정
             pm_scaled = self.pm.scaledToWidth(self.img_label.width())
             self.img_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
             self.canvas_label.setGeometry(0, 0, pm_scaled.width(), pm_scaled.height())
 
-            self.image_original.load(fname[0])
+            self.image_original.load(fname)
             # 불러온 이미지와 같은 크기의 투명 도화지. 이 위에 그림을 그림.
             self.canvas = QImage(self.image_original.width(), self.image_original.height(),
                                  QImage.Format_ARGB32_Premultiplied)
