@@ -15,6 +15,7 @@ from selector import Selector
 from classes import *
 from scale import *
 from vehicleEditor import *
+from operationData import *
 
 currentDir = os.path.abspath(os.path.dirname(__file__))
 rootDir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
@@ -88,6 +89,7 @@ class MainPage(QWidget):
         self.actual_length = None
         self.scale_pressed = None
         self.layout_name = None
+        self.show_graph = True
 
         read_map()
 
@@ -572,20 +574,20 @@ class MainPage(QWidget):
                                        * self.canvas.height() / self.canvas_label.height()
 
     def setOperationData(self):
-        #if self.image_original:
         qd = OperationData()
         qd.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
                        self.rect.width() * 0.2, self.rect.height() * 0.2)
         qd.initUI(self.context.capa, self.context.simulation_speed)
         if qd.exec_() and qd.edit_capa.text():
             capa = int(qd.edit_capa.text())
-            #simulation_speed = int(qd.edit_speed.text())
             simulation_speed = int(qd.edit_speed.currentText())
 
             self.context.capa = capa
             self.context.simulation_speed = simulation_speed
             global simulate_speed
             simulate_speed = 1 / self.context.simulation_speed
+
+            self.show_graph = qd.chbx.isChecked()
 
     def setScale(self):
         # 다시 누른 경우 창이 뜨지 않음
@@ -715,7 +717,7 @@ class MainPage(QWidget):
 
         global simulate_speed
 
-        start_simulate(ui_speed=simulate_speed)
+        start_simulate(plot=self.show_graph, ui_speed=simulate_speed)
 
     # 시뮬레이션 일시정지
     def pause(self):
