@@ -93,6 +93,7 @@ def simulate_loop():
     cnt = simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list,
                                      unloadable_port_list, simulate_time)
     simulate_cnt += cnt
+    db.add_progress(simulate_time, simulate_cnt)
 
     call_agv(node_list, wait_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
     send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unloadable_port_list)
