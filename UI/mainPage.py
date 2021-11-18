@@ -708,8 +708,10 @@ class MainPage(QWidget):
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
         # self.XML()
 
-        main.read_map()
-        main.start_simulate()
+        global simulate_speed
+
+        read_map()
+        start_simulate(ui_speed=simulate_speed)
 
     # 시뮬레이션 일시정지
     def pause(self):
