@@ -89,6 +89,7 @@ class MainPage(QWidget):
         self.scale_pressed = None
         self.layout_name = None
 
+        read_map()
         self.initUI()
 
     def initUI(self):
@@ -711,7 +712,6 @@ class MainPage(QWidget):
 
         global simulate_speed
 
-        read_map()
         start_simulate(ui_speed=simulate_speed)
 
     # 시뮬레이션 일시정지
@@ -881,7 +881,9 @@ class MainPage(QWidget):
 
     # 경유 횟수 확인
     def showVia(self):
-        pass # node_frequency(node_list, path_list)
+        global node_list, path_list
+        print(node_list)
+        node_frequency(node_list, path_list)
 
     # 키보드 클릭 이벤트
     def keyPressEvent(self, e):
