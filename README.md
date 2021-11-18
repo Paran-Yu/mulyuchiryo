@@ -1,20 +1,14 @@
-로고(logo)
+![frontImage](docs/frontImage.png)
 
-# 물류치료
-
-> 통합 물류 자동화 시뮬레이션 분석 시스템
-
-~귀사의 공장을 더 스마트하게~
-
-`물류 치료는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
+`물류치료는 삼성 SDI 물류 자동화를 위해 AGV(자율주행 무인자동차)의 최적동선을 알고리즘으로 찾아내고 ACS(AGV Control System) 시뮬레이션을 통해 시연하는 프로젝트입니다. `
 
 
 
-삼성청년소프트웨어아카데미 5기 자율프로젝트 기업연계트랙으로 진행된 프로젝트로 삼성SDI와 연계하여 물류 자동화 과정에서 기존에 AGV들의 동선을 수작업으로 작성하여 발생했던 휴먼 에러 및 보틀넥을 줄이고, 효율 최대화를 위하여 AGV들의 동선을 최적화하는 알고리즘을 도출하여 시뮬레이션으로 시연하는 것을 목표로 합니다. 프로그래밍 언어는 Python이며 PyQt를 통해 UI를 보여줍니다.
+삼성청년소프트웨어아카데미 5기 자율프로젝트 기업연계트랙으로 진행된 프로젝트로 삼성SDI와 연계하여 물류 자동화 과정에서 기존에 AGV들의 동선을 수작업으로 작성하여 발생했던 휴먼 에러 및 보틀넥을 줄이고, 효율 최대화를 위하여 AGV들의 동선을 최적화하는 알고리즘을 도출하여 시뮬레이션으로 시연하는 것을 목표로 합니다.
 
 ## 팀원 소개
 
-팀 단체 사진
+
 
 ### 강리정
 IoT IoT IoT
@@ -46,6 +40,8 @@ UI / 안드로이드
 | 4    | **물리법칙 적용 시뮬레이션** | 1초 단위 동작까지 AGV의 실제 물리적 움직임을 모사한 시뮬레이션을 제공하고, 2D 모델링으로 보여줍니다. |
 | 5    | **분석 데이터 출력**         | 시뮬레이션 데이터를 DB에 저장하고, 효과적인 분석을 위한 통계를 제공하며, Excel 파일로 내보내기를 지원합니다. |
 
+- UI에 대한 자세한 내용은 [여기](UI/README.md)에서 확인할 수 있습니다.
+- 사용된 길찾기 알고리즘에 대해서는 [여기](Core/README.md)에서 확인할 수 있습니다.
 
 
 ## 아키텍처
@@ -62,17 +58,17 @@ UI / 안드로이드
 
 ## 설치 및 실행
 
-exe 프로그램을 다운로드 받아 실행하거나, 직접 코드를 실행할 수 있습니다. 
+소스 코드를 다운로드하여 직접 프로그램을 실행할 수 있습니다. 
 
 직접 코드를 실행하는 경우 3.7 버젼 이상의 [파이썬3](https://www.python.org/downloads/)이 필요하며, 아래 절차에 따라 실행하면 됩니다. 개발환경은 3.9 버젼입니다.
 
 ##### 파일 다운로드
 
 ```
-git clone <프로젝트레포>
+git clone https://lab.ssafy.com/s05-final/S05P31F006.git
 ```
 
-그 외, 상단 다운로드 버튼을 클릭하여 zip 파일로 다운로드, 압축해제
+그 외, 상단 다운로드 버튼을 클릭하여 zip 파일로 다운로드, 압축해제하면 됩니다.
 
 ##### 모듈 설치
 
@@ -90,31 +86,45 @@ python main.py
 
 ## 사용예시
 
-메인화면
+##### 메인화면
 
-레이아웃 그리기
+![mainPage](docs/mainPage.png)
 
-데이터 입력
+##### 레이아웃 그리기
 
-시뮬레이션 실행 + 2D 모델링
+![drawPage](docs/drawPage.png)
 
-시뮬레이션 실행
+##### 데이터 입력
 
-데이터 출력
+![dataInput](docs/dataInput.png)
+
+##### 시뮬레이션 실행 + 2D 모델링
+
+> 위 사용예시의 레이아웃과는 다른 레이아웃을 사용하여 시뮬레이팅했습니다.
+
+![simulation](docs/simulation.png)
+
+##### 데이터 출력
+
+![graph](docs/graph.png)
 
 
 
 ## 개발설정
 
-Python 3.9.7
+- Python 3.9.7
+- 가상환경을 지원하지 않습니다.
+- 경로명에 한글이 들어간 경우 정상적으로 작동하지 않을 수 있습니다.
+- 하드웨어 사양에 따라 디스플레이 내용이 달라질 수 있습니다.
+
 
 ## 릴리즈 히스토리
 
-
+- 0.0.1
 
 ## 추가정보
 
-
+프로젝트 기간: 2021-10-11 ~ 2021-11-19 (6주)
 
 ## 기여
 
@@ -132,7 +142,13 @@ Python 3.9.7
 
 [노션(Notion) 페이지](https://spice-session-a8a.notion.site/SDI-bf364b0fe61f457a8687d531096a47e9)
 
+![notion](docs/notion.png)
+
+![engineeringWiki](docs/engineeringWiki.png)
+
 [WBS 스프레드 시트](https://docs.google.com/spreadsheets/d/1HMPFKf2UmTKbTjrtqk0U_vcNYzQtznxR-eZYdHO8HKE/edit?usp=sharing)
+
+![WBS](docs/WBS.jpg)
 
 [UI 메뉴 계획](https://docs.google.com/spreadsheets/d/1PMcZ8eTfPwLhpXxE9VDXUx82L5bSitthVZU2a6iTxLI/edit?usp=sharing)
 
