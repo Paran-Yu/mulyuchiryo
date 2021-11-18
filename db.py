@@ -251,10 +251,11 @@ class DB:
         data = [0 for i in range(node_cnt)]
 
         for i in range(node_cnt):
-            query = f'SELECT COUNT(*) FROM vehicle WHERE node={i+1}'
+            query = f'SELECT COUNT(*) FROM vehicle WHERE cur_node={i+1}'
             cur.execute(query)
             res = cur.fetchall()
-            data[i] = res
+            data[i] = res[0][0]
+        # print(data)
         return data
 
 

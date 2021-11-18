@@ -10,29 +10,24 @@ def send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
             if node_list[289].status == 1:
                 # 찜하기
                 node_list[289].status = -2
-                # 290으로 가는 append 로직
                 a_star_path = a_star(587, 290, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
             elif node_list[290].status == 1:
                 node_list[290].status = -2
-                # append
                 a_star_path = a_star(587, 291, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
 
         elif vehicle.status == 11 and vehicle.node == 17 and not vehicle.interrupt:
-            if node_list[289].status == 1:
-                # 찜하기
-                node_list[289].status = -2
-                # 290으로 가는 append 로직
-                a_star_path = a_star(17, 290, path_linked_list, node_list)
+            if node_list[290].status == 1:
+                node_list[290].status = -2
+                a_star_path = a_star(17, 291, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
-            elif node_list[290].status == 1:
-                node_list[290].status = -2
-                # append
-                a_star_path = a_star(17, 291, path_linked_list, node_list)
+            elif node_list[289].status == 1:
+                node_list[289].status = -2
+                a_star_path = a_star(17, 290, path_linked_list, node_list)
                 vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
                 continue
 
@@ -85,45 +80,45 @@ def send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                 
         # 1차 목적지를 지나기 전 2차 제어하기
         # 좌측 3번 포트
-        # 585에 도착하는 순간부터 path[0]이 586
-        if vehicle.desti_node == 587 and vehicle.path and vehicle.path[0] == 586:
-            for port in unloadable_port_list:
-                if port.NUM == 290 or port.NUM ==291:
-                    print(port.status)
-                if port.NUM == 290 and port.status == 1:
-                    # 찜하기
-                    port.status = -2
-                    # 290으로 가는 append 로직
-                    a_star_path = a_star(587, 290, path_linked_list, node_list)
-                    vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
-                    break
-                elif port.NUM == 291 and port.status == 1:
-                    port.status = -2
-                    # append
-                    a_star_path = a_star(587, 291, path_linked_list, node_list)
-                    vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
-                    break
+        # 586에 도착하는 순간부터 path[0]이 587
+        # if vehicle.desti_node == 587 and vehicle.path and vehicle.path[0] == 587:
+        #     for port in unloadable_port_list:
+        #         if port.NUM == 290 or port.NUM ==291:
+        #             print(port.status)
+        #         if port.NUM == 290 and port.status == 1:
+        #             # 찜하기
+        #             port.status = -2
+        #             # 290으로 가는 append 로직
+        #             a_star_path = a_star(587, 290, path_linked_list, node_list)
+        #             vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
+        #             break
+        #         elif port.NUM == 291 and port.status == 1:
+        #             port.status = -2
+        #             # append
+        #             a_star_path = a_star(587, 291, path_linked_list, node_list)
+        #             vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
+        #             break
             # unload_port가 차있어서 정지해야 하는 상황
             # append 경로 마지막까지 왔는데 끝이면 11로 된다. (대기 상태)
 
         # 우측 3번 포트
         # 922에 도착하는 순간부터 path[0]이 73
-        if vehicle.desti_node == 17 and vehicle.path and vehicle.path[0] == 73:
-            for port in unloadable_port_list:
-                if port.NUM == 290 and port.status == 1:
-                    # 찜하기
-                    port.status = -2
-                    # 290으로 가는 append 로직
-                    a_star_path = a_star(17, 290, path_linked_list, node_list)
-                    vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
-                    break
-                elif port.NUM == 291 and port.status == 1:
-                    # 찜하기
-                    port.status = -2
-                    # append
-                    a_star_path = a_star(17, 291, path_linked_list, node_list)
-                    vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
-                    break
+        # if vehicle.desti_node == 17 and vehicle.path and vehicle.path[0] == 17:
+        #     for port in unloadable_port_list:
+        #         if port.NUM == 290 and port.status == 1:
+        #             # 찜하기
+        #             port.status = -2
+        #             # 290으로 가는 append 로직
+        #             a_star_path = a_star(17, 290, path_linked_list, node_list)
+        #             vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
+        #             break
+        #         elif port.NUM == 291 and port.status == 1:
+        #             # 찜하기
+        #             port.status = -2
+        #             # append
+        #             a_star_path = a_star(17, 291, path_linked_list, node_list)
+        #             vehicle.command(a_star_path, 22 , node_list, loadable_port_list, unloadable_port_list)
+        #             break
             # unload_port가 차있어서 정지해야 하는 상황
 
         # 중앙 상단 1번 포트

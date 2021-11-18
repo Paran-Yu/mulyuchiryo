@@ -46,10 +46,11 @@ def simulate_init(node_list, port_list, wait_list, vehicle_list, path_list, plot
 
 
 # simulate_speed초 마다 한번씩 호출된다.
-def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list):
+def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list,
+                     simulate_cnt):
     print("routine start")
     port_update(port_list, loadable_port_list, unloadable_port_list)
-    vehicle_update(node_list, vehicle_list)
+    vehicle_update(node_list, vehicle_list, simulate_cnt)
 
 
 # PORT
@@ -88,32 +89,15 @@ def wait_init(wait_list, vehicle_list):
 
 
 # VEHICLE
-def vehicle_update(node_list, vehicle_list):
+def vehicle_update(node_list, vehicle_list, simulate_cnt):
     for vehicle in vehicle_list:
-        vehicle.vehicle_routine(node_list)
+        vehicle.vehicle_routine(node_list, simulate_cnt)
         # TODO: DB에 기록
 
 
 # PLOT
 def plot_init(node_list, path_list, vehicle_list):
-    img = plt.imread('./example.png')
-    imgplot = plt.imshow(img)
-    # 노드
-    # fig = plt.plot([node.X for node in node_list],[node.Y for node in node_list], 'ro')
-    x_min, y_min = 999999999999, 9999999999999
-    # x_max, y_max = -1, -1
     for node in node_list:
-        # 가장 극단 점 찾기
-        # if node.X < x_min:
-        #     x_min = node.X
-        # if x_max < node.X:
-        #     x_max = node.X
-        if node.Y < y_min:
-            y_min = node.Y
-        # if y_max < node.Y:
-        #     y_max = node.Y
-        
-
         # port
         if hasattr(node, 'PORT_NAME'):
             if node.TYPE == 'load':
@@ -131,7 +115,7 @@ def plot_init(node_list, path_list, vehicle_list):
         # node
         else:
             plt.plot(node.X, node.Y, 'r.')
-        node_texts.append(plt.text(node.X, node.Y, f'{node.NUM}', 
+        node_texts.append(plt.text(node.X, node.Y, f'', 
             horizontalalignment='right',
             verticalalignment='top',
             fontsize=8,
@@ -149,9 +133,8 @@ def plot_init(node_list, path_list, vehicle_list):
             plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
     ax = plt.gca()
+    ax.invert_yaxis()
     plt.pause(1)
-    # cur_ylim_bottom, cur_ylim_top = ax.get_ylim()
-    ax.set_ylim(top=y_min)
 
     for vehicle in vehicle_list:
         # print(vehicle.x, vehicle.y)
@@ -192,8 +175,9 @@ def plot_init(node_list, path_list, vehicle_list):
     plt.pause(1)
 
 
-def plot_update(simulate_speed, node_list, vehicle_list):
-
+def plot_update(simulate_speed, node_list, vehicle_list, simulate_time, simulate_cnt):
+    # 제목칸에 시간, 횟수 업데이트
+    plt.title(f'Time: {simulate_time}sec; Work: {simulate_cnt};')
     #  전에 있던 것 업데이트 해주기
     # Vehicle
     for i in range(len(vehicle_list)):
