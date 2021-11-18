@@ -5,7 +5,7 @@ class SceneSelector(QDialog):
     def __init__(self):
         super().__init__()
 
-    def initUI(self):
+    def initUI(self, scenes):
         QLabel("Scene #", self).move(self.width() * 0.1, self.height() * 0.1)
 
         self.cmbx = QComboBox(self)

@@ -27,6 +27,7 @@ if rootDir not in sys.path:
     sys.path.append(rootDir)
 
 from main import *
+from db import *
 from statistics import *
 
 class Context:
@@ -906,10 +907,12 @@ class MainPage(QWidget):
 
     # 경유 횟수 확인
     def showVia(self):
+        scenes = db.get_scene()
+
         ss = SceneSelector()
         ss.setGeometry(self.rect.width() * 0.3, self.rect.height() * 0.3,
                        self.rect.width() * 0.2, self.rect.height() * 0.2)
-        ss.initUI()
+        ss.initUI(scenes)
 
         # 확인 버튼 클릭 시 차트 출력.
         if ss.exec_():
