@@ -11868,26 +11868,6 @@
             <num>6</num>
             <name>V06</name>
             <type>LowHeight</type>
-            <node>499</node>
-            <angle>0</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>1</discharge_work>
-            <discharge_wait>0.2</discharge_wait>
-            <start_node>499</start_node>
-            <start_angle>0</start_angle>
-        </vehicle>
-        <vehicle>
-            <num>7</num>
-            <name>V07</name>
-            <type>LowHeight</type>
             <node>514</node>
             <angle>180</angle>
             <width>900</width>
@@ -11905,8 +11885,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>8</num>
-            <name>V08</name>
+            <num>7</num>
+            <name>V07</name>
             <type>LowHeight</type>
             <node>515</node>
             <angle>180</angle>
@@ -11925,8 +11905,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>9</num>
-            <name>V09</name>
+            <num>8</num>
+            <name>V08</name>
             <type>LowHeight</type>
             <node>516</node>
             <angle>180</angle>
@@ -11945,8 +11925,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>10</num>
-            <name>V10</name>
+            <num>9</num>
+            <name>V09</name>
             <type>LowHeight</type>
             <node>517</node>
             <angle>180</angle>
@@ -11965,8 +11945,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>11</num>
-            <name>V11</name>
+            <num>10</num>
+            <name>V10</name>
             <type>LowHeight</type>
             <node>518</node>
             <angle>180</angle>
@@ -11985,29 +11965,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>12</num>
-            <name>V12</name>
-            <type>LowHeight</type>
-            <node>519</node>
-            <angle>180</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>1</discharge_work>
-            <discharge_wait>0.2</discharge_wait>
-            <start_node>519</start_node>
-            <start_angle>180</start_angle>
-        </vehicle>
-        
-        <vehicle>
-            <num>13</num>
-            <name>V13</name>
+            <num>11</num>
+            <name>V11</name>
             <type>LowHeight</type>
             <node>504</node>
             <angle>0</angle>
@@ -12026,8 +11985,8 @@
             <start_angle>0</start_angle>
         </vehicle>
         <vehicle>
-            <num>14</num>
-            <name>V14</name>
+            <num>12</num>
+            <name>V12</name>
             <type>LowHeight</type>
             <node>505</node>
             <angle>0</angle>
@@ -12045,9 +12004,10 @@
             <start_node>505</start_node>
             <start_angle>0</start_angle>
         </vehicle>
+        
         <vehicle>
-            <num>15</num>
-            <name>V15</name>
+            <num>13</num>
+            <name>V13</name>
             <type>LowHeight</type>
             <node>506</node>
             <angle>0</angle>
@@ -12066,8 +12026,8 @@
             <start_angle>0</start_angle>
         </vehicle>
         <vehicle>
-            <num>16</num>
-            <name>V16</name>
+            <num>14</num>
+            <name>V14</name>
             <type>LowHeight</type>
             <node>507</node>
             <angle>0</angle>
@@ -12086,8 +12046,8 @@
             <start_angle>0</start_angle>
         </vehicle>
         <vehicle>
-            <num>17</num>
-            <name>V17</name>
+            <num>15</num>
+            <name>V15</name>
             <type>LowHeight</type>
             <node>508</node>
             <angle>0</angle>
@@ -12106,28 +12066,8 @@
             <start_angle>0</start_angle>
         </vehicle>
         <vehicle>
-            <num>18</num>
-            <name>V18</name>
-            <type>LowHeight</type>
-            <node>509</node>
-            <angle>0</angle>
-            <width>900</width>
-            <height>700</height>
-            <diagonal>1140</diagonal>
-            <rotate_speed>18</rotate_speed>
-            <accel>0.21</accel>
-            <max_speed>40</max_speed>
-            <lu_type>UpDown</lu_type>
-            <load_speed>30</load_speed>
-            <charge_speed>0.83</charge_speed>
-            <discharge_work>1</discharge_work>
-            <discharge_wait>0.2</discharge_wait>
-            <start_node>509</start_node>
-            <start_angle>0</start_angle>
-        </vehicle>
-        <vehicle>
-            <num>19</num>
-            <name>V19</name>
+            <num>16</num>
+            <name>V16</name>
             <type>LowHeight</type>
             <node>524</node>
             <angle>180</angle>
@@ -12146,8 +12086,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>20</num>
-            <name>V20</name>
+            <num>17</num>
+            <name>V17</name>
             <type>LowHeight</type>
             <node>525</node>
             <angle>180</angle>
@@ -12166,8 +12106,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>21</num>
-            <name>V21</name>
+            <num>18</num>
+            <name>V18</name>
             <type>LowHeight</type>
             <node>526</node>
             <angle>180</angle>
@@ -12186,8 +12126,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>22</num>
-            <name>V22</name>
+            <num>19</num>
+            <name>V19</name>
             <type>LowHeight</type>
             <node>527</node>
             <angle>180</angle>
@@ -12206,8 +12146,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>23</num>
-            <name>V23</name>
+            <num>20</num>
+            <name>V20</name>
             <type>LowHeight</type>
             <node>528</node>
             <angle>180</angle>
@@ -12226,10 +12166,10 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>24</num>
-            <name>V24</name>
+            <num>21</num>
+            <name>V21</name>
             <type>LowHeight</type>
-            <node>529</node>
+            <node>534</node>
             <angle>180</angle>
             <width>900</width>
             <height>700</height>
@@ -12242,12 +12182,32 @@
             <charge_speed>0.83</charge_speed>
             <discharge_work>1</discharge_work>
             <discharge_wait>0.2</discharge_wait>
-            <start_node>529</start_node>
+            <start_node>534</start_node>
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>25</num>
-            <name>V25</name>
+            <num>22</num>
+            <name>V22</name>
+            <type>LowHeight</type>
+            <node>535</node>
+            <angle>180</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>535</start_node>
+            <start_angle>180</start_angle>
+        </vehicle>
+        <vehicle>
+            <num>23</num>
+            <name>V23</name>
             <type>LowHeight</type>
             <node>536</node>
             <angle>180</angle>
@@ -12266,8 +12226,8 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
-            <num>26</num>
-            <name>V26</name>
+            <num>24</num>
+            <name>V24</name>
             <type>LowHeight</type>
             <node>537</node>
             <angle>180</angle>
@@ -12286,6 +12246,46 @@
             <start_angle>180</start_angle>
         </vehicle>
         <vehicle>
+            <num>25</num>
+            <name>V25</name>
+            <type>LowHeight</type>
+            <node>538</node>
+            <angle>180</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>538</start_node>
+            <start_angle>180</start_angle>
+        </vehicle>
+        <vehicle>
+            <num>26</num>
+            <name>V26</name>
+            <type>LowHeight</type>
+            <node>539</node>
+            <angle>180</angle>
+            <width>900</width>
+            <height>700</height>
+            <diagonal>1140</diagonal>
+            <rotate_speed>18</rotate_speed>
+            <accel>0.21</accel>
+            <max_speed>40</max_speed>
+            <lu_type>UpDown</lu_type>
+            <load_speed>30</load_speed>
+            <charge_speed>0.83</charge_speed>
+            <discharge_work>1</discharge_work>
+            <discharge_wait>0.2</discharge_wait>
+            <start_node>539</start_node>
+            <start_angle>180</start_angle>
+        </vehicle>
+        <!-- <vehicle>
             <num>27</num>
             <name>V27</name>
             <type>LowHeight</type>
@@ -12364,6 +12364,6 @@
             <discharge_wait>0.2</discharge_wait>
             <start_node>541</start_node>
             <start_angle>180</start_angle>
-        </vehicle>
+        </vehicle> -->
     </vehicles>
 </layout>
