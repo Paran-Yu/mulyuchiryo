@@ -253,7 +253,7 @@ class Vehicle:
             degree += 360
         return degree
 
-    def vehicle_routine(self, node_list):
+    def vehicle_routine(self, node_list, simul_db):
         result = 0
         # 1. 충돌 방지 명령
         if self.interrupt == 1:

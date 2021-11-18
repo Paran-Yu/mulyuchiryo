@@ -90,7 +90,8 @@ def simulate_loop():
         return
     simulate_time += 1
 
-    result = simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list, unloadable_port_list)
+    result = simulator.simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_port_list,
+                                        unloadable_port_list, simul_db)
     if result == 1:
         simulate_cnt += 1
 
