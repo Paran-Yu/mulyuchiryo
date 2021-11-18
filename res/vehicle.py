@@ -339,6 +339,8 @@ class Vehicle:
         elif self.status == 81:     # 명령을 받을 수 있는 충전 상태
             if self.battery < 100:
                 self.battery += self.CHARGE_SPEED
+        elif self.interrupt ==  1:
+            self.battery -= self.DISCHARGE_WAIT
         else:
             self.battery -= self.DISCHARGE_WORK
         print("status: ", self.status)
