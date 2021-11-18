@@ -51,6 +51,7 @@ VEHICLE_STATUS = {
 def read_map():
     global img, map_data
     global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
+    mapreader.mapread_init()
     img, map_data = mapreader.read_layout()
     port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
 
@@ -84,10 +85,18 @@ def simulate_loop():
     # simulate_speed마다 루틴 함수를 새로 수행
     threading.Timer(simulate_speed, simulate_loop).start()
 
-def stop_simulate():
+def pause_simulate():
     global stop_flag
     stop_flag = True
     simulator.plot_close()
+
+def stop_simulate():
+    global stop_flag
+    global port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list
+    stop_flag = True
+    simulator.plot_close()
+    mapreader.mapread_init()
+    port_list, wait_list, node_list, path_list, vehicle_list, path_linked_list = mapreader.read_component()
 
 #######################
 # Test용 main
@@ -98,5 +107,5 @@ if __name__ == "__main__":
     win = mainPage.MainPage(screen.screenGeometry())  # 메인 화면 생성
     win.show()  # 화면 띄우기
     app.exec_()  # 루프 실행
-    read_map()
-    start_simulate()
+    # read_map()
+    # start_simulate()
