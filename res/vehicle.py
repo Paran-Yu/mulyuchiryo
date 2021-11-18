@@ -253,7 +253,8 @@ class Vehicle:
             degree += 360
         return degree
 
-    def vehicle_routine(self, node_list, simulate_cnt):
+    def vehicle_routine(self, node_list):
+        result = 0
         # 1. 충돌 방지 명령
         if self.interrupt == 1:
             self.brake()
@@ -295,7 +296,7 @@ class Vehicle:
                         self.status = 10
                         self.loaded = 0
                         node_list[self.desti_node - 1].status = 0
-                        simulate_cnt += 1
+                        result = 1
                     print("unload! - ", self.count)
                 # wait
                 elif self.cmd == 20:
@@ -341,3 +342,5 @@ class Vehicle:
 
         # 4. DB에 저장
         # 상위 경로에서 처리
+
+        return result
