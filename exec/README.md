@@ -12,6 +12,7 @@ requirements.txt 의 의존성 이외 해당사항 없음
 - 경로가 상당히 중요하므로, 기작성된 파일들을 레포지토리에 포함시켜서 드립니다.
 - `{rootDir}/map.layout`
 - `{rootDir}/res/img/map.jpg`
+- 프로그램 실행 후 `Load Project` 버튼을 눌러 `map.layout` 파일을 선택하면 됩니다.
 
 시뮬레이션을 통해 생성되는 데이터베이스는 `{rootDir}/simul_data.db`입니다. 미리 시뮬레이팅된 결과를 통계기능에서 보고 싶은 경우를 위해 현재 폴더(`exec`)에 `simul_data.db`를 첨부합니다. 
 - 보시고자 하는 경우 `{rootDir}/simul_data.db`에 덮어쓰기 하시면 됩니다.
@@ -22,11 +23,25 @@ requirements.txt 의 의존성 이외 해당사항 없음
 > 시연 순서에 따른 site 화면별, 실행별(클릭 위치 등) 상세 설명
 
 1. 맵 그리기 시연
+    - `Open Layout` 버튼으로 이미지 파일 입력
+    - 상단 `Draw` 탭의 `Node`, `Port` 등을 눌러 노드, 포트데이터 등 입력
 2. 그린 지도 `layout` `xml`파일 저장
+    - `Save` 또는 `Save As`를 눌러 저장
 3. 기존 `xml` 불러오기
+    - `Load Proejct` 버튼으로 `map.layout` 파일 불러오기
 4. Simulator 파라미터 설정
+    - `Simulate` 탭의 `Oper Data` 클릭하여 파라미터 설정
 5. Simulator Matplot 있는 버전 시연
+    - `Simulate` 탭의 `Start` 클릭하여 시작
+    - `Simulate` 탭의 `Stop` 클릭하여 정지
 6. Simulator Matplot 없는 버전 시연
-7. 사전녹화한 Simulator 영상
+    - `Simulate` 탭의 `Oper Data` 클릭하여 `화면 출력` 체크 해제
+    - `Simulate` 탭의 `Start` 클릭하여 시작
+    - `Simulate` 탭의 `Stop` 클릭하여 정지
+7. 사전녹화한 Simulator 영상 재생
 8. 사전 Simulate 데이터로 통계 기능 시연
+    - `{rootDir}/simul_data.db`에 덮어쓰기
+    - `Report` 탭의 각 버튼 클릭
 9. Excel로 내보내기 시연
+    - `File` 탭의 `Export Data` 클릭
+    - `{rootDir}`의 `xlsx` 파일 확인
