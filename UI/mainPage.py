@@ -733,7 +733,7 @@ class MainPage(QWidget):
     def play(self):
         # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
-        # self.XML()
+        self.XML()
 
         global simulate_speed
 
@@ -765,7 +765,7 @@ class MainPage(QWidget):
         # AGV의 각도
         angle = ["0", "90", "180", "270"]
 
-        with open("data.xml", 'w', encoding="UTF-8") as f:
+        with open(f"{rootDir}/data2.xml", 'w', encoding="UTF-8") as f:
             # 인코딩 지정
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
 
@@ -800,10 +800,11 @@ class MainPage(QWidget):
                 f.write("\t\t\t<freq>" + str(port.FREQ) + "</freq>\n")
                 f.write("\t\t\t<v_type>" + str(port.V_TYPE) + "</v_type>\n")
                 # 연결된 unload 포트 목록
-                f.write("\t\t\t<unload>")
-                for connected_port in port.UNLOAD_LIST:
-                    f.write(str(connected_port))    # Unload port NUM
-                f.write("</unload>\n")
+                if port.TYPE == "load":
+                    f.write("\t\t\t<unload>\n")
+                    for connected_port in port.UNLOAD_LIST:
+                        f.write(f'\t\t\t\t<item>{str(connected_port)}</item>\n')    # Unload port NUM
+                    f.write("\t\t\t</unload>\n")
                 f.write('\t\t</port>\n')
             f.write('\t</ports>\n')
 
@@ -843,47 +844,46 @@ class MainPage(QWidget):
 
             # AGV
             f.write('\t<vehicles>\n')
-            for vtype in self.vehicles:
-                for vehicle in vtype:
-                    f.write('\t\t<vehicle>\n')
-                    f.write("\t\t\t<num>" + str(vehicle.NUM) + "</num>\n")
-                    f.write("\t\t\t<name>" + str(vehicle.NAME) + "</name>\n")
-                    f.write("\t\t\t<type>" + str(vehicle.TYPE) + "</type>\n")
+            for vehicle in self.vehicles:
+                f.write('\t\t<vehicle>\n')
+                f.write("\t\t\t<num>" + str(vehicle.NUM) + "</num>\n")
+                f.write("\t\t\t<name>" + str(vehicle.NAME) + "</name>\n")
+                f.write("\t\t\t<type>" + str(vehicle.TYPE) + "</type>\n")
 
-                    # AGV 랜덤 배치
+                # AGV 랜덤 배치
+                idx = random.randrange(0, count)
+                while visited[idx]:
+                    # 이미 배치된 노드 패스
                     idx = random.randrange(0, count)
-                    while visited[idx]:
-                        # 이미 배치된 노드 패스
-                        idx = random.randrange(0, count)
 
-                    visited[idx] = True
+                visited[idx] = True
+                type = 0
+                if idx < count_node:  # Node. position[0][idx]
                     type = 0
-                    if idx < count_node:    # Node. position[0][idx]
-                        type = 0
-                    elif idx < count_node + count_ports:  # Port. position[1][idx]
-                        type = 1
-                        idx -= (count_node)
-                    else:
-                        type = 2
-                        idx -= (count_node + count_ports)
+                elif idx < count_node + count_ports:  # Port. position[1][idx]
+                    type = 1
+                    idx -= (count_node)
+                else:
+                    type = 2
+                    idx -= (count_node + count_ports)
 
-                    f.write("\t\t\t<node>" + str(self.positions[type][idx].NUM) + "</node>\n")
-                    f.write("\t\t\t<angle>" + angle[random.randrange(0, 4)] + "</angle>\n")
-                    f.write("\t\t\t<width>" + str(vehicle.WIDTH) + "</width>\n")
-                    f.write("\t\t\t<height>" + str(vehicle.HEIGHT) + "</height>\n")
-                    f.write("\t\t\t<diagonal>" + str(vehicle.DIAGONAL) + "</diagonal>\n")
-                    f.write("\t\t\t<rotate_speed>" + str(vehicle.ROTATE_SPEED) + "</rotate_speed>\n")
-                    f.write("\t\t\t<accel>" + str(vehicle.ACCEL) + "</accel>\n")
-                    f.write("\t\t\t<max_speed>" + str(vehicle.MAX_SPEED) + "</max_speed>\n")
-                    f.write("\t\t\t<lu_type>" + str(vehicle.LU_TYPE) + "</lu_type>\n")
-                    f.write("\t\t\t<load_speed>" + str(vehicle.LOAD_SPEED) + "</load_speed>\n")
-                    f.write("\t\t\t<charge_speed>" + str(vehicle.CHARGE_SPEED) + "</charge_speed>\n")
-                    f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
-                    f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
-                    # TODO: Erase and Refactoring Simulator. Dupleicated with `node`, `angle`.
-                    f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
-                    f.write("\t\t\t<start_angle>" + angle[random.randrange(0, 4)] + "</start_angle>\n")
-                    f.write('\t\t</vehicle>\n')
+                f.write("\t\t\t<node>" + str(self.positions[type][idx].NUM) + "</node>\n")
+                f.write("\t\t\t<angle>" + angle[random.randrange(0, 4)] + "</angle>\n")
+                f.write("\t\t\t<width>" + str(vehicle.WIDTH) + "</width>\n")
+                f.write("\t\t\t<height>" + str(vehicle.HEIGHT) + "</height>\n")
+                f.write("\t\t\t<diagonal>" + str(vehicle.DIAGONAL) + "</diagonal>\n")
+                f.write("\t\t\t<rotate_speed>" + str(vehicle.ROTATE_SPEED) + "</rotate_speed>\n")
+                f.write("\t\t\t<accel>" + str(vehicle.ACCEL) + "</accel>\n")
+                f.write("\t\t\t<max_speed>" + str(vehicle.MAX_SPEED) + "</max_speed>\n")
+                f.write("\t\t\t<lu_type>" + str(vehicle.LU_TYPE) + "</lu_type>\n")
+                f.write("\t\t\t<load_speed>" + str(vehicle.LOAD_SPEED) + "</load_speed>\n")
+                f.write("\t\t\t<charge_speed>" + str(vehicle.CHARGE_SPEED) + "</charge_speed>\n")
+                f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
+                f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
+                # TODO: Erase and Refactoring Simulator. Dupleicated with `node`, `angle`.
+                f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
+                f.write("\t\t\t<start_angle>" + angle[random.randrange(0, 4)] + "</start_angle>\n")
+                f.write('\t\t</vehicle>\n')
             f.write('\t</vehicles>\n')
 
             f.write('</layout>\n')
