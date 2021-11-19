@@ -421,16 +421,17 @@ class DetailVehicle():
             self.context.main.selected_vehicle.NAME = self.name.text()
 
     def changedAngle(self):
-        str = self.angle.text()
+        if self.angle.text():
+            str = self.angle.text()
 
-        for char in str:
-            if not char.isdigit():
-                str = str.replace(char, "")
+            for char in str:
+                if not char.isdigit():
+                    str = str.replace(char, "")
 
-        if self.context.main.selected_vehicle:
-            self.context.main.selected_vehicle.angle = int(str)
+            if self.context.main.selected_vehicle:
+                self.context.main.selected_vehicle.angle = int(str)
 
-        self.angle.setText(str)
+            self.angle.setText(str)
 
     def changedType(self):
         if self.context.main.selected_vehicle:
