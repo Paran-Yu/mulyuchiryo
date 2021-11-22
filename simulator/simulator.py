@@ -59,7 +59,7 @@ def simulate_routine(node_list, port_list, wait_list, vehicle_list, loadable_por
 def port_init(port_list):
     for x in port_list:
         if x.TYPE == 'load':
-            cnt = random.randrange(0, x.FREQ+1)
+            cnt = random.randrange(700, x.FREQ+1)
             x.count = cnt
         elif x.TYPE == 'unload':
             x.count = x.FREQ - 1

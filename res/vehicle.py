@@ -76,7 +76,7 @@ class Vehicle:
 
 
     def move(self, node_list):
-        print("move!")
+        # print("move!")
         # 0. 후진 여부 확인
         if self.path[0] < 0:
             self.path[0] *= -1
@@ -86,8 +86,8 @@ class Vehicle:
         next_node = node_list[self.path[0] - 1].getPos()
         dx = next_node[0] - self.x
         dy = next_node[1] - self.y
-        print("cur next: ",self.node, self.path[0])
-        print("dx, dy: ", dx, dy)
+        # print("cur next: ",self.node, self.path[0])
+        # print("dx, dy: ", dx, dy)
         if self.turn_flag == 1 or self.last_flag == 1:
             pass
         elif len(self.path) == 1:
@@ -108,8 +108,8 @@ class Vehicle:
 
         # 2. 다음 목표 node와의 거리
         distance = sqrt(dx ** 2 + dy ** 2)
-        print("distance: ", distance)
-        print("brake: ", self.getBrakeDis())
+        # print("distance: ", distance)
+        # print("brake: ", self.getBrakeDis())
 
         # 3. 회전 여부에 따른 가감속
         if self.turn_flag == 1 or self.last_flag == 1 or self.back:
@@ -125,8 +125,8 @@ class Vehicle:
                 self.velocity = self.MAX_SPEED
 
         # 4. x, y 좌표 갱신
-        print("angle: ", self.angle)
-        print("velocity:", self.velocity)
+        # print("angle: ", self.angle)
+        # print("velocity:", self.velocity)
         sin_dx = sin(radians(self.angle))
         cos_dy = cos(radians(self.angle))
         if abs(sin_dx) < 0.1: sin_dx = 0
@@ -137,8 +137,8 @@ class Vehicle:
         else:
             self.x -= self.velocity * sin_dx
             self.y += self.velocity * cos_dy
-        print("sin,cos: ", sin_dx, cos_dy)
-        print("x,y: ",self.x,self.y)
+        # print("sin,cos: ", sin_dx, cos_dy)
+        # print("x,y: ",self.x,self.y)
 
         # 5. node 근접시 도착한 것으로 보정
         if distance <= 400:
@@ -159,7 +159,7 @@ class Vehicle:
 
     def turn(self, node_list):
         self.velocity = 0
-        print("turn!")
+        # print("turn!")
         # 1. 회전 방향 결정
         if self.turning == 0:
             next_node = node_list[self.path[0] - 1].getPos()
@@ -171,14 +171,14 @@ class Vehicle:
             else:
                 old_angle = self.angle
             new_angle = self.get_angle(dx1, dy1)
-            print(old_angle, new_angle)
+            # print(old_angle, new_angle)
             self.desti_angle = new_angle
             self.dAngle = new_angle - old_angle
             if self.dAngle > 180:
                 self.dAngle = 360 - self.dAngle
             elif self.dAngle < -180:
                 self.dAngle = 360 + self.dAngle
-            print(self.dAngle)
+            # print(self.dAngle)
             if self.dAngle > 0:
                 # CW
                 self.turning = 1
@@ -186,7 +186,7 @@ class Vehicle:
                 # CCW
                 self.turning = 2
 
-            print(self.turning)
+            # print(self.turning)
         # 2. 실제 회전
         # CW
         if self.turning == 1:
@@ -267,7 +267,7 @@ class Vehicle:
         # 2. 작업 - status 업데이트
         else:
             # path 이동
-            print("cmd start!: ", self.NUM)
+            # print("cmd start!: ", self.NUM)
             if len(self.path) != 0:
                 if self.turning == -1:
                     self.move(node_list)
@@ -288,7 +288,7 @@ class Vehicle:
                         self.status = 10
                         self.loaded = 1
                         node_list[self.desti_node - 1].status = 0
-                    print("load! - ", self.count)
+                    # print("load! - ", self.count)
                 # unload
                 elif self.cmd == 22:
                     if self.status != 40:
@@ -302,22 +302,22 @@ class Vehicle:
                         self.loaded = 0
                         node_list[self.desti_node - 1].status = 0
                         result = 1
-                    print("unload! - ", self.count)
+                    # print("unload! - ", self.count)
                 # wait
                 elif self.cmd == 20:
                     self.cmd = 10
                     self.status = 10
                     node_list[self.node-1].using = self.NUM
-                    print("wait!")
+                    # print("wait!")
                 # charge
                 elif self.cmd == 23:
                     self.cmd = 10
                     self.status = 80
-                    print("charge!")
+                    # print("charge!")
                 # append
                 elif self.cmd == 25:
                     self.status = 11
-                    print("append!")
+                    # print("append!")
 
             # wait to move 명령이면 5초 카운트
             if self.cmd == 20:
@@ -346,9 +346,9 @@ class Vehicle:
             self.battery -= self.DISCHARGE_WAIT
         else:
             self.battery -= self.DISCHARGE_WORK
-        print("status: ", self.status)
-        print("battery: ", self.battery)
-        print("=====================")
+        # print("status: ", self.status)
+        # print("battery: ", self.battery)
+        # print("=====================")
 
         # 4. DB에 저장
         self.db.add_vehicle_status(self, self.simulate_time)

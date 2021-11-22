@@ -31,7 +31,6 @@ def vehicle_charge():
 
     dt = 1
     t = np.arange(0, len(data[0][1]), dt)
-
     # TODO
     # 시간 간격 dt 조정 기능 - UI와 협의
 
@@ -41,6 +40,7 @@ def vehicle_charge():
 
     ax.set_xlabel('Time[sec]')
     ax.set_ylabel('Battery[%]')
+    plt.xlim(0,20000)
     ax.grid(True)
     plt.legend()
     plt.show()
@@ -82,23 +82,37 @@ def node_frequency(node_list, path_list):
     # 노드 갯수만큼 [방문횟수, 방문횟수, ...]
     # map plot 부분 추가
 
-    fig, ax = plt.subplots()
-    ax.invert_yaxis()
-    for i in range(len(node_list)):
-        plt.plot(node_list[i].X, node_list[i].Y, 'o', markersize=data[i])
-        plt.text(node_list[i].X, node_list[i].Y, f'{node_list[i].NUM}', 
-            horizontalalignment='right',
-            verticalalignment='top',
-            fontsize=8,
-        )
-    # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
-    for path in path_list:
-        start = node_list[path[0] - 1]
-        end = node_list[path[1] - 1]
-        # 수직인지 수평인지 판별 필요
-        if start.X == end.X:  # X축 동일 -> 수직
-            plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
-        else:  # Y축 동일 -> 수평
-            plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
+    X = []
+    Y = []
+    for n in node_list:
+        X.append(n.X)
+        Y.append(n.Y)
+
+
+    # fig, ax = plt.subplots()
+    # ax.invert_yaxis()
+    # for i in range(len(node_list)):
+    #     plt.plot(node_list[i].X, node_list[i].Y, 'o', markersize=data[i])
+    #     plt.text(node_list[i].X, node_list[i].Y, f'{node_list[i].NUM}',
+    #         horizontalalignment='right',
+    #         verticalalignment='top',
+    #         fontsize=8,
+    #     )
+
+    plt.scatter(X, Y, c=data)
+    # for i in range(len(node_list)):
+    #     plt.annotate(i+1, (X[i], Y[i]))
+    plt.colorbar(label="frequency")
+    # plt.xlim(20000)
+
+    # # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
+    # for path in path_list:
+    #     start = node_list[path[0] - 1]
+    #     end = node_list[path[1] - 1]
+    #     # 수직인지 수평인지 판별 필요
+    #     if start.X == end.X:  # X축 동일 -> 수직
+    #         plt.vlines(x=start.X, ymin=start.Y, ymax=end.Y)
+    #     else:  # Y축 동일 -> 수평
+    #         plt.hlines(y=start.Y, xmin=start.X, xmax=end.X)
 
     plt.show()
