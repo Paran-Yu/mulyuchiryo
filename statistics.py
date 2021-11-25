@@ -108,6 +108,7 @@ def node_frequency(node_list, path_list):
     # for i in range(len(node_list)):
     #     plt.annotate(i+1, (X[i], Y[i]))
     plt.colorbar(label="frequency")
+    plt.gca().invert_yaxis()
     # plt.xlim(20000)
 
     # # path_list에는 x,y 값이 없고 노드 번호만 있다. 직접 계산해줘야한다.
