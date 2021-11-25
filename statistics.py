@@ -78,6 +78,11 @@ def work_progress():
 
 
 def node_frequency(node_list, path_list):
+    import mapreader
+    mapreader.mapread_init()
+    node_list = mapreader.node_list
+    # print(node_list)
+
     data = db.get_node_freq(len(node_list))
     # 노드 갯수만큼 [방문횟수, 방문횟수, ...]
     # map plot 부분 추가
