@@ -733,7 +733,7 @@ class MainPage(QWidget):
     def play(self):
         # 테스트 시 XML이 변경될 가능성이 있으므로 주석처리 했음.
         # 그린 레이아웃을 적용하고 싶다면 주석 해제하고 사용.
-        self.XML()
+        #self.XML()
 
         global simulate_speed
 
@@ -765,7 +765,7 @@ class MainPage(QWidget):
         # AGV의 각도
         angle = ["0", "90", "180", "270"]
 
-        with open(f"{rootDir}/data2.xml", 'w', encoding="UTF-8") as f:
+        with open(f"{rootDir}/data.xml", 'w', encoding="UTF-8") as f:
             # 인코딩 지정
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
 
@@ -782,7 +782,7 @@ class MainPage(QWidget):
 
             # 운영 데이터
             f.write('\t<map>\n')
-            f.write("\t\t<width>" + str(self.rect.width()) + "</width>\n")    # 가로 길이
+            f.write("\t\t<width>" + str(self.canvas.width()) + "</width>\n")    # 가로 길이
             f.write("\t\t<scale>" + str(self.context.scale) + "</scale>\n")   # 스케일 정보
             f.write("\t\t<capa>" + str(self.context.capa) + "</capa>\n")      # 일일 반송량
             f.write('\t</map>\n')
@@ -792,7 +792,8 @@ class MainPage(QWidget):
             for port in self.ports:
                 f.write('\t\t<port>\n')
                 f.write("\t\t\t<num>" + str(port.NUM) + "</num>\n")
-                x, y = self.convertCanvasToMonitor(port.X, port.Y)
+                #x, y = self.convertCanvasToMonitor(port.X, port.Y)
+                x, y = port.X, port.Y
                 f.write("\t\t\t<x>" + str(x) + "</x>\n")
                 f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<name>" + str(port.PORT_NAME) + "</name>\n")
@@ -813,7 +814,8 @@ class MainPage(QWidget):
             for wait_point in self.wait_points:
                 f.write('\t\t<wait>\n')
                 f.write("\t\t\t<num>" + str(wait_point.NUM) + "</num>\n")
-                x, y = self.convertCanvasToMonitor(wait_point.X, wait_point.Y)
+                #x, y = self.convertCanvasToMonitor(wait_point.X, wait_point.Y)
+                x, y = wait_point.X, wait_point.Y
                 f.write("\t\t\t<x>" + str(x) + "</x>\n")
                 f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<name>" + str(wait_point.WAIT_NAME) + "</name>\n")
@@ -826,7 +828,8 @@ class MainPage(QWidget):
             for node in self.nodes:
                 f.write('\t\t<node>\n')
                 f.write("\t\t\t<num>" + str(node.NUM) + "</num>\n")
-                x, y = self.convertCanvasToMonitor(node.X, node.Y)
+                #x, y = self.convertCanvasToMonitor(node.X, node.Y)
+                x, y = node.X, node.Y
                 f.write("\t\t\t<x>" + str(x) + "</x>\n")
                 f.write("\t\t\t<y>" + str(y) + "</y>\n")
                 f.write("\t\t\t<isCross>" + ("Y" if node.isCross else "N") + "</isCross>\n")
@@ -850,6 +853,7 @@ class MainPage(QWidget):
                 f.write("\t\t\t<name>" + str(vehicle.NAME) + "</name>\n")
                 f.write("\t\t\t<type>" + str(vehicle.TYPE) + "</type>\n")
 
+                '''
                 # AGV 랜덤 배치
                 idx = random.randrange(0, count)
                 while visited[idx]:
@@ -868,6 +872,8 @@ class MainPage(QWidget):
                     idx -= (count_node + count_ports)
 
                 f.write("\t\t\t<node>" + str(self.positions[type][idx].NUM) + "</node>\n")
+                '''
+                f.write("\t\t\t<node>" + str(vehicle.node) + "</node>\n")
                 f.write("\t\t\t<angle>" + angle[random.randrange(0, 4)] + "</angle>\n")
                 f.write("\t\t\t<width>" + str(vehicle.WIDTH) + "</width>\n")
                 f.write("\t\t\t<height>" + str(vehicle.HEIGHT) + "</height>\n")
@@ -881,7 +887,8 @@ class MainPage(QWidget):
                 f.write("\t\t\t<discharge_work>" + str(vehicle.DISCHARGE_WORK) + "</discharge_work>\n")
                 f.write("\t\t\t<discharge_wait>" + str(vehicle.DISCHARGE_WAIT) + "</discharge_wait>\n")
                 # TODO: Erase and Refactoring Simulator. Dupleicated with `node`, `angle`.
-                f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
+                #f.write("\t\t\t<start_node>" + str(self.positions[type][idx].NUM) + "</start_node>\n")
+                f.write("\t\t\t<start_node>" + str(vehicle.node) + "</start_node>\n")
                 f.write("\t\t\t<start_angle>" + angle[random.randrange(0, 4)] + "</start_angle>\n")
                 f.write('\t\t</vehicle>\n')
             f.write('\t</vehicles>\n')
