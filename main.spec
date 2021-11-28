@@ -5,9 +5,9 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['.','UI','res','simulator','Core','UI/resources/image'],
+             pathex=['.','UI','res','simulator','Core'],
              binaries=[],
-             datas=[],
+             datas=[('UI/resources/image/*.png','UI/resources/image')],
              hiddenimports=["Tkinter", "FileDialog"],
              hookspath=[],
              hooksconfig={},
