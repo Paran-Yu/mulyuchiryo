@@ -351,6 +351,6 @@ class Vehicle:
         # print("=====================")
 
         # 4. DB에 저장
-        self.db.add_vehicle_status(self, self.simulate_time)
+        # self.db.add_vehicle_status(self, self.simulate_time)
 
         return result
