@@ -61,7 +61,8 @@ def send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                 vehicle.command(a_star_path, 25, node_list, loadable_port_list, unloadable_port_list)
             # 중앙 상단 1번 포트
             elif 388 <= vehicle.node <= 389:
-                a_star_path = a_star(vehicle.node, 645, path_linked_list, node_list)
+                a_star_path = a_star(vehicle.node, 46, path_linked_list, node_list)
+                a_star_path += a_star(46, 645, path_linked_list, node_list)
                 a_star_path[0] = a_star_path[0] * -1
                 vehicle.command(a_star_path, 25, node_list, loadable_port_list, unloadable_port_list)
             elif 390 <= vehicle.node <= 391:
@@ -70,7 +71,8 @@ def send_agv(node_list, vehicle_list, path_linked_list, loadable_port_list, unlo
                 vehicle.command(a_star_path, 25, node_list, loadable_port_list, unloadable_port_list)
             # 중앙 하단 1번 포트
             elif 440 <= vehicle.node <= 441:
-                a_star_path = a_star(vehicle.node, 779, path_linked_list, node_list)
+                a_star_path = a_star(vehicle.node, 246, path_linked_list, node_list)
+                a_star_path += a_star(246, 779, path_linked_list, node_list)
                 a_star_path[0] = a_star_path[0] * -1
                 vehicle.command(a_star_path, 25, node_list, loadable_port_list, unloadable_port_list)
             elif 442 <= vehicle.node <= 443:
