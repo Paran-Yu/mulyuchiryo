@@ -13,12 +13,13 @@ def heuristic(start, goal, node_list):
     x2 = node_list[goal-1].X
     y2 = node_list[goal-1].Y
     
-    # 맵의 특성을 고려하여 직선 경로가 있다면 직선으로 가도록 유도하기 위해서 heurisitc 값을 크게 낮춰주었다.
+    # 맵의 특성을 고려하여 직선 경로가 있다면 직선으로 가도록 유도하기 위해서
+    # heurisitc 값을 낮춰주었다.
     if x1 == x2 or y1 == y2:
-        return (abs(x1 - x2) + abs(y1 - y2)) / 400
+        return 0
     else:
-        # 시간으로 나타내고 싶어서 40으로 나눠주었다.
-        return (abs(x1 - x2) + abs(y1 - y2)) / 40
+        return abs(x1 - x2) + abs(y1 - y2)
+
 
 def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 아주 큰 수를 넣어주었다.
     path = [1000000] * len(node_list)
@@ -99,7 +100,7 @@ def a_star(start, goal, path_linked_list, node_list):    # 노드 개수만큼 �
 
     return final_path
 
-def control_cost(each_node):
-    exclusion_list.append(each_node)
-    time.sleep(5)
-    exclusion_list.remove(each_node)
+# def control_cost(each_node):
+#     exclusion_list.append(each_node)
+#     time.sleep(5)
+#     exclusion_list.remove(each_node)
